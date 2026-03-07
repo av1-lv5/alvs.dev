@@ -28,15 +28,6 @@ const { person } = Astro.props;
     )
   }
 
-  <!-- Progressive blur layers — each covers full card, mask controls zone -->
-  <div class="blur-layer blur-1" aria-hidden="true"></div>
-  <div class="blur-layer blur-2" aria-hidden="true"></div>
-  <div class="blur-layer blur-3" aria-hidden="true"></div>
-  <div class="blur-layer blur-4" aria-hidden="true"></div>
-
-  <!-- Dark gradient scrim on top of blur -->
-  <div class="scrim" aria-hidden="true"></div>
-
   <div class="film-info">
     <span class="film-name">{person.name}</span>
   </div>
@@ -78,54 +69,14 @@ const { person } = Astro.props;
     background: var(--bg-soft);
   }
 
-  /* Progressive blur — each layer uses mask-image to confine its blur zone */
-  .blur-layer {
-    position: absolute;
-    inset: 0;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-  }
-
-  .blur-1 {
-    backdrop-filter: blur(2px);
-    -webkit-mask-image: linear-gradient(to top, black 0%, transparent 38%);
-    mask-image: linear-gradient(to top, black 0%, transparent 38%);
-  }
-
-  .blur-2 {
-    backdrop-filter: blur(5px);
-    -webkit-mask-image: linear-gradient(to top, black 0%, transparent 28%);
-    mask-image: linear-gradient(to top, black 0%, transparent 28%);
-  }
-
-  .blur-3 {
-    backdrop-filter: blur(10px);
-    -webkit-mask-image: linear-gradient(to top, black 0%, transparent 18%);
-    mask-image: linear-gradient(to top, black 0%, transparent 18%);
-  }
-
-  .blur-4 {
-    backdrop-filter: blur(18px);
-    -webkit-mask-image: linear-gradient(to top, black 0%, transparent 10%);
-    mask-image: linear-gradient(to top, black 0%, transparent 10%);
-  }
-
-  /* Dark color overlay above the blur */
-  .scrim {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.7) 0%,
-      rgba(0, 0, 0, 0.1) 40%,
-      transparent 60%
-    );
-  }
-
   .film-info {
     position: absolute;
+
+    background: linear-gradient(
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.6) 60%,
+      rgba(0, 0, 0, 1) 100%
+    );
     bottom: 0;
     left: 0;
     right: 0;
