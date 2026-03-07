@@ -19,20 +19,21 @@ export const recommendations: MonthGroup[] = [
   {
     monthId: "2026-02",
     label: "February 2026",
-    items: [],
+    items: [
+      { tmdbId: 122906, type: "movie" }, // About time
+      { tmdbId: 80752, type: "tv" }, // See
+      { tmdbId: 701387, type: "movie" }, // Bugonia
+      { tmdbId: 752, type: "movie" }, // v for vendetta
+    ],
   },
   {
     monthId: "2026-01",
     label: "January 2026",
     items: [
-      {
-        tmdbId: 589964, // Karuppudurai
-        type: "movie",
-      },
-      {
-        tmdbId: 95396, // severance
-        type: "tv",
-      },
+      { tmdbId: 250658, type: "movie" }, // The internet's own boy: The story of Aaron Swartz
+      { tmdbId: 589964, type: "movie" }, // Karuppudurai
+      { tmdbId: 95396, type: "tv" }, // severance
+      { tmdbId: 1062722, type: "movie" }, // frankenstein
     ],
   },
 ];
@@ -41,7 +42,7 @@ export const watchlist: { tmdbId: number; type: MediaType }[] = [
   { tmdbId: 976121, type: "movie" }, // Romancham
   { tmdbId: 1317288, type: "movie" }, // Marty supreme
   { tmdbId: 1272837, type: "movie" }, // The bone temple
-  { tmdbId: 701387, type: "movie" }, // Bugonia
+  { tmdbId: 1582770, type: "movie" }, // Dhurandhar: The Revenge
 ];
 
 export const favoriteActors: number[] = [
