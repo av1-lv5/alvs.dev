@@ -1,0 +1,49 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import LabLayout from "@layouts/LabLayout.astro";
+
+const allComponents = import.meta.glob("/src/components/*.astro", {
+  eager: true,
+});
+const allSources = import.meta.glob("/src/components/*.astro", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+
+export async function getStaticPaths() {
+  const entries = await getCollection("lab", ({ data }) => !data.isDraft);
+  const sorted = entries.sort(
+    (a, b) => a.data.date.getTime() - b.data.date.getTime(),
+  );
+
+  return sorted.map((entry, i) => ({
+    params: {
+      slug: entry.slug,
+    },
+    props: {
+      entry,
+      prev: sorted[i - 1] ?? null,
+      next: sorted[i + 1] ?? null,
+    },
+  }));
+}
+
+export type Props = {
+  entry: CollectionEntry<"lab">;
+  prev: CollectionEntry<"lab"> | null;
+  next: CollectionEntry<"lab"> | null;
+};
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await entry.render();
+
+const componentKey = `/src/components/${entry.data.component}.astro`;
+const DemoComponent = (allComponents[componentKey] as any)?.default;
+const source = allSources[componentKey] as string;
+---
+
+<LabLayout entry={entry} source={source} prev={prev} next={next}>
+  <DemoComponent slot="demo" />
+  <Content />
+</LabLayout>

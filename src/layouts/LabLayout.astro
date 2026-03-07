@@ -1,0 +1,278 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Layout from "@layouts/Layout.astro";
+import BackInHistory from "@components/BackInHistory.astro";
+import { Icon } from "astro-icon/components";
+import { Code } from "astro/components";
+
+type Props = {
+  entry: CollectionEntry<"lab">;
+  source: string;
+  prev: CollectionEntry<"lab"> | null;
+  next: CollectionEntry<"lab"> | null;
+};
+
+const { entry, source, prev, next } = Astro.props;
+
+const sourceConfig = {
+  youtube: { icon: "lucide:youtube", label: "inspired by a youtube video" },
+  blog: { icon: "lucide:newspaper", label: "inspired by a blog post" },
+  codepen: { icon: "lucide:codepen", label: "inspired by a codepen" },
+  other: { icon: "lucide:link", label: "inspired by source" },
+};
+
+const inspiration = entry.data.sourceType
+  ? sourceConfig[entry.data.sourceType]
+  : null;
+
+const lang = "astro";
+---
+
+<Layout
+  categoryTabTitle="Lab"
+  pageTabTitle={entry.data.title}
+  pageTitle={entry.data.title}
+  showNav={false}
+  description={entry.data.description}
+>
+  <div class="sub-navigation">
+    <BackInHistory />
+    <div class="links-container">
+      <a href="/" class="nav-like">Home</a>
+      <a href="/lab" class="nav-like">Lab</a>
+    </div>
+  </div>
+
+  <div class="demo-container">
+    <slot name="demo" />
+  </div>
+
+  {
+    inspiration && entry.data.source && (
+      <div class="source-attribution">
+        <a
+          href={entry.data.source}
+          class="source-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Icon name={inspiration.icon} size={13} />
+          {inspiration.label}
+        </a>
+      </div>
+    )
+  }
+
+  <div class="description">
+    <slot />
+  </div>
+
+  <div class="source-section">
+    <div class="code-wrapper">
+      <span class="lang-label">{lang}</span>
+      <button class="copy-btn" id="copy-btn" aria-label="Copy source">
+        <Icon name="lucide:copy" size={14} class="icon-copy" />
+        <Icon name="lucide:check" size={14} class="icon-check" />
+      </button>
+      <Code
+        code={source}
+        lang="astro"
+        themes={{ light: "catppuccin-latte", dark: "houston" }}
+      />
+      <div class="expand-fade"></div>
+    </div>
+    <button class="expand-btn" id="expand-btn">View more</button>
+  </div>
+
+  <nav class="entry-nav">
+    {
+      prev ? (
+        <a href={`/lab/${prev.slug}`} class="nav-entry nav-prev">
+          <Icon name="lucide:arrow-left" size={14} />
+          <span class="nav-title">{prev.data.title}</span>
+        </a>
+      ) : (
+        <div />
+      )
+    }
+    {
+      next && (
+        <a href={`/lab/${next.slug}`} class="nav-entry nav-next">
+          <span class="nav-title">{next.data.title}</span>
+          <Icon name="lucide:arrow-right" size={14} />
+        </a>
+      )
+    }
+  </nav>
+</Layout>
+
+<script>
+  const expandBtn = document.getElementById("expand-btn");
+  const wrapper = expandBtn?.previousElementSibling as HTMLElement | null;
+
+  expandBtn?.addEventListener("click", () => {
+    wrapper?.classList.toggle("expanded");
+    expandBtn.textContent = wrapper?.classList.contains("expanded")
+      ? "View less"
+      : "View more";
+  });
+
+  const copyBtn = document.getElementById("copy-btn");
+  const pre = copyBtn?.parentElement?.querySelector("pre");
+
+  copyBtn?.addEventListener("click", async () => {
+    await navigator.clipboard.writeText(pre?.textContent ?? "");
+    copyBtn.classList.add("copied");
+    setTimeout(() => copyBtn.classList.remove("copied"), 2000);
+  });
+</script>
+
+<style>
+  .sub-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem 0;
+  }
+  .links-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  a.nav-like {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .source-attribution {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.65rem 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: var(--transition);
+  }
+  .source-link:hover {
+    border-color: var(--text-muted);
+    color: var(--text);
+  }
+
+  .code-wrapper {
+    position: relative;
+  }
+  .code-wrapper :global(pre) {
+    max-height: calc(15 * 1.6em);
+    overflow: hidden;
+    transition: max-height 500ms ease;
+  }
+
+  .code-wrapper.expanded :global(pre) {
+    max-height: 10000px;
+  }
+
+  .expand-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6rem;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
+    transition: opacity 300ms ease;
+  }
+  .code-wrapper.expanded .expand-fade {
+    opacity: 0;
+  }
+  .expand-btn {
+    display: block;
+    width: 100%;
+    margin-top: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 0.75rem;
+    opacity: 0.5;
+    cursor: pointer;
+    color: inherit;
+    padding: 0;
+    text-align: center;
+    transition: opacity 200ms ease;
+  }
+  .expand-btn:hover {
+    opacity: 1;
+  }
+
+  .lang-label {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.9rem;
+    z-index: 1;
+    font-size: 0.7rem;
+    opacity: 0.35;
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+    pointer-events: none;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    z-index: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.3;
+    padding: 0.25rem;
+    transition: opacity 200ms ease;
+    display: flex;
+    align-items: center;
+  }
+  .copy-btn:hover {
+    opacity: 0.8;
+  }
+  .icon-check {
+    display: none;
+  }
+  .copy-btn.copied .icon-copy {
+    display: none;
+  }
+  .copy-btn.copied .icon-check {
+    display: block;
+  }
+
+  .entry-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+  }
+  .nav-entry {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    opacity: 0.5;
+    transition: opacity 200ms ease;
+    max-width: 45%;
+  }
+  .nav-entry:hover {
+    opacity: 1;
+  }
+  .nav-next {
+    margin-left: auto;
+    text-align: right;
+  }
+  .nav-title {
+    font-size: 0.85rem;
+  }
+</style>

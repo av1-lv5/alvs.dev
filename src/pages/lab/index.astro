@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "@layouts/PageLayout.astro";
+
+const allEntries = await getCollection("lab", ({ data }) => {
+  return !data.isDraft;
+});
+
+const sorted = allEntries.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+
+const sourceLabels = {
+  youtube: "YouTube",
+  blog: "Blog post",
+  codepen: "Codepen",
+  other: "Inspiration",
+};
+---
+
+<PageLayout
+  tabTitle="Lab"
+  description="Small experiments and curiosity-driven builds."
+>
+  <section class="hero">
+    <h1>Lab</h1>
+    <p class="hero-text">
+      Small experiments I start on a whim. Some are useful, some are just fun,
+      that's reason enough.
+    </p>
+
+    <ul class="entries">
+      {
+        sorted.map((entry) => (
+          <li>
+            <a href={`/lab/${entry.slug}`}>{entry.data.title}</a>
+            {entry.data.sourceType && (
+              <span class="source-type">
+                {sourceLabels[entry.data.sourceType]}
+              </span>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</PageLayout>
+
+<style>
+  .entries {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .entries li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .source-type {
+    font-size: 0.75rem;
+    opacity: 0.4;
+  }
+</style>
