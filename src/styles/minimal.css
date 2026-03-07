@@ -1,20 +1,20 @@
 :root {
   /* Palette: Blue, Gray, Black, White */
-  --bg: hsl(40, 20%, 98%);
-  --bg-soft: hsl(40, 14%, 95%);
-  --bg-translucent: hsla(40, 20%, 98%, 0.8);
-  --accent-bg: hsl(216, 33%, 95%);
-  --dot: rgba(0, 0, 0, 0.07);
-  --text: #111111;
-  --text-muted: #4b5563;
-  --text-light: #646a78;
-  --border: hsl(220, 13%, 86%);
-  --border-muted: hsl(220, 14%, 90%);
-  --accent: hsl(221, 83%, 53%);
+  --bg: hsl(220, 15%, 96%);
+  --bg-soft: hsl(220, 12%, 94%);
+  --bg-translucent: hsla(220, 12%, 95%, 0.8);
+  --accent-bg: hsl(220, 12%, 94%);
+  --dot: hsla(0, 0%, 0%, 0.08);
+  --text: hsl(0, 0%, 7%);
+  --text-muted: hsl(215, 14%, 34%);
+  --text-light: hsl(222, 9%, 43%);
+  --border: hsl(220, 20%, 90%);
+  --border-muted: hsl(220, 15%, 90%);
+  --accent: hsl(220, 83%, 53%);
   --accent-hover: hsl(224, 76%, 48%);
-  --link-visited: #6d28d9;
-  --code: #0f172a;
-  --pre-bg: #f8fafc;
+  --link-visited: hsl(263, 70%, 50%);
+  --code: hsl(222, 47%, 11%);
+  --pre-bg: hsl(210, 40%, 98%);
 
   /* Layout & Spacing */
   --header-height: 72px;
@@ -38,21 +38,21 @@
 /* System preference fallback when no data-theme is set */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: hsl(220, 18%, 5%);
-    --bg-soft: hsl(220, 15%, 8%);
-    --bg-translucent: hsla(220, 18%, 5%, 0.8);
-    --accent-bg: #171717;
-    --dot: rgba(255, 255, 255, 0.04);
+    --bg: hsl(220, 15%, 4%);
+    --bg-soft: hsl(220, 12%, 6%);
+    --bg-translucent: hsla(220, 15%, 5%, 0.8);
+    --accent-bg: hsl(220, 8%, 8%);
+    --dot: hsla(0, 0%, 100%, 0.05);
     --text: hsl(220, 5%, 92%);
     --text-muted: hsl(220, 7%, 65%);
     --text-light: hsl(220, 3%, 55%);
-    --border: #262626;
-    --border-muted: #171717;
+    --border: hsl(220, 20%, 10%);
+    --border-muted: hsla(220, 15%, 10%);
     --accent: hsl(220, 91%, 60%);
     --accent-hover: hsl(210, 94%, 68%);
-    --link-visited: #a78bfa;
-    --code: #f1f5f9;
-    --pre-bg: #111827;
+    --link-visited: hsl(255, 92%, 76%);
+    --code: hsl(210, 40%, 96%);
+    --pre-bg: hsl(221, 39%, 11%);
   }
 
   :root:not([data-theme="light"]) img {
