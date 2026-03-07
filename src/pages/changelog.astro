@@ -1,0 +1,189 @@
+---
+/*
+  AI CONTENT GENERATION PROMPT
+  ════════════════════════════
+
+  To add a new month's changelog entry, ask an AI assistant (with git tool access):
+
+  "Add a changelog entry for [Month] [Year] to src/data/changelog.ts.
+   Run `git log --oneline --after='YYYY-MM-01' --before='YYYY-MM-DD' --reverse`
+   to fetch the commits for that month. Only add the entry once the month has fully ended.
+
+   Write a short prose paragraph (2–5 sentences) summarising the main changes.
+   Tone: casual and slightly witty, written for a general visitor, not a developer changelog.
+   Skip technical details. Focus on what's new or different from a visitor's perspective.
+   Do not use em dashes (—). Use commas or rewrite the sentence instead.
+   Optionally add a short title that captures the month's feel.
+
+   Add the entry under the correct year and month number (1=Jan … 12=Dec) in the changelog object.
+   Month key format: { title?: string; content: string }
+
+   Example for April 2026 (month 4):
+     4: {
+       title: 'Short vibe for the month',
+       content: 'A couple of sentences about what changed this month, written naturally.',
+     },
+  "
+*/
+import PageLayout from "@layouts/PageLayout.astro";
+import { changelog } from "../data/changelog";
+
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const years = Object.keys(changelog)
+  .map(Number)
+  .sort((a, b) => b - a);
+
+const defaultYear = years[0];
+---
+
+<PageLayout
+  tabTitle="Changelog"
+  description="Monthly updates to this site: what changed, what was added, what was removed."
+>
+  <section class="hero">
+    <h1>Changelog</h1>
+    <p class="hero-text">
+      Monthly updates to this site: what changed, what was added, what was
+      removed.
+    </p>
+
+        <div class="year-tabs" role="tablist" aria-label="Filter by year">
+          {
+            years.map((year) => (
+              <button
+                role="tab"
+                class="year-tab"
+                aria-selected={year === defaultYear ? "true" : "false"}
+                data-year={year}
+              >
+                {year}
+              </button>
+            ))
+          }
+        </div>
+
+        {
+          years.map((year) => {
+            const months = Object.keys(changelog[year])
+              .map(Number)
+              .sort((a, b) => b - a);
+
+            return (
+              <div
+                class="year-section"
+                data-year={year}
+                hidden={year !== defaultYear}
+              >
+                {months.map((month) => {
+                  const entry = changelog[year][month];
+                  return (
+                    <div class="month-block">
+                      <h2 class="month-heading">
+                        {MONTHS[month - 1]}
+                        {entry.title && (
+                          <span class="month-title">{entry.title}</span>
+                        )}
+                      </h2>
+                      <p class="month-content">{entry.content}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })
+        }
+  </section>
+</PageLayout>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".year-tab");
+  const sections = document.querySelectorAll<HTMLElement>(".year-section");
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const year = tab.dataset.year;
+
+      tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+      tab.setAttribute("aria-selected", "true");
+
+      sections.forEach((s) => {
+        s.hidden = s.dataset.year !== year;
+      });
+    });
+  });
+</script>
+
+<style>
+  .hero {
+    padding-top: 3rem;
+  }
+
+  .year-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin: 2rem 0 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .year-tab {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.3rem 1rem;
+    font-size: 0.875rem;
+    font-family: var(--sans);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+  }
+
+  .year-tab:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .year-tab[aria-selected="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .month-block {
+    margin-bottom: 3rem;
+  }
+
+  .month-heading {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+
+  .month-title {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0;
+    opacity: 0.7;
+  }
+</style>
