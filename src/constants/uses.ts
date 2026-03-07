@@ -17,7 +17,7 @@ export const uses: UseCategory[] = [
         name: "MacBook Air (M1, 2020)",
         description:
           "My only machine. Still incredibly fast and portable for everything I do.",
-        link: "https://www.apple.com/macbook-air-m1/",
+        link: "https://www.apple.com/macbook-air/",
       },
     ],
   },
@@ -83,7 +83,7 @@ export const uses: UseCategory[] = [
       {
         name: "AntennaPod",
         description:
-          "An open-source podcast manager for Android. Simple, no tracking, no algorithms.",
+          "The feature rich podcast manager for Android. Simple, no tracking, no algorithms.",
         link: "https://antennapod.org/",
       },
       {
@@ -118,6 +118,12 @@ export const uses: UseCategory[] = [
         description:
           "A fast, Material F-Droid client for Android to manage open-source apps.",
         link: "https://github.com/Droid-ify/Droid-ify",
+      },
+      {
+        name: "Ente Photos",
+        description:
+          "Feature-rich, end-to-end encrypted photo storage. Open-source and fully private.",
+        link: "https://ente.io/",
       },
       {
         name: "Crypt.ee",
