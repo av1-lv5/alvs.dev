@@ -1,5 +1,5 @@
 ---
-import { experiences as allExperiences } from "../constants/experiences";
+import { experiences as allExperiences } from "../data/experiences";
 import { Icon } from "astro-icon/components";
 
 interface Props {
@@ -37,7 +37,11 @@ const hasMore = count ? allExperiences.length > count : false;
                 </div>
                 <div class="header-right">
                   <div class="period-pill">{exp.period}</div>
-                  <Icon name="lucide:chevron-down" class="toggle-chevron" size={16} />
+                  <Icon
+                    name="lucide:chevron-down"
+                    class="toggle-chevron"
+                    size={16}
+                  />
                 </div>
               </summary>
               <div class="points-body">
@@ -122,19 +126,26 @@ const hasMore = count ? allExperiences.length > count : false;
   .experience-entry {
     display: flex;
     gap: 1.5rem;
-    transition: opacity 0.25s ease, filter 0.25s ease;
+    transition:
+      opacity 0.25s ease,
+      filter 0.25s ease;
   }
 
   .timeline-cta-wrapper {
-    transition: opacity 0.25s ease, filter 0.25s ease;
+    transition:
+      opacity 0.25s ease,
+      filter 0.25s ease;
   }
 
   /* Blur siblings when any summary is hovered */
-  .experience-container:has(summary.header:hover) .experience-entry:not(:has(summary.header:hover)),
+  .experience-container:has(summary.header:hover)
+    .experience-entry:not(:has(summary.header:hover)),
   .experience-container:has(summary.header:hover) .timeline-cta-wrapper {
     opacity: 0.35;
     filter: blur(1.5px);
-    transition: opacity 0.4s ease 150ms, filter 0.4s ease 150ms;
+    transition:
+      opacity 0.4s ease 150ms,
+      filter 0.4s ease 150ms;
   }
 
   /* Timeline track */
@@ -262,7 +273,9 @@ const hasMore = count ? allExperiences.length > count : false;
 
   .toggle-chevron {
     color: var(--text-light);
-    transition: transform 0.25s ease, color var(--transition);
+    transition:
+      transform 0.25s ease,
+      color var(--transition);
     flex-shrink: 0;
   }
 
@@ -467,46 +480,48 @@ const hasMore = count ? allExperiences.length > count : false;
 </style>
 
 <script>
-  document.querySelectorAll<HTMLDetailsElement>(".points-toggle").forEach((details) => {
-    const summary = details.querySelector("summary")!;
-    const body = details.querySelector<HTMLElement>(".points-body")!;
-    let currentAnim: Animation | null = null;
+  document
+    .querySelectorAll<HTMLDetailsElement>(".points-toggle")
+    .forEach((details) => {
+      const summary = details.querySelector("summary")!;
+      const body = details.querySelector<HTMLElement>(".points-body")!;
+      let currentAnim: Animation | null = null;
 
-    summary.addEventListener("click", (e) => {
-      e.preventDefault();
+      summary.addEventListener("click", (e) => {
+        e.preventDefault();
 
-      // Commit and cancel any in-progress animation so we read the real height
-      if (currentAnim) {
-        currentAnim.commitStyles();
-        currentAnim.cancel();
-        currentAnim = null;
-      }
-
-      if (details.open) {
-        // — Close —
-        details.classList.remove("is-open");
-        currentAnim = body.animate(
-          [{ height: body.offsetHeight + "px" }, { height: "0px" }],
-          { duration: 250, easing: "ease" }
-        );
-        currentAnim.onfinish = () => {
-          details.removeAttribute("open");
-          body.style.height = "";
+        // Commit and cancel any in-progress animation so we read the real height
+        if (currentAnim) {
+          currentAnim.commitStyles();
+          currentAnim.cancel();
           currentAnim = null;
-        };
-      } else {
-        // — Open —
-        details.setAttribute("open", "");
-        details.classList.add("is-open");
-        const targetHeight = body.scrollHeight + "px";
-        currentAnim = body.animate(
-          [{ height: "0px" }, { height: targetHeight }],
-          { duration: 250, easing: "ease" }
-        );
-        currentAnim.onfinish = () => {
-          currentAnim = null;
-        };
-      }
+        }
+
+        if (details.open) {
+          // — Close —
+          details.classList.remove("is-open");
+          currentAnim = body.animate(
+            [{ height: body.offsetHeight + "px" }, { height: "0px" }],
+            { duration: 250, easing: "ease" },
+          );
+          currentAnim.onfinish = () => {
+            details.removeAttribute("open");
+            body.style.height = "";
+            currentAnim = null;
+          };
+        } else {
+          // — Open —
+          details.setAttribute("open", "");
+          details.classList.add("is-open");
+          const targetHeight = body.scrollHeight + "px";
+          currentAnim = body.animate(
+            [{ height: "0px" }, { height: targetHeight }],
+            { duration: 250, easing: "ease" },
+          );
+          currentAnim.onfinish = () => {
+            currentAnim = null;
+          };
+        }
+      });
     });
-  });
 </script>

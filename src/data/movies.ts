@@ -42,6 +42,7 @@ export const watchlist: { tmdbId: number; type: MediaType }[] = [
   { tmdbId: 976121, type: "movie" }, // Romancham
   { tmdbId: 1317288, type: "movie" }, // Marty supreme
   { tmdbId: 1272837, type: "movie" }, // The bone temple
+  { tmdbId: 1411, type: "tv" }, // Person of interest
   { tmdbId: 1582770, type: "movie" }, // Dhurandhar: The Revenge
 ];
 

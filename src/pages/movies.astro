@@ -4,7 +4,7 @@ import MovieCard from "@components/MovieCard.astro";
 import WatchlistCard from "@components/WatchlistCard.astro";
 import ActorCard from "@components/ActorCard.astro";
 
-import { recommendations, watchlist, favoriteActors } from "@constants/movies";
+import { recommendations, watchlist, favoriteActors } from "@data/movies";
 import {
   getMovieById,
   getShowById,
@@ -79,8 +79,8 @@ const defaultIndex = Math.max(
   <section>
     <h2>Recommendations</h2>
     <p>
-      Films and shows I recently watched and think are worth your time, every
-      month I recall something to share
+      Films and shows I watched and think are worth your time, every month I
+      recall something to share
     </p>
 
     <div class="month-tabs">

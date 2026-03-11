@@ -5,7 +5,7 @@
 
   To add a new month's changelog entry, ask an AI assistant (with git tool access):
 
-  "Add a changelog entry for [Month] [Year] to src/data/changelog.ts.
+  "Add a changelog entry for [Month] [Year] to @data/changelog.ts.
    Run `git log --oneline --after='YYYY-MM-01' --before='YYYY-MM-DD' --reverse`
    to fetch the commits for that month. Only add the entry once the month has fully ended.
 
@@ -61,51 +61,51 @@ const defaultYear = years[0];
       removed.
     </p>
 
-        <div class="year-tabs" role="tablist" aria-label="Filter by year">
-          {
-            years.map((year) => (
-              <button
-                role="tab"
-                class="year-tab"
-                aria-selected={year === defaultYear ? "true" : "false"}
-                data-year={year}
-              >
-                {year}
-              </button>
-            ))
-          }
-        </div>
+    <div class="year-tabs" role="tablist" aria-label="Filter by year">
+      {
+        years.map((year) => (
+          <button
+            role="tab"
+            class="year-tab"
+            aria-selected={year === defaultYear ? "true" : "false"}
+            data-year={year}
+          >
+            {year}
+          </button>
+        ))
+      }
+    </div>
 
-        {
-          years.map((year) => {
-            const months = Object.keys(changelog[year])
-              .map(Number)
-              .sort((a, b) => b - a);
+    {
+      years.map((year) => {
+        const months = Object.keys(changelog[year])
+          .map(Number)
+          .sort((a, b) => b - a);
 
-            return (
-              <div
-                class="year-section"
-                data-year={year}
-                hidden={year !== defaultYear}
-              >
-                {months.map((month) => {
-                  const entry = changelog[year][month];
-                  return (
-                    <div class="month-block">
-                      <h2 class="month-heading">
-                        {MONTHS[month - 1]}
-                        {entry.title && (
-                          <span class="month-title">{entry.title}</span>
-                        )}
-                      </h2>
-                      <p class="month-content">{entry.content}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })
-        }
+        return (
+          <div
+            class="year-section"
+            data-year={year}
+            hidden={year !== defaultYear}
+          >
+            {months.map((month) => {
+              const entry = changelog[year][month];
+              return (
+                <div class="month-block">
+                  <h2 class="month-heading">
+                    {MONTHS[month - 1]}
+                    {entry.title && (
+                      <span class="month-title">{entry.title}</span>
+                    )}
+                  </h2>
+                  <p class="month-content">{entry.content}</p>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })
+    }
   </section>
 </PageLayout>
 
