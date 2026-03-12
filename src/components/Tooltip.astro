@@ -1,0 +1,57 @@
+---
+interface Props {
+  text: string;
+  class?: string;
+}
+
+const { text, class: className } = Astro.props;
+---
+
+<span class:list={["tooltip-wrapper", className]} data-tooltip={text}>
+  <slot />
+  <span class="tooltip-text">{text}</span>
+</span>
+
+<style>
+  .tooltip-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .tooltip-text {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--bg);
+    background: var(--text);
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+    z-index: 10;
+  }
+
+  .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--text);
+  }
+
+  .tooltip-wrapper:hover .tooltip-text,
+  .tooltip-wrapper.show-tooltip .tooltip-text {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>

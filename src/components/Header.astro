@@ -10,6 +10,7 @@ const { title, showNav } = Astro.props;
 
 import { Icon } from "astro-icon/components";
 import ThemeToggle from "./ThemeToggle.astro";
+import Tooltip from "./Tooltip.astro";
 // data
 import { socials, rootNav } from "src/constants";
 
@@ -87,9 +88,17 @@ const pathName = Astro.url.pathname;
           >
             <Icon name="simple-icons:linkedin" size={20} />
           </a>
-          <a href={`mailto:${socials.email}`} aria-label="Email">
-            <Icon name="lucide:mail" size={20} />
-          </a>
+          <Tooltip text="Click to copy email">
+            <button
+              class="header-copy-email"
+              data-email={socials.email}
+              data-success="Copied!"
+              aria-label="Copy email address"
+            >
+              <Icon name="lucide:mail" size={20} class="icon-mail" />
+              <Icon name="lucide:check" size={20} class="icon-check" />
+            </button>
+          </Tooltip>
         </div>
       </nav>
     </div>
@@ -117,6 +126,31 @@ const pathName = Astro.url.pathname;
 
   menuBtn?.addEventListener("click", toggleMenu);
   closeBtn?.addEventListener("click", toggleMenu);
+
+  // Copy email
+  const copyBtn = document.querySelector<HTMLButtonElement>(".header-copy-email");
+  let copyTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  copyBtn?.addEventListener("click", async () => {
+    const email = copyBtn.dataset.email!;
+    const wrapper = copyBtn.closest<HTMLElement>(".tooltip-wrapper")!;
+    const tooltip = wrapper.querySelector<HTMLElement>(".tooltip-text")!;
+
+    await navigator.clipboard.writeText(email);
+
+    if (copyTimeout) clearTimeout(copyTimeout);
+
+    copyBtn.classList.add("copied");
+    wrapper.classList.add("show-tooltip", "tooltip-success");
+    tooltip.textContent = copyBtn.dataset.success!;
+
+    copyTimeout = setTimeout(() => {
+      copyBtn.classList.remove("copied");
+      wrapper.classList.remove("show-tooltip", "tooltip-success");
+      tooltip.textContent = "Click to copy email";
+      copyTimeout = null;
+    }, 2000);
+  });
 </script>
 
 <style>
@@ -233,11 +267,31 @@ const pathName = Astro.url.pathname;
     margin-top: 2rem;
   }
 
-  .mobile-socials a {
+  .mobile-socials a,
+  .header-copy-email {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 4px;
+  }
+
+  .header-copy-email {
+    all: unset;
+    cursor: pointer;
+    color: inherit;
+  }
+
+  .header-copy-email .icon-check {
+    display: none;
+    color: #10b981;
+  }
+
+  .header-copy-email.copied .icon-mail {
+    display: none;
+  }
+
+  .header-copy-email.copied .icon-check {
+    display: block;
   }
 
   @media (max-width: 768px) {

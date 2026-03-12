@@ -4,6 +4,9 @@ import type { Page } from "astro";
 import PageLayout from "@layouts/PageLayout.astro";
 import BookCard from "@components/BookCard.astro";
 import BookPagination from "@components/BookPagination.astro";
+import Tooltip from "@components/Tooltip.astro";
+import { Icon } from "astro-icon/components";
+import { socials } from "@constants/index";
 
 export async function getStaticPaths({ paginate }: any) {
   const allBooks = await getCollection("books");
@@ -38,15 +41,83 @@ const { page }: Props = Astro.props;
 
   <blockquote>
     If you have recommendations based on what you see here, feel free to
-    <a href="mailto:alvs.codee@slmail.me">email me</a>
+    <Tooltip text="Click to copy">
+      <button
+        class="copy-email-inline"
+        data-email={socials.email}
+        data-success="Now drop me a good one!"
+      >
+        email me
+        <Icon name="lucide:copy" size={12} class="icon-copy" />
+        <Icon name="lucide:check" size={12} class="icon-check" />
+      </button>
+    </Tooltip>
   </blockquote>
 </PageLayout>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>(".copy-email-inline")!;
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  btn.addEventListener("click", async () => {
+    const email = btn.dataset.email!;
+    const successMsg = btn.dataset.success!;
+    const wrapper = btn.closest<HTMLElement>(".tooltip-wrapper")!;
+    const tooltip = wrapper.querySelector<HTMLElement>(".tooltip-text")!;
+
+    await navigator.clipboard.writeText(email);
+
+    if (timeout) clearTimeout(timeout);
+
+    btn.classList.add("copied");
+    wrapper.classList.add("show-tooltip", "tooltip-success");
+    tooltip.textContent = successMsg;
+
+    timeout = setTimeout(() => {
+      btn.classList.remove("copied");
+      wrapper.classList.remove("show-tooltip", "tooltip-success");
+      tooltip.textContent = "Click to copy";
+      timeout = null;
+    }, 2000);
+  });
+</script>
 
 <style>
   .books-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 1.25rem;
+  }
+
+  .copy-email-inline {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .icon-copy {
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .icon-check {
+    display: none;
+    color: #10b981;
+    flex-shrink: 0;
+  }
+
+  .copy-email-inline.copied .icon-copy {
+    display: none;
+  }
+
+  .copy-email-inline.copied .icon-check {
+    display: block;
   }
 
   @media (max-width: 640px) {

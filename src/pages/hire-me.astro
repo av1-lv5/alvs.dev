@@ -9,6 +9,7 @@ import ProjectsList from "@components/ProjectsList.astro";
 import GithubCommitGraph from "@components/GithubCommitGraph.astro";
 import { socials } from "@constants/index";
 import { Icon } from "astro-icon/components";
+import Tooltip from "@components/Tooltip.astro";
 ---
 
 <PageLayout
@@ -61,10 +62,17 @@ import { Icon } from "astro-icon/components";
       to reach me. I reply within 24-48 hours.
     </p>
     <div class="contact-links">
-      <a href={`mailto:${socials.email}`}>
-        <Icon name="lucide:mail" />
-        Send an email
-      </a>
+      <Tooltip text="Click to copy">
+        <button
+          class="copy-email-btn"
+          data-email={socials.email}
+          data-success="Half the hiring process, done"
+        >
+          <Icon name="lucide:copy" size={14} class="icon-copy" />
+          <Icon name="lucide:check" size={14} class="icon-check" />
+          Send an email
+        </button>
+      </Tooltip>
       <span class="sep">·</span>
       <a
         href="https://docs.google.com/document/d/18bA86UaDA-uf2K0nV5dYiv23MMp_YkEjvkvXBcwXH6M/export?format=pdf"
@@ -90,6 +98,33 @@ import { Icon } from "astro-icon/components";
   </section>
 </PageLayout>
 
+<script>
+  const btn = document.querySelector<HTMLButtonElement>(".copy-email-btn")!;
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  btn.addEventListener("click", async () => {
+    const email = btn.dataset.email!;
+    const successMsg = btn.dataset.success!;
+    const wrapper = btn.closest<HTMLElement>(".tooltip-wrapper")!;
+    const tooltip = wrapper.querySelector<HTMLElement>(".tooltip-text")!;
+
+    await navigator.clipboard.writeText(email);
+
+    if (timeout) clearTimeout(timeout);
+
+    btn.classList.add("copied");
+    wrapper.classList.add("show-tooltip", "tooltip-success");
+    tooltip.textContent = successMsg;
+
+    timeout = setTimeout(() => {
+      btn.classList.remove("copied");
+      wrapper.classList.remove("show-tooltip", "tooltip-success");
+      tooltip.textContent = "Click to copy";
+      timeout = null;
+    }, 2000);
+  });
+</script>
+
 <style>
   .skills-note {
     margin: 1.5rem 0 0 0;
@@ -104,17 +139,23 @@ import { Icon } from "astro-icon/components";
     font-size: 0.95rem;
   }
 
-  .contact-links a {
+  .contact-links a,
+  .copy-email-btn {
+    all: unset;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.4rem;
     color: var(--text-muted);
     text-decoration: none;
     font-weight: 500;
+    font: inherit;
+    font-size: inherit;
     transition: var(--transition);
   }
 
-  .contact-links a:hover {
+  .contact-links a:hover,
+  .copy-email-btn:hover {
     color: var(--text);
   }
 
@@ -122,6 +163,23 @@ import { Icon } from "astro-icon/components";
     width: 16px;
     height: 16px;
     flex-shrink: 0;
+  }
+
+  .icon-copy {
+    color: var(--text-muted);
+  }
+
+  .icon-check {
+    display: none;
+    color: #10b981;
+  }
+
+  .copy-email-btn.copied .icon-copy {
+    display: none;
+  }
+
+  .copy-email-btn.copied .icon-check {
+    display: block;
   }
 
   .sep {
