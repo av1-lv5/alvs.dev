@@ -54,4 +54,19 @@ const { book } = Astro.props;
     font-family: var(--mono);
     color: var(--text-light);
   }
+
+  @media (max-width: 640px) {
+    .book-card {
+      gap: 0.25rem;
+    }
+
+    .title {
+      font-size: 0.75rem;
+      min-height: calc(1.3em * 2);
+    }
+
+    .author {
+      font-size: 0.625rem;
+    }
+  }
 </style>
