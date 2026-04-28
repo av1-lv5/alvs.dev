@@ -12,9 +12,9 @@ const { count } = Astro.props;
 
 const fetchedProjects = [];
 fetchedProjects.push(await getEntry("projects", "orbit"));
-fetchedProjects.push(await getEntry("projects", "audiophile"));
-fetchedProjects.push(await getEntry("projects", "markdown-editor"));
-fetchedProjects.push(await getEntry("projects", "photosnap"));
+// fetchedProjects.push(await getEntry("projects", "audiophile"));
+// fetchedProjects.push(await getEntry("projects", "markdown-editor"));
+// fetchedProjects.push(await getEntry("projects", "photosnap"));
 
 const displayedProjects = count
   ? fetchedProjects.slice(0, count)

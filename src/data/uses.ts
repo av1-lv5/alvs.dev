@@ -25,9 +25,9 @@ export const uses: UseCategory[] = [
     title: "Development",
     items: [
       {
-        name: "Antigravity",
-        description: "My primary code editor, for now.",
-        link: "https://antigravity.google",
+        name: "Cursor",
+        description: "My primary code editor.",
+        link: "https://www.cursor.com/",
       },
       {
         name: "Claude Code",
@@ -41,9 +41,9 @@ export const uses: UseCategory[] = [
         link: "https://ghostty.org/",
       },
       {
-        name: "Arc",
-        description: "My main browser, helps keep my tabs organized.",
-        link: "https://arc.net/",
+        name: "Helium",
+        description: "My main browser. Minimal, distraction-free, and stays out of the way.",
+        link: "https://heliumBrowser.com/",
       },
     ],
   },
@@ -129,6 +129,12 @@ export const uses: UseCategory[] = [
         name: "Crypt.ee",
         description: "Private, encrypted storage for photos and documents.",
         link: "https://crypt.ee/",
+      },
+      {
+        name: "LocalSend",
+        description:
+          "Open-source, cross-platform file sharing over local network. No internet required.",
+        link: "https://localsend.org/",
       },
     ],
   },

@@ -1,6 +1,7 @@
 ---
 title: "We didn't need a better branching strategy"
 tags: ["git"]
+publishedAt: "2026-03-09"
 draft: false
 ---
 
@@ -12,7 +13,7 @@ Working along a dev, changed almost nothing. We naturally picked different areas
 
 Four devs moving fast on the same codebase was where "just coordinate verbally" started cracking.
 
-We looked at the established models. [GitHub Flow](https://docs.github.com/en/get-started/using-github/github-flow) with PRs straight to main had no staging gate, and our client needed a live URL to test before anything went to production. [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) with develop and release branches felt too ceremonial for four people. [Trunk-Based Development](https://trunkbaseddevelopment.com/) with feature flags introduced overhead we had no reason to take on. Our features are mostly tiny, refactor things on a whim, fixing bugs on the fly.
+We looked at the established models. [GitHub Flow](https://docs.github.com/en/get-started/using-github/github-flow) with PRs straight to main had no staging gate, and our manager needed a live URL to test before anything went to production. [Git Flow](https://nvie.com/posts/a-successful-git-branching-model/) with develop and release branches felt too ceremonial for four people who pushes updates daily that needs to get live often. [Trunk-Based Development](https://trunkbaseddevelopment.com/) with feature flags introduced overhead we had no reason to take on. Our features are mostly tiny, refactor things on a whim, fixing bugs on the fly.
 
 So we shaped something from the parts that made sense.
 

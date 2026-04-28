@@ -10,12 +10,12 @@ export const experiences = [
         text: "Going deeper into backend and databases.",
       },
       {
-        label: "Side projects",
-        text: "Finally building ideas I've had for years.",
+        label: "Product building",
+        text: "Working on Orbit - personal daily budgeting app",
       },
       {
-        label: "Small business solutions",
-        text: "Building high-performance marketing sites for local businesses and lean web systems focused on speed and lead capture.",
+        label: "Freelancing on the side",
+        text: "Building marketing sites with lead capture for clients.",
       },
     ],
   },
@@ -26,24 +26,24 @@ export const experiences = [
     location: "Hyderabad",
     points: [
       {
-        label: "Stack upgrade",
-        text: "Moved us to Next.js 14 + TypeScript. Cleaned up old messy code.",
+        label: "Codebase revamp",
+        text: "Migrated Next.js codebase to App Router, TypeScript, Tailwind CSS, shadcn/ui, and React Query from scratch.",
       },
       {
-        label: "Performance",
-        text: "Faster loading with React Query and smart location handling for big GIS data.",
+        label: "Payments",
+        text: "Replaced Razorpay payment buttons with standard checkout flow. Added analytics and backend payment event visibility.",
       },
       {
-        label: "Custom CMS",
-        text: "Built a tool for the team to upload KMLs/PDFs using Mapbox + Supabase + R2.",
+        label: "GIS & maps",
+        text: "Built out map layers using Mapbox and Google Maps JS API. Worked with KML, GeoJSON, and dynamic layers. Optimised for performance on large datasets.",
       },
       {
-        label: "Team guidance",
-        text: "Mentored devs, added CI/CD and reviews. Faster and smoother work.",
+        label: "Sole frontend owner",
+        text: "Handled frontend architecture, product and design decisions,  backend coordination, and third-party integrations like Mixpanel.",
       },
       {
-        label: "Roadmap ownership",
-        text: "Turned the vision into a real product. Owned the frontend from MVP onward.",
+        label: "Team handoff",
+        text: "Mentored 3 frontend devs. Set up git branching strategies, PR review workflows, and coding standards.",
       },
     ],
   },
@@ -74,8 +74,8 @@ export const experiences = [
     location: "Vizag",
     points: [
       {
-        label: "First online presence",
-        text: "Simple static sites with maps and leads for small businesses.",
+        label: "Initial days of coding",
+        text: "Simple static sites with lead capture forms for small businesses.",
       },
     ],
   },
@@ -87,7 +87,7 @@ export const experiences = [
     points: [
       {
         label: "Web consulting",
-        text: "Worked on WordPress optimization, technical SEO improvements, and performance tuning.",
+        text: "Worked on WordPress websites, SEO improvements, and performance tuning.",
       },
     ],
   },

@@ -27,13 +27,17 @@ const { project } = Astro.props as Props;
         )
       }
       {
-        project.data.repoId && (
+        project.data.repoId ? (
           <a
             href={`https://github.com/Av1-Lv5/${project.data.repoId}`}
             target="_blank"
             class="meta-link"
           >
             Code
+          </a>
+        ) : (
+          <a href={`/projects/${project.slug}`} class="meta-link">
+            Read
           </a>
         )
       }
@@ -174,6 +178,17 @@ const { project } = Astro.props as Props;
 
     .title {
       font-size: 1.125rem;
+    }
+
+    .title a {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      text-decoration-color: var(--border);
+    }
+
+    .meta-link::after {
+      transform: scaleX(1);
+      opacity: 0.7;
     }
   }
 </style>

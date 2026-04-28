@@ -137,17 +137,6 @@ const hasMore = count ? allExperiences.length > count : false;
       filter 0.25s ease;
   }
 
-  /* Blur siblings when any summary is hovered */
-  .experience-container:has(summary.header:hover)
-    .experience-entry:not(:has(summary.header:hover)),
-  .experience-container:has(summary.header:hover) .timeline-cta-wrapper {
-    opacity: 0.35;
-    filter: blur(1.5px);
-    transition:
-      opacity 0.4s ease 150ms,
-      filter 0.4s ease 150ms;
-  }
-
   /* Timeline track */
   .timeline {
     display: flex;
@@ -448,11 +437,6 @@ const hasMore = count ? allExperiences.length > count : false;
   }
 
   @media (max-width: 768px) {
-    .header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
     .points-list {
       grid-template-columns: 1fr;
     }
@@ -467,6 +451,7 @@ const hasMore = count ? allExperiences.length > count : false;
 
     .cta-body {
       padding: 1.25rem;
+      align-items: center;
     }
 
     .cta-description {
@@ -475,6 +460,13 @@ const hasMore = count ? allExperiences.length > count : false;
 
     .cta-title {
       font-size: 1rem;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>
