@@ -16,17 +16,17 @@ The site uses a classless stylesheet as a foundation to ensure semantic HTML loo
 
 The decision to start with a **classless stylesheet** was about reducing the mental overhead of styling basic elements (like headings, lists, and links). It forces a focus on semantic HTML and content hierarchy.
 
-My journey into this approach began with discovering **Simple.css**—not as a heavy framework, but as an introduction to the concept that a pure stylesheet can create a functional, readable site with zero classes.
+My journey into this approach began with discovering **Simple.css**, not as a heavy framework, but as an introduction to the concept that a pure stylesheet can create a functional, readable site with zero classes.
 
-However, I don't use it exclusively. While the classless base handles the "look" of individual elements, I utilize **Astro's scoped styles** to build intentional layout structures—like the recursive "Split-Column" pattern—without polluting a global stylesheet.
+However, I don't use it exclusively. While the classless base handles the "look" of individual elements, I utilize **Astro's scoped styles** to build intentional layout structures, without polluting a global stylesheet.
 
-### Technical Architecture: Why Astro?
+### Why Astro?
 
-The site is a purely static entity. I chose **Astro** for its "zero-friction" content delivery and its ability to keep styles isolated where they belong.
+I started as a pure HTML, CSS, and JS developer. Eventually I started looking at static site generators like Hugo, Eleventy, Gatsby, Jekyll. Too many options, and I never finished anything real with any of them. Just tutorials.
 
-- **Styling**: A custom, lightweight classless stylesheet acts as the foundation. Specific layout grids and component-level refinements are handled via scoped CSS within Astro components.
-- **Content**: Pure Markdown/MDX. No external CMS. Everything is version-controlled and portable.
-- **Performance**: Zero client-side JavaScript by default, resulting in instant load times and perfect SEO scores.
+My vision for the site was still forming, and I didn't want to commit to a stack. So I stayed skeptical.
+
+Then I heard about Astro. No framework lock-in. The syntax read like HTML. I tried porting my own site over to get hands-on and god, did I love it.
 
 ### The Evolution (Archives)
 
@@ -37,6 +37,12 @@ The site is a purely static entity. I chose **Astro** for its "zero-friction" co
 
 ### Future Roadmap
 
-- Integration of a dedicated Blog for technical deep-dives.
-- Interactive "Knowledge Graph" for public notes.
-- Advanced typography experimentation.
+A lot of ideas, some will change along the way:
+
+- Longer, more substantial notes
+- More HTML, CSS, and JS experiments in the lab
+- Webmentions
+- A guestbook
+- A gallery for random pictures I take
+
+This site is going to be a real digital garden of my own by the time I reach old age, for sure.

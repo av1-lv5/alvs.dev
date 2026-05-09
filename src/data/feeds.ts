@@ -33,12 +33,6 @@ export const followFeeds = [
         url: "https://astro.build/blog/",
         feed: "https://astro.build/rss.xml",
       },
-      {
-        name: "Ken Shirriff's Blog",
-        description: "Reverse engineering, hardware, and archaic technology.",
-        url: "https://www.righto.com/",
-        feed: "http://www.righto.com/feeds/posts/default",
-      },
     ],
   },
   {

@@ -17,6 +17,26 @@ export interface MonthGroup {
 // TMDB IDs at https://www.themoviedb.org/
 export const recommendations: MonthGroup[] = [
   {
+    monthId: "2026-04",
+    label: "April 2026",
+    items: [
+      { tmdbId: 980477, type: "movie" }, // ne zha 2
+      { tmdbId: 1136423, type: "movie" }, // Meiyazhagan
+      { tmdbId: 1473354, type: "movie" }, // Sarvam maya
+      { tmdbId: 84105, type: "tv" }, // Mirzapur
+    ],
+  },
+  {
+    monthId: "2026-03",
+    label: "March 2026",
+    items: [
+      { tmdbId: 37165, type: "movie" }, // The truman show
+      { tmdbId: 1136867, type: "movie" }, // Materialists
+      { tmdbId: 786345, type: "movie" }, // Viduthalai
+      { tmdbId: 1368166, type: "movie" }, // The housemaid
+    ],
+  },
+  {
     monthId: "2026-02",
     label: "February 2026",
     items: [
