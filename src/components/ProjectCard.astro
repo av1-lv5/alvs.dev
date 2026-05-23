@@ -12,7 +12,7 @@ const { project } = Astro.props as Props;
 <div class="project-item">
   <div class="project-header">
     <h3 class="title">
-      <a href={`/projects/${project.slug}`}>{project.data.title}</a>
+      <a href={`/projects/${project.id}`}>{project.data.title}</a>
     </h3>
     <div class="project-meta">
       {
@@ -36,7 +36,7 @@ const { project } = Astro.props as Props;
             Code
           </a>
         ) : (
-          <a href={`/projects/${project.slug}`} class="meta-link">
+          <a href={`/projects/${project.id}`} class="meta-link">
             Read
           </a>
         )

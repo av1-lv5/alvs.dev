@@ -87,7 +87,7 @@ const lang = "astro";
   <nav class="entry-nav">
     {
       prev ? (
-        <a href={`/lab/${prev.slug}`} class="nav-entry nav-prev">
+        <a href={`/lab/${prev.id}`} class="nav-entry nav-prev">
           <Icon name="lucide:arrow-left" size={14} />
           <span class="nav-title">{prev.data.title}</span>
         </a>
@@ -97,7 +97,7 @@ const lang = "astro";
     }
     {
       next && (
-        <a href={`/lab/${next.slug}`} class="nav-entry nav-next">
+        <a href={`/lab/${next.id}`} class="nav-entry nav-next">
           <span class="nav-title">{next.data.title}</span>
           <Icon name="lucide:arrow-right" size={14} />
         </a>

@@ -33,7 +33,7 @@ const sourceLabels = {
       {
         sorted.map((entry) => (
           <li>
-            <a href={`/lab/${entry.slug}`}>{entry.data.title}</a>
+            <a href={`/lab/${entry.id}`}>{entry.data.title}</a>
             {entry.data.sourceType && (
               <span class="source-type">
                 {sourceLabels[entry.data.sourceType]}
