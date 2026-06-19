@@ -4,6 +4,7 @@ title: "alvs.dev"
 description: "A minimalist digital garden and portfolio."
 tags: ["astro"]
 repoId: "personal-site-archive"
+year: 2025
 isDraft: false
 featured: false
 ---
@@ -34,6 +35,8 @@ Then I heard about Astro. No framework lock-in. The syntax read like HTML. I tri
 2. **The Gulp Era (2022)**: Using Pug templating and Gulp for source management.
 3. **The Classless Introduction**: Discovering pure stylesheets (Simple.css) and adopting a minimal-first mindset.
 4. **The Custom Standard (2025)**: Developing the current hybrid approach of classless base styles combined with custom scoped structures.
+
+You can follow the ongoing changes in the [changelog](/changelog).
 
 ### Future Roadmap
 

@@ -5,6 +5,7 @@ description: A community-driven platform for transparency and accountability for
 tags: ["react", "supabase"]
 repoId: ""
 liveAt: "https://colive-archive.netlify.app"
+year: 2025
 isDraft: true
 featured: false
 ---

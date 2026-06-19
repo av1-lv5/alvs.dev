@@ -5,6 +5,7 @@ description: "A Fullstack E-commerce website for audio electronic devices"
 tags: ["next", "typescript"]
 repoId: "audiophile-FM"
 liveAt: "audiophile-fm-alvs.netlify.app"
+year: 2023
 isDraft: false
 featured: true
 ---

@@ -5,6 +5,7 @@ description: "Simple markdown writing experience on the web"
 tags: ["react", "typescript"]
 repoId: "markdown-editor-FM"
 liveAt: "mde-fm-alvs.netlify.app"
+year: 2022
 isDraft: false
 featured: true
 ---

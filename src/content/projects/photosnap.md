@@ -5,6 +5,7 @@ description: A multi-page marketing site for a photosharing platform.
 tags: ["astro", "typescript"]
 repoId: "photosnap-FM"
 liveAt: "photosnap-fm-alvs.netlify.app"
+year: 2023
 isDraft: false
 featured: true
 ---

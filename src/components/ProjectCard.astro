@@ -13,6 +13,7 @@ const { project } = Astro.props as Props;
   <div class="project-header">
     <h3 class="title">
       <a href={`/projects/${project.id}`}>{project.data.title}</a>
+      <span class="title-year">{project.data.year}</span>
     </h3>
     <div class="project-meta">
       {
@@ -96,6 +97,16 @@ const { project } = Astro.props as Props;
   .project-meta {
     display: flex;
     gap: 0.75rem;
+  }
+
+  .title-year {
+    font-size: 0.7rem;
+    color: var(--text-light);
+    font-family: var(--mono);
+    font-weight: 400;
+    opacity: 0.5;
+    margin-left: 0.5rem;
+    vertical-align: middle;
   }
 
   .meta-link {

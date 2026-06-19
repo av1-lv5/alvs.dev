@@ -5,6 +5,7 @@ description: "A daily budgeting app built around one number: how much you can sa
 tags: ["next", "typescript", "supabase"]
 repoId: ""
 liveAt: "orbitbudget.com"
+year: 2026
 isDraft: false
 featured: true
 ---
@@ -19,7 +20,7 @@ Categories, tags, which account it came from, understanding flow. That's a whole
 
 The real question is simpler:
 
-**"How much can I safely spend today and ?"**
+**"How much can I safely spend today?"**
 
 ### The solution
 
@@ -38,13 +39,13 @@ The goal is not financial analytics. It's staying within your limits with minima
 
 ### Engineering
 
-Building Orbit was a deep dive into **product reasoning** and pushing the web platform to its limits.
+Building Orbit was a deep dive into **product reasoning** and PWA's.
 
 - **Logic over CRUD** The core of the app isn't just saving and retrieving data, it's the calculation that handles overspending, carries totals forward, and adjusts for varying budget cycles.
 - **Offline-first** The app is fully functional without a network connection. Expenses can be created, edited, and budgets managed entirely offline. All writes go into an IndexedDB queue and sync to the server the moment connectivity returns.
-- **Push notifications** A pg_cron job triggers a Supabase Edge Function at the user's set time. If no expense has been logged that day, it fires a push via the Web Push API, received by the service worker.
+- **Push notifications** A pg_cron job triggers a Supabase Edge Function at the user's set time, it fires a push via the Web Push API, received by the service worker.
 - **Custom Auth flows** Instead of using Clerk's pre-built UIs, I implemented custom auth flows using their SDK, not just to have full control over the user experience and branding, but also to understand auth flows.
-- **PWA** installable on any mobile device, opens from desktop, and ships a single codebase. The next step is distributing it on the Google Play Store using the process called [Trusted Web Activity (TWA) &#x2197;](https://developers.google.com/codelabs/pwa-in-play#0)
+- **PWA** installable everywhere, and ships a single codebase. The next step is distributing it on the Google Play Store using the process called [Trusted Web Activity (TWA) &#x2197;](https://developers.google.com/codelabs/pwa-in-play#0)
 - **Product-led Development** Designed the product, UX, database structure, and user flows end-to-end from concept to production.
 
 ### Technical sheet

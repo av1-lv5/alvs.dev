@@ -5,6 +5,7 @@ description: Brief description of the project.
 tags: ["tech", "stack"]
 repoId: "" # or "" if private/none
 liveAt: "" # or "" if not deployed
+year: 2026
 isDraft: true
 featured: false
 ---

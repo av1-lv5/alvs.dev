@@ -21,6 +21,7 @@ export default {
     .max(4),
   repoId: z.string().optional(),
   liveAt: z.string().optional(),
+  year: z.number(),
   isDraft: z.boolean(),
   featured: z.boolean().optional(),
 };
