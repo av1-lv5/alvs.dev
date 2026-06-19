@@ -1,16 +1,10 @@
 # Avinash (alvs.dev)
 
-Frontend web developer based in India, building web applications with Next.js, TypeScript, and modern tooling. Currently freelancing and exploring full-stack development.
+Frontend web developer based in India. Comfortable with JavaScript across the stack. Currently building Orbit, a daily budgeting app.
 
 ## About
 
-I build focused web projects to learn and solve real problems. Passionate about open source, clean code, and shipping over endless polish. Currently diving deeper into backend (Bun, Hono, Cloudflare) while maintaining frontend expertise.
-
-## Core Stack
-
-- Frontend: Next.js, TypeScript, React, Astro, Tailwind CSS
-- Backend/Tools: Supabase, Clerk, Vercel, PostHog, Biome
-- Learning: Bun, Hono, Cloudflare Workers
+I build focused web projects to learn and solve real problems. Passionate about open source, clean code, and shipping over endless polish.
 
 ## Pages
 
@@ -18,26 +12,29 @@ I build focused web projects to learn and solve real problems. Passionate about 
 
 - Home: https://alvs.dev - Overview of work and current focus
 - About: https://alvs.dev/about - Personal philosophy and interests
-- Now: https://alvs.dev/now - Current activities and focus 
+- Now: https://alvs.dev/now - Current activities and focus
 - Connect: https://alvs.dev/connect - Contact info and collaboration inquiries
 
-- Hire me: https://alvs.dev/Resume - Things recruiters look for.
-- Projects: https://alvs.dev/projects - Featured projects (Orbit, Audiophile, etc.)
-- Experience: https://alvs.dev/experience - Professional timeline from 2021-present
+- Hire me: https://alvs.dev/hire-me - My experience, past projects, and what I'm looking for.
+- Projects: https://alvs.dev/projects - Things I've built.
+- Lab: https://alvs.dev/lab - A personal playground for curiosity-driven builds.
+- Experience: https://alvs.dev/experience - Timeline of my professional journey.
 
-- Notes: https://alvs.dev/notes - Public notes to express ever evolving thoughts
-- Books: https://alvs.dev/books - Reading list and thoughts
+- Notes: https://alvs.dev/notes - Public notes on things I want to share.
+- Books: https://alvs.dev/books - What I've read.
+- Echoes: https://alvs.dev/echoes - Lines that feel close.
 
-- Music: https://alvs.dev/music - Lists top artists and top tracks
-- Movies: https://alvs.dev/movies - My watchlist and recommendations
+- Music: https://alvs.dev/music - What I've been listening to.
+- Movies: https://alvs.dev/movies - Movies I recommend to watch.
 
-- Uses: https://alvs.dev/uses - Tools and setup 
-- Feeds: https://alvs.dev/feeds - to follow my public activity. As well as feeds i personally follow
-- Colophon: https://alvs.dev/colophon - Site build details
+- Changelog: https://alvs.dev/changelog - Updates and changes to this site.
+- Uses: https://alvs.dev/uses - My gear, tools, and daily software.
+- Feeds: https://alvs.dev/feeds - RSS feeds I follow and ways to follow my activity.
+- Colophon: https://alvs.dev/colophon - How this site is built.
 
 ## Featured Products
 
-- Orbit: Daily budget app, that calculates your safe-to-spend - https://www.orbitbudget.com
+- Orbit: Daily budget app, that calculates your safe-to-spend for today - https://www.orbitbudget.com
 
 ## Socials
 
