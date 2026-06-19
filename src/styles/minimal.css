@@ -4,7 +4,6 @@
   --bg-soft: hsl(220, 12%, 94%);
   --bg-translucent: hsla(220, 12%, 95%, 0.8);
   --accent-bg: hsl(220, 12%, 94%);
-  --dot: hsla(0, 0%, 0%, 0.08);
   --text: hsl(0, 0%, 7%);
   --text-muted: hsl(215, 14%, 34%);
   --text-light: hsl(222, 9%, 43%);
@@ -42,7 +41,6 @@
     --bg-soft: hsl(220, 12%, 6%);
     --bg-translucent: hsla(220, 15%, 5%, 0.8);
     --accent-bg: hsl(220, 8%, 8%);
-    --dot: hsla(0, 0%, 100%, 0.05);
     --text: hsl(220, 5%, 92%);
     --text-muted: hsl(220, 7%, 65%);
     --text-light: hsl(220, 3%, 55%);
@@ -65,8 +63,6 @@ html {
   font-family: var(--sans);
   line-height: var(--line-height);
   background-color: var(--bg);
-  background-image: radial-gradient(var(--dot) 1px, transparent 1px);
-  background-size: 24px 24px;
   color: var(--text);
   box-sizing: border-box;
   font-size: 16px;
@@ -87,6 +83,7 @@ body {
   margin: 0;
   font-size: 1rem;
 }
+
 
 main {
   width: min(var(--max-width), 90%);
