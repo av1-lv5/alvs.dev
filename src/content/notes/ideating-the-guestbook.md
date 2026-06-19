@@ -2,11 +2,12 @@
 title: "I wanted to have a guestbook for this website"
 tags: [""]
 draft: false
+publishedAt: "2026-02-23"
 ---
 
 _Yes, I wanted to have a guestbook for a site with close to zero visitors_
 
-I didn't open my code editor first. I opened a notes app and started planning. What the flow would look like, what the stack would be, how someone would sign it.
+I didn't jump straight into writing code, or prompt calude to spin one for me. I created a guestbook.md and started planning. What the flow would look like, what the stack would be, how someone would sign it.
 
 And the first thing that stopped me was auth.
 
@@ -26,6 +27,6 @@ That felt worse than not having a guestbook at all.
 
 I kept going in circles. Every version of it either asked too much from the visitor or created a chore I wouldn't keep up with. The free and open version invites spam. The moderated version invites neglect.
 
-So I closed the notes app and didn't build it.
+So I closed the note and didn't build it.
 
 Maybe someday I'll figure out the right shape for it. But for now the guestbook lives here, in this note, as the thing I thought about but couldn't finish thinking through.

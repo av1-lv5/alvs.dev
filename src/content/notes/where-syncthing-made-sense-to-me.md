@@ -9,7 +9,7 @@ Like most people, I use cloud storage providers. They make it easy to log in fro
 
 But I believe that not everything needs to live in the cloud. I carry my phone everywhere, and the files I actually need regular access to fit comfortably into local storage. For me, the cloud is more of an archive than a workspace. It is where I keep things I do not need often or things that are not particularly private.
 
-The default assumption today is that syncing between devices requires a cloud provider in the middle. I wanted the convenience of sync without making the cloud the primary home for my files.
+The default assumption today is that syncing between devices requires a cloud provider in the middle. I wanted the convenience of sync without making cloud the primary home for my files.
 
 The alternative would be to go all in on self-hosted storage, like running a NAS or setting up Nextcloud. That gives maximum control, but it comes with maintenance and technical overhead that I do not need right now.
 

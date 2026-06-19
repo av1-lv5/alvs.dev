@@ -1,28 +1,30 @@
 ---
 title: "Things I want to learn"
 tags: ["learning", "goals", "engineering"]
+publishedAt: "2023-10-07"
+updatedAt: "May 2026"
 draft: false
 ---
 
-I want to expand my understanding of software, its not like I want to get into those fields professionally but just the curiosity around understanding in depth of something I use and rely upon daily.
+I want to expand my understanding of software, not to switch fields professionally, just curiosity about things I use and rely on daily.
 
-I am currently looking to be able to handle full stack development exploring `bun + hono`, yes inclined towards [BHVR stack](https://bhvr.dev/)
+On the full stack side, I'm exploring `bun + hono`, leaning toward the [BHVR stack](https://bhvr.dev/).
 
-Beyond the browser, I want to build interfaces for:
+Beyond the browser, I want to build for desktops, mobile, and terminals. My approach: learn what things are and how they work, then go deep when I have something real to build.
 
-- Desktop apps using **Tauri**
-- Native mobile apps using React Native (not sure yet)
-- Not going to leave TUI's, once I learn Go or Rust
+- **Desktop** Looked at **Tauri**, but the argument for Electron keeps coming up: native WebKit on Linux and Mac is inconsistent, and shipping Chromium means your app behaves the same everywhere.
+- **Mobile** - Will give **React Native + Expo** a spin. It's a small investment to get my feet wet without diving into the full native ecosystem.
+- **TUI** - Not skipping this one either.
 
-I want to learn a different programming language as well
+On languages, three kept coming up:
 
-- It could be Go lang, mostly heard good things about it.
-- I am even considering **Python + DJango** as it is battle tested, and the library ecosystem.
-- Also most tools I personally love and use are built with **Rust**, and if ever I want to build something for web using WASM, Rust will be my goto.
+- **Go** - mostly hearing good things from people I trust.
+- **Python** - strong argument that it is battle-tested, and the library ecosystem speaks for itself.
+- **Rust** - most tools I love are built with it, and it's the natural fit if I ever want to target WASM.
 
-_Yes, too much thinking for picking, so I just picked Go lang for now. Will see about others, when the time arrives_
+_Yes, too much thinking for picking, so I just picked Go lang for now. Will see about others, when there's a reason_
 
 ### Tools
 
-- They say(_yes, you primeagen_) a developer using vim, codes at the speed of thought, I heard **[Neovim](https://neovim.io/)** is a good starting point. At the very least, might pick up [Vim keybindings in VS Code](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim) to try out what the hype about those motions.
-- **[Three.js](https://threejs.org)** - 3D animation for the browser. Projects built with it are genuinely fun to interact with, something to explore when I want to build interactive creative websites
+- **[Neovim](https://neovim.io/)** - They say _(yes, you Primeagen)_ a developer using Vim codes at the speed of thought. At the very least, might try [Vim keybindings in VS Code](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim) to see what the hype about those motions is.
+- **[Three.js](https://threejs.org)** - 3D animation for the browser. Projects built with it are genuinely fun to interact with, something to explore when I want to build interactive creative websites.

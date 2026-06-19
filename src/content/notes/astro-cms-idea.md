@@ -1,6 +1,7 @@
 ---
 title: "An astro cms that doesn't exist yet"
 tags: [""]
+publishedAt: "2026-03-09"
 draft: false
 ---
 
@@ -24,6 +25,7 @@ In dev it just works. In production you'd put it behind basic auth or disable it
 
 I don't know why this doesn't exist. Maybe TypeScript schema introspection is messier than it looks. Maybe auth makes the scope balloon. Maybe nobody has needed it badly enough to build it, or maybe the Astro ecosystem is just young.
 
+Or with the capabilities of AI today <small>20th Jun, 2026</small> it's easy to integrate a headless CMS without worrying about the cost of maintaining it.
 Or maybe the honest answer is that for a personal site, editing a file is still the right call and I'm overcomplicating it.
 
 Still. Feels like a gap.

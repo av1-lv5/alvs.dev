@@ -1,7 +1,9 @@
 ---
 title: "Skills I've picked in my journey as Developer"
 tags: [""]
+publishedAt: "2023-10-07"
 draft: false
+updatedAt: "May 2026"
 ---
 
 _A detailed and exhaustive list of skills I have and tools I use, told as a journey that began back in 2021_
@@ -12,9 +14,9 @@ I wanted to be a frontend web developer, so HTML, CSS, and JavaScript were non-n
 
 The early days involved some interesting detours. I wanted reusable HTML components before I understood what frameworks were, so I landed on Pug as a templating language and Gulp as a task runner, with BrowserSync for local dev. It worked, and I learned more from that setup than I expected.
 
-I switched to PNPM for package management because my MacBook is the base variant and storage is genuinely an issue. Disk efficiency matters when you have fifteen projects installed.
+I switched to PNPM for package management because my MacBook is the base variant and storage is genuinely an issue. Disk efficiency matters when you start spinning more projects with mostly same dependencies.
 
-Prettier and ESLint were extensions in VS Code from the start. Their configs were never touched.
+Prettier and ESLint were just extensions installed on VS code from the start. Their configs were never touched.
 
 ### Graduating to web apps
 
@@ -46,27 +48,25 @@ Analytics was split across Mixpanel, Google Analytics, and Clarity. Playing with
 
 Most of my work at the startup revolved around an interactive map, so Mapbox and the Google Maps JS API became very familiar territory. That work opened up the world of GIS: KML, KMZ, GeoJSON, the differences between vector and raster tiles. Things I didn't know existed before that job.
 
-_All of this was shaped by a manager who researched and picked great tools. It made a real difference._
-
 ### Filling the gaps
 
-Postman served for a long time, and I mean actually using it: collections, environment variables, documentation, not just firing off requests. 
+Postman served for a long time, and I mean actually using it: collections, environment variables, documentation, not just firing off requests.
 
 React Email was a revelation when I discovered that HTML emails are not the HTML you write for the web. The email client compatibility issues are a different kind of pain. Haven't shipped it in production yet but the DX is excellent. Resend from the same team solved my email related basics.
 
-Motion (formerly Framer Motion) for animations. I thought about learning GSAP but Framer was the simpler on-ramp.
+[Motion](https://motion.dev/) (formerly Framer Motion) for animations. I thought about learning GSAP but Motion was the simpler on-ramp.
 
-I was interested in Bash scripting but never got very good at it. With AI I now prompt for scripts when I need them and it works well enough for the automation tasks I actually run into.
+I was interested in Bash scripting but never got good at it. With AI I can now prompt for scripts when I need them and it works well enough for the automation tasks I actually run into.
 
 ### And this is where I am now
 
-Payload CMS with MongoDB for code-first CMS work. PostHog for product analytics, I can't do it justice in a line, just look it up. Biome with Ultracite to replace ESLint and Prettier. Bruno replacing Postman.
+[Payload CMS](https://payloadcms.com/) for code-first CMS work. [PostHog](https://posthog.com/) for product analytics, its cost efficient, fast, best DX, I can't do it justice in a line, just look it up. [Biome](https://biomejs.dev/) with [Ultracite](https://www.ultracite.ai/) preset to replace ESLint and Prettier. [Bruno](https://www.usebruno.com/) replacing Postman.
 
 ### The workshop
 
-Antigravity is my primary editor, with occasional switches back to Cursor. I've tried Zed, and Kiro. None of them grew on me, but I might revisit them later.
+Cursor is my primary editor. I've tried Zed, and Kiro. None of them grew on me, but I might revisit them later.
 
-Using Claude Code for a long time. Codex is starting to look interesting.
+Mostly Claude Code, but Codex pulls me over every now and then
 
 Figma for design and wireframing, Excalidraw when I need something faster, Mermaid when I'm thinking through logic in a dev context.
 
