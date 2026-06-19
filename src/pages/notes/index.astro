@@ -5,8 +5,12 @@ import { getCollection } from "astro:content";
 import PageLayout from "@layouts/PageLayout.astro";
 
 // fetching notes to display
-const allNotes = await getCollection("notes", ({ data }) => {
+const allNotes = (await getCollection("notes", ({ data }) => {
   return !data.draft;
+})).sort((a, b) => {
+  const dateA = a.data.publishedAt ?? "";
+  const dateB = b.data.publishedAt ?? "";
+  return dateB.localeCompare(dateA);
 });
 ---
 
@@ -27,6 +31,9 @@ const allNotes = await getCollection("notes", ({ data }) => {
           return (
             <li>
               <a href={`/notes/${note.id}`}>{note.data.title}</a>
+              {note.data.updatedAt && (
+                <span class="updated-at">Updated {note.data.updatedAt}</span>
+              )}
             </li>
           );
         })
@@ -34,3 +41,21 @@ const allNotes = await getCollection("notes", ({ data }) => {
     </ul>
   </section>
 </PageLayout>
+
+<style>
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li {
+    display: flex;
+    padding-left: 0;
+    align-items: baseline;
+  }
+  .updated-at {
+    font-size: 0.7rem;
+    opacity: 0.4;
+    flex-shrink: 0;
+    margin-left: 1rem;
+  }
+</style>

@@ -27,8 +27,52 @@ const { note } = Astro.props;
       <a href="/notes" class="nav-like">Notes</a>
     </div>
   </div>
-  <slot />
+  <div class="note-content">
+    <slot />
+  </div>
 </Layout>
+
+<script>
+  document.querySelectorAll(".note-content pre").forEach((pre) => {
+    const code = pre.querySelector("code");
+    const langClass = Array.from(code?.classList ?? []).find((c) =>
+      c.startsWith("language-"),
+    );
+    const lang = langClass ? langClass.replace("language-", "") : null;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "code-wrapper";
+    pre.parentNode?.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+
+    if (lang) {
+      const label = document.createElement("span");
+      label.className = "lang-label";
+      label.textContent = lang;
+      wrapper.appendChild(label);
+    }
+
+    const copyBtn = document.createElement("button");
+    copyBtn.className = "copy-btn";
+    copyBtn.setAttribute("aria-label", "Copy code");
+    copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-check" style="display:none"><polyline points="20 6 9 17 4 12"/></svg>`;
+    wrapper.appendChild(copyBtn);
+
+    copyBtn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(pre.textContent ?? "");
+      copyBtn.classList.add("copied");
+      const iconCopy = copyBtn.querySelector<HTMLElement>(".icon-copy");
+      const iconCheck = copyBtn.querySelector<HTMLElement>(".icon-check");
+      if (iconCopy) iconCopy.style.display = "none";
+      if (iconCheck) iconCheck.style.display = "block";
+      setTimeout(() => {
+        copyBtn.classList.remove("copied");
+        if (iconCopy) iconCopy.style.display = "";
+        if (iconCheck) iconCheck.style.display = "none";
+      }, 2000);
+    });
+  });
+</script>
 
 <style>
   .sub-navigation {
@@ -44,5 +88,43 @@ const { note } = Astro.props;
   a.nav-like {
     border-color: var(--accent);
     color: var(--accent);
+  }
+
+  .note-content :global(.code-wrapper) {
+    position: relative;
+    margin: 1.5rem 0;
+  }
+  .note-content :global(pre) {
+    margin: 0;
+  }
+  .note-content :global(.lang-label) {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.9rem;
+    z-index: 1;
+    font-size: 0.7rem;
+    opacity: 0.35;
+    letter-spacing: 0.05em;
+    text-transform: lowercase;
+    pointer-events: none;
+    font-family: var(--mono);
+  }
+  .note-content :global(.copy-btn) {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    z-index: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.3;
+    padding: 0.25rem;
+    transition: opacity 200ms ease;
+    display: flex;
+    align-items: center;
+  }
+  .note-content :global(.copy-btn:hover) {
+    opacity: 0.8;
   }
 </style>
