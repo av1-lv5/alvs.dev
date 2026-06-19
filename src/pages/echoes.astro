@@ -1,0 +1,74 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import { Icon } from "astro-icon/components";
+import EchoCard from "@components/EchoCard.astro";
+import echoes from "@data/echoes.json";
+---
+
+<PageLayout tabTitle="Echoes" description="Lines that feel close to me.">
+  <section class="hero echo-hero">
+    <h1>/echoes</h1>
+    <p class="hero-text">
+      Lines I keep coming back to. Not citations, just words that feel close.
+    </p>
+  </section>
+
+  <div id="echo-grid" class="echo-grid">
+    {echoes.map((line) => <EchoCard line={line} />)}
+  </div>
+
+  <script>
+    const grid = document.getElementById("echo-grid")!;
+
+    async function copyCard(card: Element) {
+      const text = card.querySelector(".echo-text")?.textContent;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        return;
+      }
+      card.classList.add("is-copied");
+      setTimeout(() => {
+        card.classList.remove("is-copied");
+        card.classList.add("is-reset");
+        setTimeout(() => card.classList.remove("is-reset"), 200);
+      }, 1400);
+    }
+
+    grid.addEventListener("click", (e) => {
+      const card = (e.target as Element).closest(".echo-card");
+      if (card) copyCard(card);
+    });
+
+    grid.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const card = (e.target as Element).closest?.(".echo-card");
+      if (!card) return;
+      e.preventDefault();
+      copyCard(card);
+    });
+  </script>
+
+  <style>
+    .echo-hero {
+      margin-bottom: 2.5rem;
+    }
+
+    .echo-hero h1 {
+      margin-top: 0;
+    }
+
+    .echo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+      .echo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</PageLayout>
