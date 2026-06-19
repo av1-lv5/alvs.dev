@@ -11,6 +11,16 @@ export type Changelog = {
 
 export const changelog: Changelog = {
   2026: {
+    4: {
+      title: "Editing mode",
+      content:
+        "April was mostly a writing pass. The home page, now page, and hire-me page all got rewritten. The Orbit project write-up was significantly expanded with more detail on what the project actually involved. The 'Where Syncthing Made Sense' note was published. Skills, uses, and experiences were quietly refreshed to better reflect where things stand now.",
+    },
+    3: {
+      title: "New rooms to explore",
+      content:
+        "A new /lab page launched this month, a dedicated corner for experiments and small builds. The first entry is a chunky analog-digits clock. The changelog page also went live (you are looking at it). Published a new essay on the rise of the hybrid builder, and a batch of notes got rewritten and pushed out. Small quality-of-life touch: email links now copy the address to your clipboard instead of launching your mail app.",
+    },
     2: {
       title: "The productive one",
       content:
