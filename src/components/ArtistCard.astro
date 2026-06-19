@@ -28,11 +28,11 @@ const { artist, rank } = Astro.props;
     >
       {artist.name}
     </a>
-    {
+    <!-- {
       artist.genres.length > 0 && (
         <span class="genres">{artist.genres.join(", ")}</span>
       )
-    }
+    } -->
   </div>
 </div>
 
@@ -88,14 +88,5 @@ const { artist, rank } = Astro.props;
   .artist-name:hover {
     color: var(--accent);
     text-decoration: none;
-  }
-
-  .genres {
-    font-size: 0.75rem;
-    color: var(--text-light);
-    font-family: var(--mono);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 </style>
