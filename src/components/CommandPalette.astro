@@ -1,0 +1,477 @@
+---
+// Desktop counterpart to MobileDock's search panel — same data source,
+// same visual language (scrim + translucent panel + grouped/filtered
+// list), triggered by Cmd/Ctrl+K instead of a tap. Adds keyboard
+// navigation (arrows + enter) since that's the expected interaction
+// model for a command palette.
+
+import { Icon } from "astro-icon/components";
+import { sitemapSections } from "@data/sitemap";
+
+type SitePage = {
+  title: string;
+  path: string;
+  description: string;
+  category: string;
+};
+
+const pages: SitePage[] = sitemapSections.flatMap((section) =>
+  section.items.map((item) => ({
+    title: item.label,
+    path: item.href,
+    description: item.description,
+    category: section.title,
+  })),
+);
+---
+
+<div class="cmdk-scrim" id="cmdk-scrim"></div>
+
+<div class="cmdk" id="cmdk" data-open="false" role="dialog" aria-modal="true">
+  <div class="cmdk-panel">
+    <div class="cmdk-input-row">
+      <Icon name="lucide:search" size={18} class="cmdk-search-icon" />
+      <input
+        type="text"
+        id="cmdk-input"
+        class="cmdk-input"
+        placeholder="Search pages..."
+        autocomplete="off"
+      />
+      <kbd class="cmdk-kbd">esc</kbd>
+    </div>
+
+    <div class="cmdk-results-scroll" id="cmdk-results-scroll">
+      <div class="cmdk-results" id="cmdk-results"></div>
+      <p class="cmdk-empty" id="cmdk-empty" hidden>No pages match that.</p>
+    </div>
+
+    <div class="cmdk-footer">
+      <span
+        ><kbd class="cmdk-kbd">↑</kbd><kbd class="cmdk-kbd">↓</kbd> navigate</span
+      >
+      <span><kbd class="cmdk-kbd">↵</kbd> open</span>
+      <span><kbd class="cmdk-kbd">esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<script
+  id="cmdk-data"
+  type="application/json"
+  set:html={JSON.stringify(pages)}
+/>
+
+<script>
+  import { rankPages, debounce, type SitePage } from "@utils/pageSearch";
+
+  const cmdk = document.getElementById("cmdk");
+  const scrim = document.getElementById("cmdk-scrim");
+  const resultsScroll = document.getElementById("cmdk-results-scroll");
+  const resultsEl = document.getElementById("cmdk-results");
+  const emptyEl = document.getElementById("cmdk-empty");
+  const input = document.getElementById(
+    "cmdk-input",
+  ) as HTMLInputElement | null;
+
+  const pages: SitePage[] = JSON.parse(
+    document.getElementById("cmdk-data")?.textContent || "[]",
+  );
+
+  let activeIndex = -1;
+
+  function groupByCategory(items: SitePage[]) {
+    const groups = new Map<string, SitePage[]>();
+    for (const item of items) {
+      const list = groups.get(item.category) ?? [];
+      list.push(item);
+      groups.set(item.category, list);
+    }
+    return groups;
+  }
+
+  function getResultLinks(): HTMLAnchorElement[] {
+    return resultsEl
+      ? Array.from(resultsEl.querySelectorAll("a.cmdk-result-link"))
+      : [];
+  }
+
+  function setActive(index: number) {
+    const links = getResultLinks();
+    if (links.length === 0) {
+      activeIndex = -1;
+      return;
+    }
+    activeIndex = Math.min(Math.max(index, 0), links.length - 1);
+    links.forEach((link, i) =>
+      link.classList.toggle("is-active", i === activeIndex),
+    );
+    links[activeIndex]?.scrollIntoView({ block: "nearest" });
+  }
+
+  function renderList(items: SitePage[]) {
+    if (!resultsEl) return;
+    resultsEl.classList.remove("is-flat");
+    resultsEl.innerHTML = "";
+    const groups = groupByCategory(items);
+    for (const [category, entries] of groups) {
+      const section = document.createElement("div");
+      section.className = "cmdk-group";
+
+      const heading = document.createElement("h3");
+      heading.className = "cmdk-group-title";
+      heading.textContent = category;
+      section.appendChild(heading);
+
+      for (const entry of entries) {
+        const link = document.createElement("a");
+        link.href = entry.path;
+        link.className = "cmdk-result-link";
+        link.innerHTML = `<span class="cmdk-result-title">${entry.title}</span><span class="cmdk-result-desc">${entry.description}</span>`;
+        link.addEventListener("mouseenter", () => {
+          const links = getResultLinks();
+          setActive(links.indexOf(link));
+        });
+        section.appendChild(link);
+      }
+      resultsEl.appendChild(section);
+    }
+  }
+
+  function renderFlatList(items: SitePage[]) {
+    if (!resultsEl) return;
+    resultsEl.classList.add("is-flat");
+    resultsEl.innerHTML = "";
+    for (const entry of items) {
+      const link = document.createElement("a");
+      link.href = entry.path;
+      link.className = "cmdk-result-link";
+      link.innerHTML = `<span class="cmdk-result-title">${entry.title}</span><span class="cmdk-result-desc">${entry.description}</span>`;
+      link.addEventListener("mouseenter", () => {
+        const links = getResultLinks();
+        setActive(links.indexOf(link));
+      });
+      resultsEl.appendChild(link);
+    }
+  }
+
+  function update(query: string) {
+    const trimmed = query.trim();
+
+    if (!trimmed) {
+      if (emptyEl) emptyEl.hidden = true;
+      renderList(pages);
+    } else {
+      // Fuzzy-ranked: title matches always outrank description matches,
+      // which always outrank category matches (see rankPages). The
+      // palette reads top-to-bottom with the input at the top, so the
+      // best match renders first.
+      const ranked = rankPages(pages, trimmed);
+      if (emptyEl) emptyEl.hidden = ranked.length > 0;
+      renderFlatList(ranked);
+    }
+
+    if (resultsScroll) resultsScroll.scrollTop = 0;
+    setActive(0);
+  }
+
+  const debouncedUpdate = debounce(update, 200);
+
+  function open() {
+    cmdk?.setAttribute("data-open", "true");
+    scrim?.setAttribute("data-visible", "true");
+    document.body.style.overflow = "hidden";
+    update("");
+    requestAnimationFrame(() => input?.focus());
+  }
+
+  function close() {
+    cmdk?.setAttribute("data-open", "false");
+    scrim?.setAttribute("data-visible", "false");
+    document.body.style.overflow = "";
+    if (input) input.value = "";
+  }
+
+  function isOpen() {
+    return cmdk?.getAttribute("data-open") === "true";
+  }
+
+  document.addEventListener("keydown", (e) => {
+    const isMod = e.metaKey || e.ctrlKey;
+
+    if (isMod && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      isOpen() ? close() : open();
+      return;
+    }
+
+    if (!isOpen()) return;
+
+    if (e.key === "Escape") {
+      close();
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActive(activeIndex + 1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActive(activeIndex - 1);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const links = getResultLinks();
+      links[activeIndex]?.click();
+    }
+  });
+
+  scrim?.addEventListener("click", close);
+  input?.addEventListener("input", (e) =>
+    debouncedUpdate((e.target as HTMLInputElement).value),
+  );
+  document
+    .getElementById("cmdk-trigger")
+    ?.addEventListener("click", () => (isOpen() ? close() : open()));
+</script>
+
+<style>
+  .cmdk,
+  .cmdk-scrim {
+    display: none;
+  }
+
+  @media (min-width: 769px) {
+    .cmdk-scrim {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .cmdk-scrim[data-visible="true"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cmdk {
+      display: flex;
+      justify-content: center;
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 14vh;
+      z-index: 2001;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98);
+      transition:
+        opacity 0.18s ease,
+        transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cmdk[data-open="true"] {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .cmdk-panel {
+    display: flex;
+    flex-direction: column;
+    width: min(560px, calc(100vw - 3rem));
+    max-height: min(28rem, 70vh);
+    background: var(--bg-translucent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    /* .cmdk (the flex row wrapping this) stays pointer-events:none so
+       clicks in its empty gutters fall through to the scrim below —
+       only the panel itself should intercept clicks. */
+    pointer-events: auto;
+  }
+
+  .cmdk-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--border-muted);
+    flex-shrink: 0;
+  }
+
+  .cmdk-search-icon {
+    color: var(--text-light);
+    flex-shrink: 0;
+  }
+
+  .cmdk-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: none;
+    outline: none;
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .cmdk-input::placeholder {
+    color: var(--text-light);
+  }
+
+  .cmdk-results-scroll {
+    overflow-y: auto;
+    padding: 0 0.75rem 0.5rem 0.75rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-muted) transparent;
+  }
+
+  .cmdk-results-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .cmdk-results-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .cmdk-results-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-muted);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .cmdk-results-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+    background-clip: padding-box;
+  }
+
+  .cmdk-results.is-flat {
+    padding-top: 0.5rem;
+  }
+
+  :global(.cmdk-group) {
+    margin-bottom: 1.25rem;
+  }
+
+  :global(.cmdk-group:last-child) {
+    margin-bottom: 0;
+  }
+
+  :global(.cmdk-group-title) {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    margin: 0 -0.75rem 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border: none;
+    border-bottom: 1px solid var(--border-muted);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-light);
+    font-weight: 700;
+    background: var(--bg-translucent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  :global(.cmdk-result-link) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    transition: var(--transition);
+  }
+
+  :global(.cmdk-result-link.is-active) {
+    background: var(--accent-bg);
+    text-decoration: none;
+  }
+
+  :global(.cmdk-result-link.is-active .cmdk-result-title) {
+    color: var(--accent);
+  }
+
+  /*
+   * These are <a> tags, so the site-wide `a:hover` rule in minimal.css
+   * (which sets color + underline) has enough specificity to override
+   * the title/desc colors below on native mouse hover — independent of
+   * the .is-active class that actually tracks selection. Neutralize it
+   * so .is-active (kept in sync with hover via mouseenter in the script)
+   * is the only thing that ever paints a highlight.
+   */
+  :global(.cmdk-result-link:hover) {
+    text-decoration: none;
+  }
+
+  :global(.cmdk-result-title) {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  :global(.cmdk-result-link:hover .cmdk-result-title) {
+    color: var(--text);
+  }
+
+  :global(.cmdk-result-desc) {
+    color: var(--text-light);
+    font-size: 0.8rem;
+  }
+
+  :global(.cmdk-result-link:hover .cmdk-result-desc) {
+    color: var(--text-light);
+  }
+
+  /* Same specificity as the hover-neutralizer above, so when the mouse
+     happens to be resting on the active row, .is-active must still win. */
+  :global(.cmdk-result-link.is-active:hover .cmdk-result-title) {
+    color: var(--accent);
+  }
+
+  .cmdk-empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.875rem;
+  }
+
+  .cmdk-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 1rem;
+    border-top: 1px solid var(--border-muted);
+    font-size: 0.75rem;
+    color: var(--text-light);
+    flex-shrink: 0;
+  }
+
+  .cmdk-footer span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .cmdk-kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.3em;
+    padding: 0.1rem 0.35rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-soft);
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+  }
+</style>

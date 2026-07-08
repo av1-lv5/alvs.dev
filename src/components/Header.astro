@@ -47,6 +47,17 @@ const pathName = Astro.url.pathname;
             >
               <Icon name={"simple-icons:github"} size={20} />
             </a>
+            <button
+              type="button"
+              id="cmdk-trigger"
+              class="cmdk-trigger"
+              aria-label="Search pages"
+            >
+              <Icon name="lucide:search" size={14} />
+              <span class="cmdk-keys">
+                <kbd>⌘</kbd><kbd>K</kbd>
+              </span>
+            </button>
           </nav>
           <ThemeToggle />
           <div id="menu-btn" class="mobile-menu-btn">
@@ -178,6 +189,48 @@ const pathName = Astro.url.pathname;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .cmdk-trigger {
+    appearance: none;
+    -webkit-appearance: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    font: inherit;
+  }
+
+  .cmdk-trigger:hover {
+    border-color: var(--text-muted);
+    color: var(--text);
+  }
+
+  .cmdk-keys {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .cmdk-trigger kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.1em;
+    padding: 0.05rem 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-soft);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    line-height: 1.4;
+    color: inherit;
   }
 
   /* Mobile Menu Styles */

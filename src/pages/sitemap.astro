@@ -1,6 +1,8 @@
 ---
 // layout
 import PageLayout from "@layouts/PageLayout.astro";
+// data
+import { sitemapSections } from "@data/sitemap";
 ---
 
 <PageLayout
@@ -12,72 +14,20 @@ import PageLayout from "@layouts/PageLayout.astro";
     <p class="hero-text">A full map of every page on this site.</p>
   </section>
 
-  <section>
-    <h2>Main</h2>
-    <ul class="sitemap-list">
-      <li><a href="/">Home</a> - Start here.</li>
-      <li><a href="/about">About</a> - Who I am, what I care about.</li>
-      <li><a href="/now">Now</a> - What I'm currently focused on.</li>
-      <li><a href="/connect">Connect</a> - Ways to reach me.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Work</h2>
-    <ul class="sitemap-list">
-      <li>
-        <a href="/hire-me">Resume</a> - My experience, past projects, and what I'm
-        looking for.
-      </li>
-      <li><a href="/projects">Projects</a> - Things I've built.</li>
-      <li>
-        <a href="/lab">Lab</a> - A personal playground for curiosity-driven builds.
-      </li>
-      <li>
-        <a href="/experience">Experience</a> - Timeline of my professional journey.
-      </li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Writing & Reading</h2>
-    <ul class="sitemap-list">
-      <li>
-        <a href="/notes">Notes</a> - A scratchpad, made presentable.
-      </li>
-      <li>
-        <a href="/books">Books</a> - What I've read
-      </li>
-      <li>
-        <a href="/echoes">Echoes</a> - Lines that feel close.
-      </li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>Interests</h2>
-    <ul class="sitemap-list">
-      <li><a href="/music">Music</a> - What I've been listening to.</li>
-      <li><a href="/movies">Movies</a> - Movies I recommend to watch.</li>
-      <!-- <li><a href="/podcasts">Podcasts</a> - Shows I follow.</li> -->
-    </ul>
-  </section>
-
-  <section>
-    <h2>Backstage</h2>
-    <ul class="sitemap-list">
-      <li>
-        <a href="/changelog">Changelog</a> - Updates and changes to this site.
-      </li>
-      <li>
-        <a href="/uses">Uses</a> - My gear, tools, and daily software.
-      </li>
-      <li><a href="/feeds">Feeds</a> - RSS feeds I subscribe to.</li>
-      <!-- TODO: build a guestbook -->
-      <!-- <li><a href="/guestbook">Guestbook</a> - Leave a note.</li> -->
-      <li><a href="/colophon">Colophon</a> - How this site is built.</li>
-    </ul>
-  </section>
+  {
+    sitemapSections.map((section) => (
+      <section>
+        <h2>{section.title}</h2>
+        <ul class="sitemap-list">
+          {section.items.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a> - {item.description}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
 </PageLayout>
 
 <style>
