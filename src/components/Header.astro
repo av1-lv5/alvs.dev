@@ -88,17 +88,13 @@ const pathName = Astro.url.pathname;
           >
             <Icon name="simple-icons:linkedin" size={20} />
           </a>
-          <Tooltip text="Click to copy email">
-            <button
-              class="header-copy-email"
-              data-email={socials.email}
-              data-success="Copied!"
-              aria-label="Copy email address"
-            >
-              <Icon name="lucide:mail" size={20} class="icon-mail" />
-              <Icon name="lucide:check" size={20} class="icon-check" />
-            </button>
-          </Tooltip>
+          <a
+            target="_blank"
+            href={`mailto:${socials.email}`}
+            aria-label="E-mail"
+          >
+            <Icon name="lucide:mail" size={20} class="icon-mail" />
+          </a>
         </div>
       </nav>
     </div>
@@ -126,32 +122,6 @@ const pathName = Astro.url.pathname;
 
   menuBtn?.addEventListener("click", toggleMenu);
   closeBtn?.addEventListener("click", toggleMenu);
-
-  // Copy email
-  const copyBtn =
-    document.querySelector<HTMLButtonElement>(".header-copy-email");
-  let copyTimeout: ReturnType<typeof setTimeout> | null = null;
-
-  copyBtn?.addEventListener("click", async () => {
-    const email = copyBtn.dataset.email!;
-    const wrapper = copyBtn.closest<HTMLElement>(".tooltip-wrapper")!;
-    const tooltip = wrapper.querySelector<HTMLElement>(".tooltip-text")!;
-
-    await navigator.clipboard.writeText(email);
-
-    if (copyTimeout) clearTimeout(copyTimeout);
-
-    copyBtn.classList.add("copied");
-    wrapper.classList.add("show-tooltip", "tooltip-success");
-    tooltip.textContent = copyBtn.dataset.success!;
-
-    copyTimeout = setTimeout(() => {
-      copyBtn.classList.remove("copied");
-      wrapper.classList.remove("show-tooltip", "tooltip-success");
-      tooltip.textContent = "Click to copy email";
-      copyTimeout = null;
-    }, 2000);
-  });
 </script>
 
 <style>
