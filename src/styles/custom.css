@@ -74,19 +74,24 @@ blockquote h3 {
 }
 
 /* ---- Tabs ---- */
+
 .tabs-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
   gap: 0.25rem;
   background: var(--accent-bg);
   padding: 0.25rem;
   border-radius: 12px;
   border: 1px solid var(--border);
   width: fit-content;
+  max-width: 100%;
 }
 
 .tab-button {
   padding: 0.5rem 1.25rem;
+  white-space: nowrap;
   border-radius: 8px;
   border: none;
   background: transparent;

@@ -20,22 +20,24 @@ const tabItems = await Promise.all(
 ---
 
 <div class:list={["tabs-container", className]}>
-  <div class="tabs-list" role="tablist">
-    {
-      tabItems.map((tab) => (
-        <button
-          type="button"
-          role="tab"
-          aria-selected={tab.id === initialTab ? "true" : "false"}
-          aria-controls={`panel-${tab.id}`}
-          id={`tab-${tab.id}`}
-          class="tab-button"
-          data-tab={tab.id}
-        >
-          {tab.label}
-        </button>
-      ))
-    }
+  <div class="tabs-wrapper">
+    <div class="tabs-list" role="tablist">
+      {
+        tabItems.map((tab) => (
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab.id === initialTab ? "true" : "false"}
+            aria-controls={`panel-${tab.id}`}
+            id={`tab-${tab.id}`}
+            class="tab-button"
+            data-tab={tab.id}
+          >
+            {tab.label}
+          </button>
+        ))
+      }
+    </div>
   </div>
 
   <div class="tabs-content">
