@@ -16,8 +16,7 @@ const { note } = Astro.props;
 <Layout
   categoryTabTitle="Note"
   pageTabTitle={note.data.title}
-  pageTitle={note.data.title}
-  showNav={false}
+  showNav={true}
   description={note.data.description}
 >
   <div class="sub-navigation">
@@ -27,6 +26,7 @@ const { note } = Astro.props;
       <a href="/notes" class="nav-like">Notes</a>
     </div>
   </div>
+  <h1>{note.data.title}</h1>
   <div class="note-content">
     <slot />
   </div>

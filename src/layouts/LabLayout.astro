@@ -31,8 +31,7 @@ const lang = "astro";
 <Layout
   categoryTabTitle="Lab"
   pageTabTitle={entry.data.title}
-  pageTitle={entry.data.title}
-  showNav={false}
+  showNav={true}
   description={entry.data.description}
 >
   <div class="sub-navigation">
@@ -42,6 +41,8 @@ const lang = "astro";
       <a href="/lab" class="nav-like">Lab</a>
     </div>
   </div>
+
+  <h1>{entry.data.title}</h1>
 
   <div class="demo-container">
     <slot name="demo" />

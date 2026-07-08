@@ -4,6 +4,8 @@
 // components
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import MobileDock from "@components/MobileDock.astro";
+import CommandPalette from "@components/CommandPalette.astro";
 import BaseHead from "@components/BaseHead.astro";
 // import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/geist";
@@ -68,5 +70,7 @@ const fullTitle = `${pageTabTitle} • ${categoryTabTitle}`;
       <slot />
     </main>
     <Footer />
+    {showNav && <MobileDock />}
+    {showNav && <CommandPalette />}
   </body>
 </html>

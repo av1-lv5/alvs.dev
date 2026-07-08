@@ -17,8 +17,7 @@ const { project } = Astro.props;
 <Layout
   categoryTabTitle="Projects"
   pageTabTitle={project.data.title}
-  pageTitle={project.data.title}
-  showNav={false}
+  showNav={true}
   description={project.data.description}
 >
   <div class="actions-container">
@@ -28,6 +27,7 @@ const { project } = Astro.props;
       projectRepoId={project.data.repoId}
     />
   </div>
+  <h1>{project.data.title}</h1>
   <div id="project-content">
     <slot />
   </div>
