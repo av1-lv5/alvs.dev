@@ -17,6 +17,32 @@ export interface MonthGroup {
 // TMDB IDs at https://www.themoviedb.org/
 export const recommendations: MonthGroup[] = [
   {
+    monthId: "2026-07",
+    label: "July 2026",
+    items: [
+      { tmdbId: 243206, type: "tv" }, // Pritam and Pedro
+      { tmdbId: 1443961, type: "movie" }, // Rao Bahadur
+    ],
+  },
+  {
+    monthId: "2026-06",
+    label: "June 2026",
+    items: [
+      { tmdbId: 61889, type: "tv" }, // Daredevil
+      { tmdbId: 1007757, type: "movie" }, // Swapped
+    ],
+  },
+  {
+    monthId: "2026-05",
+    label: "May 2026",
+    items: [
+      { tmdbId: 1189518, type: "movie" }, // Vaarzha
+      { tmdbId: 1336770, type: "movie" }, // Vaarzha II
+      { tmdbId: 1022789, type: "movie" }, // Inside out 2
+      { tmdbId: 687163, type: "movie" }, // Project hail mary
+    ],
+  },
+  {
     monthId: "2026-04",
     label: "April 2026",
     items: [
