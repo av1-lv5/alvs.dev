@@ -6,16 +6,12 @@ export const experiences = [
     location: "Bangalore",
     points: [
       {
-        label: "Full-stack learning",
-        text: "Going deeper into backend and databases.",
+        label: "Orbit",
+        text: "Building orbitbudget.com - no categories, no charts, just one number: your safe-to-spend today. Live with 100+ users, built solo end-to-end.",
       },
       {
-        label: "Product building",
-        text: "Working on Orbit - personal daily budgeting app",
-      },
-      {
-        label: "Freelancing on the side",
-        text: "Building marketing sites with lead capture for clients.",
+        label: "Modlix contract",
+        text: "3-month contract with Modlix (sitezump.ai), a Framer/Webflow-style site marketplace. Led 8 interns to ship 200+ site templates.",
       },
     ],
   },
@@ -27,24 +23,20 @@ export const experiences = [
     points: [
       {
         label: "Codebase revamp",
-        text: "Migrated Next.js codebase to App Router, TypeScript, Tailwind CSS, shadcn/ui, and React Query from scratch.",
+        text: "Migrated off a closed-source UI library sitting in an ex-employee's personal npm account to Tailwind CSS + shadcn/ui, upgraded to App Router, and added TypeScript, and React Query.",
       },
       {
         label: "Payments",
-        text: "Replaced Razorpay payment buttons with standard checkout flow. Added analytics and backend payment event visibility.",
+        text: "Replaced Razorpay payment buttons with a standard checkout flow. Added analytics and backend visibility into payment events.",
       },
       {
         label: "GIS & maps",
-        text: "Built out map layers using Mapbox and Google Maps JS API. Worked with KML, GeoJSON, and dynamic layers. Optimised for performance on large datasets.",
+        text: "Rendered 10,000+ dynamic map markers as a single cached canvas layer instead of DOM nodes to keep mobile usable. Built the internal CMS and Mapbox pipeline behind it.",
       },
       {
         label: "Sole frontend owner",
-        text: "Handled frontend architecture, product and design decisions,  backend coordination, and third-party integrations like Mixpanel.",
-      },
-      {
-        label: "Team handoff",
-        text: "Mentored 3 frontend devs. Set up git branching strategies, PR review workflows, and coding standards.",
-      },
+        text: "Owned frontend architecture. Grew the team from solo: mentored a junior dev, set up git branching and PR review workflows, and handed off to a senior engineer 3 months before leaving.",
+      }
     ],
   },
   {
