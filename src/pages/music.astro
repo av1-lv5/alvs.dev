@@ -9,10 +9,15 @@ import TrackCard from "@components/TrackCard.astro";
 // Data
 import { getTopArtists, getTopTracks } from "@utils/spotify";
 
-const [artists, tracks] = await Promise.all([
-  getTopArtists(10),
-  getTopTracks(10),
-]);
+let artists: Awaited<ReturnType<typeof getTopArtists>> = [];
+let tracks: Awaited<ReturnType<typeof getTopTracks>> = [];
+let spotifyUnavailable = false;
+
+try {
+  [artists, tracks] = await Promise.all([getTopArtists(10), getTopTracks(10)]);
+} catch {
+  spotifyUnavailable = true;
+}
 ---
 
 <PageLayout
@@ -27,24 +32,46 @@ const [artists, tracks] = await Promise.all([
     </p>
   </section>
 
-  <section>
-    <h2>Most Streamed Artists</h2>
-    <div class="list">
-      {artists.map((artist, i) => <ArtistCard artist={artist} rank={i + 1} />)}
-    </div>
-  </section>
+  {
+    spotifyUnavailable ? (
+      <section>
+        <p class="spotify-error">
+          Spotify key expired or unavailable. Check back once it's
+          reconnected.
+        </p>
+      </section>
+    ) : (
+      <>
+        <section>
+          <h2>Most Streamed Artists</h2>
+          <div class="list">
+            {artists.map((artist, i) => (
+              <ArtistCard artist={artist} rank={i + 1} />
+            ))}
+          </div>
+        </section>
 
-  <section>
-    <h2>Top Tracks</h2>
-    <div class="list">
-      {tracks.map((track, i) => <TrackCard track={track} rank={i + 1} />)}
-    </div>
-  </section>
+        <section>
+          <h2>Top Tracks</h2>
+          <div class="list">
+            {tracks.map((track, i) => (
+              <TrackCard track={track} rank={i + 1} />
+            ))}
+          </div>
+        </section>
+      </>
+    )
+  }
 </PageLayout>
 
 <style>
   .list {
     display: flex;
     flex-direction: column;
+  }
+
+  .spotify-error {
+    color: var(--text-light);
+    font-size: 0.9375rem;
   }
 </style>

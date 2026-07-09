@@ -37,6 +37,10 @@ async function getAccessToken(): Promise<string> {
     }),
   });
 
+  if (!res.ok) {
+    throw new Error("SPOTIFY_UNAVAILABLE");
+  }
+
   const data = await res.json();
   return data.access_token as string;
 }
@@ -51,6 +55,10 @@ export async function getTopArtists(limit = 10): Promise<SpotifyArtist[]> {
   const res = await fetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   });
+
+  if (!res.ok) {
+    throw new Error("SPOTIFY_UNAVAILABLE");
+  }
 
   const data = await res.json();
 
@@ -73,6 +81,10 @@ export async function getTopTracks(limit = 10): Promise<SpotifyTrack[]> {
   const res = await fetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   });
+
+  if (!res.ok) {
+    throw new Error("SPOTIFY_UNAVAILABLE");
+  }
 
   const data = await res.json();
 
