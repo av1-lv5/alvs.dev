@@ -224,12 +224,29 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
 
   const debouncedUpdate = debounce(update, 200);
 
+  // On mobile, opening the keyboard shrinks the visual viewport but the
+  // layout viewport (which fixed-position elements are anchored to) stays
+  // the same size — so a static bottom offset + 60vh panel height end up
+  // computed against the pre-keyboard screen and get pushed off-screen.
+  // Track the visual viewport directly and feed it back in as CSS vars.
+  function updateViewportOffset() {
+    const vv = window.visualViewport;
+    if (!dock || !vv) return;
+    const keyboardInset = window.innerHeight - vv.height - vv.offsetTop;
+    dock.style.setProperty(
+      "--dock-bottom-offset",
+      `${Math.max(0, keyboardInset)}px`,
+    );
+    dock.style.setProperty("--dock-max-panel-height", `${vv.height * 0.6}px`);
+  }
+
   function expand() {
     dock?.setAttribute("data-expanded", "true");
     scrim?.setAttribute("data-visible", "true");
     searchBtn?.setAttribute("aria-expanded", "true");
     update("");
     document.body.style.overflow = "hidden";
+    updateViewportOffset();
     requestAnimationFrame(() => input?.focus());
   }
 
@@ -240,6 +257,9 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
     document.body.style.overflow = "";
     if (input) input.value = "";
   }
+
+  window.visualViewport?.addEventListener("resize", updateViewportOffset);
+  window.visualViewport?.addEventListener("scroll", updateViewportOffset);
 
   searchBtn?.addEventListener("click", expand);
   backBtn?.addEventListener("click", collapse);
@@ -318,7 +338,9 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
       align-items: stretch;
       position: fixed;
       left: 50%;
-      bottom: calc(1rem + env(safe-area-inset-bottom));
+      bottom: calc(
+        1rem + env(safe-area-inset-bottom) + var(--dock-bottom-offset, 0px)
+      );
       transform: translateX(-50%);
       width: min(420px, calc(100vw - 2rem));
       z-index: 1500;
@@ -353,13 +375,13 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
   }
 
   .dock[data-expanded="true"] .dock-panel {
-    max-height: 60vh;
+    max-height: var(--dock-max-panel-height, 60vh);
     opacity: 1;
     margin-bottom: 0.5rem;
   }
 
   .dock-panel-scroll {
-    max-height: 60vh;
+    max-height: var(--dock-max-panel-height, 60vh);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
