@@ -91,20 +91,13 @@ main {
 }
 
 ::selection {
-  background-color: hsl(221, 100%, 90%);
-  color: hsl(0, 0%, 10%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) ::selection {
-    background-color: hsl(221, 50%, 90%);
-    color: hsl(0, 0%, 10%);
-  }
+  background-color: color-mix(in srgb, var(--accent) 25%, var(--bg));
+  color: var(--text);
 }
 
 pre ::selection {
-  background-color: #b2bec3;
-  color: #000000;
+  background-color: color-mix(in srgb, var(--accent) 30%, var(--pre-bg));
+  color: var(--text);
 }
 
 a::selection {
