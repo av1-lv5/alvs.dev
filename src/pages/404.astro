@@ -16,30 +16,29 @@ import PageLayout from "@layouts/PageLayout.astro";
       <span class="path" id="current-path">/page-not-found</span>
     </div>
 
-    <div id="not-found-action">
-      <a href="/" class="nav-like">Return Home</a>
-    </div>
+    <a href="/" id="not-found-link">Return Home</a>
   </section>
 </PageLayout>
 
 <script>
   const pathname = window.location.pathname;
-  const actionContainer = document.getElementById("not-found-action");
+  const link = document.getElementById("not-found-link");
   const pathDisplay = document.getElementById("current-path");
 
   if (pathDisplay) {
     pathDisplay.textContent = pathname;
   }
 
-  if (actionContainer) {
-    if (pathname.startsWith("/notes/")) {
-      actionContainer.innerHTML = `
-				<a href="/notes" class="nav-like">Go to Notes &rarr;</a>
-			`;
-    } else if (pathname.startsWith("/projects/")) {
-      actionContainer.innerHTML = `
-				<a href="/projects" class="nav-like">Go to Projects &rarr;</a>
-			`;
+  if (link instanceof HTMLAnchorElement) {
+    if (pathname.startsWith("/notes")) {
+      link.href = "/notes";
+      link.textContent = "Go to Notes";
+    } else if (pathname.startsWith("/projects")) {
+      link.href = "/projects";
+      link.textContent = "Go to Projects";
+    } else if (pathname.startsWith("/lab")) {
+      link.href = "/lab";
+      link.textContent = "Go to Lab";
     }
   }
 </script>
@@ -103,11 +102,6 @@ import PageLayout from "@layouts/PageLayout.astro";
   .path {
     color: var(--accent);
     word-break: break-all;
-  }
-
-  #not-found-action {
-    display: flex;
-    gap: 0.75rem;
   }
 
   @media (max-width: 768px) {
