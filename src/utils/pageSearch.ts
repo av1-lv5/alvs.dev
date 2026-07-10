@@ -1,3 +1,5 @@
+import { sitemapSections } from "@data/sitemap";
+
 export type SitePage = {
   title: string;
   path: string;
@@ -6,6 +8,59 @@ export type SitePage = {
 };
 
 export type RankedPage = SitePage & { score: number };
+
+/**
+ * Flattens the sitemap into the flat page list the search UIs consume.
+ * Shared by MobileDock and CommandPalette so they always search the same
+ * set. Server-side only (called from component frontmatter); the client
+ * scripts receive the result as a JSON island.
+ */
+export function getSitePages(): SitePage[] {
+  return sitemapSections.flatMap((section) =>
+    section.items.map((item) => ({
+      title: item.label,
+      path: item.href,
+      description: item.description,
+      category: section.title,
+    })),
+  );
+}
+
+/** Groups pages by category, preserving first-seen order. */
+export function groupByCategory(items: SitePage[]): Map<string, SitePage[]> {
+  const groups = new Map<string, SitePage[]>();
+  for (const item of items) {
+    const list = groups.get(item.category) ?? [];
+    list.push(item);
+    groups.set(item.category, list);
+  }
+  return groups;
+}
+
+/**
+ * Builds a result <a> with title/description spans, prefixed by the
+ * caller's CSS namespace ("dock" or "cmdk"). Uses textContent (never
+ * innerHTML) so page copy can't inject nodes. DOM helper — client only.
+ */
+export function createResultLink(
+  entry: SitePage,
+  prefix: string,
+): HTMLAnchorElement {
+  const link = document.createElement("a");
+  link.href = entry.path;
+  link.className = `${prefix}-result-link`;
+
+  const title = document.createElement("span");
+  title.className = `${prefix}-result-title`;
+  title.textContent = entry.title;
+
+  const desc = document.createElement("span");
+  desc.className = `${prefix}-result-desc`;
+  desc.textContent = entry.description;
+
+  link.append(title, desc);
+  return link;
+}
 
 function normalize(value: string) {
   return value.toLowerCase();

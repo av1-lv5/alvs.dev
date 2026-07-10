@@ -6,44 +6,45 @@
 // model for a command palette.
 
 import { Icon } from "astro-icon/components";
-import { sitemapSections } from "@data/sitemap";
+import { getSitePages } from "@utils/pageSearch";
 
-type SitePage = {
-  title: string;
-  path: string;
-  description: string;
-  category: string;
-};
-
-const pages: SitePage[] = sitemapSections.flatMap((section) =>
-  section.items.map((item) => ({
-    title: item.label,
-    path: item.href,
-    description: item.description,
-    category: section.title,
-  })),
-);
+const pages = getSitePages();
 ---
 
 <div class="cmdk-scrim" id="cmdk-scrim"></div>
 
-<div class="cmdk" id="cmdk" data-open="false" role="dialog" aria-modal="true">
-  <div class="cmdk-panel">
+<div
+  class="cmdk"
+  id="cmdk"
+  data-open="false"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Search pages"
+>
+  <div class="cmdk-panel" inert>
     <div class="cmdk-input-row">
       <Icon name="lucide:search" size={18} class="cmdk-search-icon" />
       <input
-        type="text"
+        type="search"
         id="cmdk-input"
         class="cmdk-input"
         placeholder="Search pages..."
+        aria-label="Search pages"
+        role="combobox"
+        aria-expanded="false"
+        aria-controls="cmdk-results"
+        aria-autocomplete="list"
         autocomplete="off"
+        enterkeyhint="go"
       />
       <kbd class="cmdk-kbd">esc</kbd>
     </div>
 
     <div class="cmdk-results-scroll" id="cmdk-results-scroll">
-      <div class="cmdk-results" id="cmdk-results"></div>
-      <p class="cmdk-empty" id="cmdk-empty" hidden>No pages match that.</p>
+      <div class="cmdk-results" id="cmdk-results" role="listbox" aria-label="Pages"></div>
+      <p class="cmdk-empty" id="cmdk-empty" role="status" hidden>
+        No pages match that.
+      </p>
     </div>
 
     <div class="cmdk-footer">
@@ -63,9 +64,16 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
 />
 
 <script>
-  import { rankPages, debounce, type SitePage } from "@utils/pageSearch";
+  import {
+    rankPages,
+    debounce,
+    groupByCategory,
+    createResultLink,
+    type SitePage,
+  } from "@utils/pageSearch";
 
   const cmdk = document.getElementById("cmdk");
+  const panel = cmdk?.querySelector(".cmdk-panel");
   const scrim = document.getElementById("cmdk-scrim");
   const resultsScroll = document.getElementById("cmdk-results-scroll");
   const resultsEl = document.getElementById("cmdk-results");
@@ -79,15 +87,20 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
   );
 
   let activeIndex = -1;
+  let lastFocused: HTMLElement | null = null;
 
-  function groupByCategory(items: SitePage[]) {
-    const groups = new Map<string, SitePage[]>();
-    for (const item of items) {
-      const list = groups.get(item.category) ?? [];
-      list.push(item);
-      groups.set(item.category, list);
-    }
-    return groups;
+  // Wrap the shared link builder with the ARIA option semantics the
+  // combobox/listbox pattern needs (id, role, selection, hover sync).
+  function makeResultLink(entry: SitePage, index: number) {
+    const link = createResultLink(entry, "cmdk");
+    link.id = `cmdk-option-${index}`;
+    link.setAttribute("role", "option");
+    link.setAttribute("aria-selected", "false");
+    link.addEventListener("mouseenter", () => {
+      const links = getResultLinks();
+      setActive(links.indexOf(link));
+    });
+    return link;
   }
 
   function getResultLinks(): HTMLAnchorElement[] {
@@ -100,13 +113,20 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
     const links = getResultLinks();
     if (links.length === 0) {
       activeIndex = -1;
+      input?.setAttribute("aria-activedescendant", "");
       return;
     }
     activeIndex = Math.min(Math.max(index, 0), links.length - 1);
-    links.forEach((link, i) =>
-      link.classList.toggle("is-active", i === activeIndex),
-    );
-    links[activeIndex]?.scrollIntoView({ block: "nearest" });
+    links.forEach((link, i) => {
+      const isActive = i === activeIndex;
+      link.classList.toggle("is-active", isActive);
+      link.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+    const active = links[activeIndex];
+    active?.scrollIntoView({ block: "nearest" });
+    // Point the combobox at the active option so screen readers announce
+    // it as the user arrows through the list.
+    if (input) input.setAttribute("aria-activedescendant", active?.id ?? "");
   }
 
   function renderList(items: SitePage[]) {
@@ -114,9 +134,13 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
     resultsEl.classList.remove("is-flat");
     resultsEl.innerHTML = "";
     const groups = groupByCategory(items);
+    let index = 0;
     for (const [category, entries] of groups) {
       const section = document.createElement("div");
       section.className = "cmdk-group";
+      // Transparent to AT so the listbox → option relationship isn't
+      // broken by this grouping wrapper.
+      section.setAttribute("role", "presentation");
 
       const heading = document.createElement("h3");
       heading.className = "cmdk-group-title";
@@ -124,15 +148,7 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
       section.appendChild(heading);
 
       for (const entry of entries) {
-        const link = document.createElement("a");
-        link.href = entry.path;
-        link.className = "cmdk-result-link";
-        link.innerHTML = `<span class="cmdk-result-title">${entry.title}</span><span class="cmdk-result-desc">${entry.description}</span>`;
-        link.addEventListener("mouseenter", () => {
-          const links = getResultLinks();
-          setActive(links.indexOf(link));
-        });
-        section.appendChild(link);
+        section.appendChild(makeResultLink(entry, index++));
       }
       resultsEl.appendChild(section);
     }
@@ -142,17 +158,7 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
     if (!resultsEl) return;
     resultsEl.classList.add("is-flat");
     resultsEl.innerHTML = "";
-    for (const entry of items) {
-      const link = document.createElement("a");
-      link.href = entry.path;
-      link.className = "cmdk-result-link";
-      link.innerHTML = `<span class="cmdk-result-title">${entry.title}</span><span class="cmdk-result-desc">${entry.description}</span>`;
-      link.addEventListener("mouseenter", () => {
-        const links = getResultLinks();
-        setActive(links.indexOf(link));
-      });
-      resultsEl.appendChild(link);
-    }
+    items.forEach((entry, i) => resultsEl.appendChild(makeResultLink(entry, i)));
   }
 
   function update(query: string) {
@@ -178,8 +184,11 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
   const debouncedUpdate = debounce(update, 200);
 
   function open() {
+    lastFocused = document.activeElement as HTMLElement | null;
     cmdk?.setAttribute("data-open", "true");
     scrim?.setAttribute("data-visible", "true");
+    input?.setAttribute("aria-expanded", "true");
+    panel?.removeAttribute("inert");
     document.body.style.overflow = "hidden";
     update("");
     requestAnimationFrame(() => input?.focus());
@@ -188,8 +197,13 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
   function close() {
     cmdk?.setAttribute("data-open", "false");
     scrim?.setAttribute("data-visible", "false");
+    input?.setAttribute("aria-expanded", "false");
+    panel?.setAttribute("inert", "");
     document.body.style.overflow = "";
     if (input) input.value = "";
+    // Restore focus to whatever had it before the palette opened (e.g. the
+    // trigger button), instead of dropping it on <body>.
+    lastFocused?.focus();
   }
 
   function isOpen() {
@@ -219,6 +233,22 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
       e.preventDefault();
       const links = getResultLinks();
       links[activeIndex]?.click();
+    } else if (e.key === "Tab") {
+      // Modal: keep Tab focus within the panel. Focus order here is just
+      // the input and the result links; cycle between the two ends.
+      const focusable = [input, ...getResultLinks()].filter(
+        (el): el is HTMLElement => !!el,
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   });
 
@@ -235,6 +265,13 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
   .cmdk,
   .cmdk-scrim {
     display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cmdk,
+    .cmdk-scrim {
+      transition: none;
+    }
   }
 
   @media (min-width: 769px) {

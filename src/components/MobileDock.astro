@@ -4,7 +4,7 @@
 // Once approved, fold this into Header/Footer and delete this file.
 
 import { Icon } from "astro-icon/components";
-import { sitemapSections } from "@data/sitemap";
+import { getSitePages } from "@utils/pageSearch";
 
 const pathName = Astro.url.pathname;
 
@@ -30,21 +30,7 @@ function maskForLayer(index: number, total: number) {
   return `linear-gradient(to top, transparent ${start}%, black ${rampIn}%, black ${rampOut}%, transparent ${end}%)`;
 }
 
-type SitePage = {
-  title: string;
-  path: string;
-  description: string;
-  category: string;
-};
-
-const pages: SitePage[] = sitemapSections.flatMap((section) =>
-  section.items.map((item) => ({
-    title: item.label,
-    path: item.href,
-    description: item.description,
-    category: section.title,
-  })),
-);
+const pages = getSitePages();
 ---
 
 <div class="dock-fade" aria-hidden="true">
@@ -63,23 +49,36 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
 <div class="dock-scrim" id="dock-scrim"></div>
 
 <div class="dock" id="dock" data-expanded="false">
-  <div class="dock-panel" id="dock-panel">
+  <div
+    class="dock-panel"
+    id="dock-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Search pages"
+    inert
+  >
     <div class="dock-panel-scroll" id="dock-panel-scroll">
       <div class="dock-results" id="dock-results"></div>
       <p class="dock-empty" id="dock-empty" hidden>No pages match that.</p>
     </div>
+    <p class="sr-only" id="dock-status" role="status" aria-live="polite"></p>
     <div class="dock-panel-fade" id="dock-panel-fade" aria-hidden="true"></div>
   </div>
 
   <div class="dock-bar">
-    <a href="/" class="dock-icon-btn dock-logo" data-role="collapsed" aria-label="Home">
+    <a
+      href="/"
+      class="dock-icon-btn dock-logo"
+      data-role="collapsed"
+      aria-label="Home"
+    >
       <img src="/favicon.svg" alt="" class="dock-logo-img" />
     </a>
 
     <div class="dock-actions" data-role="collapsed">
       <a
         href="/projects/"
-        class={`dock-icon-btn ${pathName === "/projects/" ? "active" : ""}`}
+        class={`dock-icon-btn ${pathName.startsWith("/projects") ? "active" : ""}`}
         aria-label="Projects"
       >
         <Icon name="lucide:code-2" size={20} />
@@ -112,44 +111,47 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
       <Icon name="lucide:arrow-left" size={20} />
     </button>
     <input
-      type="text"
+      type="search"
       id="dock-search-input"
       data-role="expanded"
       class="dock-input"
       placeholder="Search pages..."
+      aria-label="Search pages"
       autocomplete="off"
+      enterkeyhint="search"
+      inputmode="search"
     />
   </div>
 </div>
 
 <script>
-  import { rankPages, debounce, type SitePage } from "@utils/pageSearch";
+  import {
+    rankPages,
+    debounce,
+    groupByCategory,
+    createResultLink,
+    type SitePage,
+  } from "@utils/pageSearch";
 
   const dock = document.getElementById("dock");
+  const panel = document.getElementById("dock-panel");
   const scrim = document.getElementById("dock-scrim");
   const panelScroll = document.getElementById("dock-panel-scroll");
   const panelFade = document.getElementById("dock-panel-fade");
   const resultsEl = document.getElementById("dock-results");
   const emptyEl = document.getElementById("dock-empty");
+  const statusEl = document.getElementById("dock-status");
   const searchBtn = document.getElementById("dock-search-btn");
   const backBtn = document.getElementById("dock-back-btn");
   const input = document.getElementById(
     "dock-search-input",
   ) as HTMLInputElement | null;
 
+  const makeResultLink = (entry: SitePage) => createResultLink(entry, "dock");
+
   const pages: SitePage[] = JSON.parse(
     document.getElementById("dock-data")?.textContent || "[]",
   );
-
-  function groupByCategory(items: SitePage[]) {
-    const groups = new Map<string, SitePage[]>();
-    for (const item of items) {
-      const list = groups.get(item.category) ?? [];
-      list.push(item);
-      groups.set(item.category, list);
-    }
-    return groups;
-  }
 
   function renderList(items: SitePage[]) {
     if (!resultsEl) return;
@@ -166,11 +168,7 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
       section.appendChild(heading);
 
       for (const entry of entries) {
-        const link = document.createElement("a");
-        link.href = entry.path;
-        link.className = "dock-result-link";
-        link.innerHTML = `<span class="dock-result-title">${entry.title}</span><span class="dock-result-desc">${entry.description}</span>`;
-        section.appendChild(link);
+        section.appendChild(makeResultLink(entry));
       }
       resultsEl.appendChild(section);
     }
@@ -181,11 +179,7 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
     resultsEl.classList.add("is-flat");
     resultsEl.innerHTML = "";
     for (const entry of items) {
-      const link = document.createElement("a");
-      link.href = entry.path;
-      link.className = "dock-result-link";
-      link.innerHTML = `<span class="dock-result-title">${entry.title}</span><span class="dock-result-desc">${entry.description}</span>`;
-      resultsEl.appendChild(link);
+      resultsEl.appendChild(makeResultLink(entry));
     }
   }
 
@@ -206,6 +200,7 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
       if (emptyEl) emptyEl.hidden = true;
       renderList(pages);
       if (panelScroll) panelScroll.scrollTop = 0;
+      if (statusEl) statusEl.textContent = `${pages.length} pages`;
     } else {
       // Fuzzy-ranked: title matches always outrank description matches,
       // which always outrank category matches (see rankPages).
@@ -217,6 +212,10 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
       // to the bottom to reveal it without the user having to scroll up.
       renderFlatList([...ranked].reverse());
       if (panelScroll) panelScroll.scrollTop = panelScroll.scrollHeight;
+      if (statusEl)
+        statusEl.textContent = ranked.length
+          ? `${ranked.length} result${ranked.length === 1 ? "" : "s"}`
+          : "No pages match that.";
     }
 
     requestAnimationFrame(updateFadeVisibility);
@@ -244,6 +243,7 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
     dock?.setAttribute("data-expanded", "true");
     scrim?.setAttribute("data-visible", "true");
     searchBtn?.setAttribute("aria-expanded", "true");
+    panel?.removeAttribute("inert");
     update("");
     document.body.style.overflow = "hidden";
     updateViewportOffset();
@@ -254,8 +254,35 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
     dock?.setAttribute("data-expanded", "false");
     scrim?.setAttribute("data-visible", "false");
     searchBtn?.setAttribute("aria-expanded", "false");
+    panel?.setAttribute("inert", "");
     document.body.style.overflow = "";
     if (input) input.value = "";
+    // Return focus to the control that opened the panel, rather than
+    // letting it fall to <body> when the back button becomes display:none.
+    searchBtn?.focus();
+  }
+
+  // The expanded dock is a modal, so keep Tab focus inside it.
+  function trapFocus(e: KeyboardEvent) {
+    if (e.key !== "Tab" || dock?.getAttribute("data-expanded") !== "true") {
+      return;
+    }
+    const focusable = dock?.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
+    );
+    if (!focusable || focusable.length === 0) return;
+    const list = Array.from(focusable).filter(
+      (el) => el.offsetParent !== null || el === document.activeElement,
+    );
+    const first = list[0];
+    const last = list[list.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   }
 
   window.visualViewport?.addEventListener("resize", updateViewportOffset);
@@ -272,6 +299,8 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && dock?.getAttribute("data-expanded") === "true") {
       collapse();
+    } else if (e.key === "Tab") {
+      trapFocus(e);
     }
   });
 </script>
@@ -287,6 +316,30 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
   .dock-scrim,
   .dock-fade {
     display: none;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dock-panel,
+    .dock-scrim,
+    .dock-panel-fade {
+      transition: none;
+    }
+
+    :global(.dock-result-link:active) {
+      transform: none;
+    }
   }
 
   @media (max-width: 768px) {
@@ -403,7 +456,7 @@ const pages: SitePage[] = sitemapSections.flatMap((section) =>
   }
 
   .dock-results {
-    padding: 0.5rem 0.75rem 0.75rem;
+    padding: 0 0.75rem 0.5rem 0.75rem;
   }
 
   .dock-results.is-flat {
