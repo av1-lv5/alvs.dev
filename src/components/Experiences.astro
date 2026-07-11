@@ -50,6 +50,12 @@ const hasMore = count ? allExperiences.length > count : false;
                     <div class="point-item">
                       <span class="label">{point.label}</span>
                       <p class="description">{point.text}</p>
+                      {point.href && (
+                        <a href={point.href} class="point-link">
+                          Read more
+                          <Icon name="lucide:arrow-right" size={12} />
+                        </a>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -309,6 +315,23 @@ const hasMore = count ? allExperiences.length > count : false;
     font-size: 0.95rem;
     line-height: 1.5;
     color: var(--text-muted);
+  }
+
+  .point-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    width: fit-content;
+    transition: var(--transition);
+  }
+
+  .point-link:hover {
+    text-decoration: underline;
   }
 
   /* Timeline CTA Styles */

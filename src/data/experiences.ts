@@ -8,6 +8,7 @@ export const experiences = [
       {
         label: "Orbit",
         text: "Building orbitbudget.com - no categories, no charts, just one number: your safe-to-spend today. Live with 100+ users, built solo end-to-end.",
+        href: "/projects/orbit",
       },
       {
         label: "Modlix contract",
@@ -31,7 +32,8 @@ export const experiences = [
       },
       {
         label: "GIS & maps",
-        text: "Rendered 10,000+ dynamic map markers as a single cached canvas layer instead of DOM nodes to keep mobile usable. Built the internal CMS and Mapbox pipeline behind it.",
+        text: "Rendered 10,000+ dynamic map markers as GeoJSON-driven Mapbox symbol layers with cached sprite icons instead of DOM nodes, keeping mobile usable. Built the internal CMS and Mapbox pipeline behind it.",
+        href: "/notes/we-stopped-rendering-markers-as-dom-nodes",
       },
       {
         label: "Sole frontend owner",
