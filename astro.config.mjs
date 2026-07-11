@@ -3,6 +3,8 @@ import rehypeExternalLinks from "rehype-external-links";
 
 import icon from "astro-icon";
 
+import mdx from "@astrojs/mdx";
+
 // https://astro.build/config
 export default defineConfig({
   prefetch: {
@@ -26,6 +28,6 @@ export default defineConfig({
       },
     },
   },
-  integrations: [icon()],
+  integrations: [icon(), mdx()],
   site: "https://alvs.dev",
 });
