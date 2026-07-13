@@ -252,6 +252,13 @@ const pages = getSitePages();
     }
   });
 
+  // Back/forward navigation can restore this page from bfcache with the
+  // palette frozen mid-open (scrim visible, body scroll locked) exactly
+  // as it was when the user navigated away. Force it closed on restore.
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) close();
+  });
+
   scrim?.addEventListener("click", close);
   input?.addEventListener("input", (e) =>
     debouncedUpdate((e.target as HTMLInputElement).value),

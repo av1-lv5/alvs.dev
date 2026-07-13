@@ -1,8 +1,4 @@
 ---
-// Experimental floating bottom nav for mobile.
-// Replaces the header hamburger nav + footer on small screens.
-// Once approved, fold this into Header/Footer and delete this file.
-
 import { Icon } from "astro-icon/components";
 import { getSitePages } from "@utils/pageSearch";
 
@@ -118,6 +114,7 @@ const pages = getSitePages();
       placeholder="Search pages..."
       aria-label="Search pages"
       autocomplete="off"
+      autofocus="false"
       enterkeyhint="search"
       inputmode="search"
     />
@@ -303,6 +300,13 @@ const pages = getSitePages();
       trapFocus(e);
     }
   });
+
+  // Back/forward navigation can restore this page from bfcache with the
+  // dock frozen mid-expansion (scrim visible, body scroll locked) exactly
+  // as it was when the user navigated away. Force it collapsed on restore.
+  window.addEventListener("pageshow", (e) => {
+    if (e.persisted) collapse();
+  });
 </script>
 
 <script
@@ -349,7 +353,7 @@ const pages = getSitePages();
       left: 0;
       right: 0;
       bottom: 0;
-      height: 150px;
+      height: 120px;
       z-index: 1450;
       pointer-events: none;
     }
