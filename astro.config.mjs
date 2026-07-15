@@ -33,4 +33,12 @@ export default defineConfig({
   },
   integrations: [icon(), mdx()],
   site: "https://alvs.dev",
+  vite: {
+    build: {
+      // lightningcss (Vite 8's default CSS minifier) drops the unprefixed
+      // backdrop-filter declaration, keeping only -webkit-backdrop-filter:
+      // https://github.com/parcel-bundler/lightningcss/issues/537
+      cssMinify: "esbuild",
+    },
+  },
 });
