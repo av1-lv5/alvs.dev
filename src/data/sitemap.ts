@@ -102,6 +102,11 @@ export const sitemapSections: SitemapSection[] = [
         description: "My gear, tools, and daily software.",
       },
       {
+        href: "/radar/",
+        label: "Radar",
+        description: "Every technology I know, want to learn, or am watching.",
+      },
+      {
         href: "/feeds/",
         label: "Feeds",
         description: "RSS feeds I subscribe to.",

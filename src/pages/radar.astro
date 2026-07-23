@@ -1,0 +1,57 @@
+---
+// layout
+import PageLayout from "@layouts/PageLayout.astro";
+
+// data
+import { radar } from "@data/radar";
+
+const sortedRadar = [...radar].sort((a, b) => a.localeCompare(b));
+---
+
+<PageLayout
+  tabTitle="Radar"
+  description="Technologies I know, want to learn, or am just keeping an eye on."
+>
+  <section class="hero">
+    <h1>/radar</h1>
+    <p class="hero-text">
+      A running list of technologies that have crossed my radar: things I use,
+      things I want to learn, and things I've just heard about enough times to
+      remember. No status, no ranking, no claim of expertise on any of it.
+      Just a gallery of everything.
+    </p>
+  </section>
+
+  <section>
+    <ul class="cloud">
+      {sortedRadar.map((item) => <li>{item}</li>)}
+    </ul>
+  </section>
+</PageLayout>
+
+<style>
+  .cloud {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .cloud li {
+    font-size: 0.9rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    transition: var(--transition);
+  }
+
+  .cloud li:hover {
+    color: var(--text);
+    border-color: var(--text-muted);
+    background: var(--accent-bg);
+  }
+</style>
