@@ -30,10 +30,10 @@ export const uses: UseCategory[] = [
         link: "https://www.cursor.com/",
       },
       {
-        name: "Claude Code",
+        name: "Open Code",
         description:
-          "My AI pair partner for when I want to move fast and solve complex problems.",
-        link: "https://claude.ai/",
+          "My coding agent of choice, when I want to move fast and run multiple experiments in parallel.",
+        link: "https://opencode.ai/",
       },
       {
         name: "Ghostty",
@@ -42,7 +42,8 @@ export const uses: UseCategory[] = [
       },
       {
         name: "Helium",
-        description: "My main browser. Minimal, distraction-free, and stays out of the way.",
+        description:
+          "My main browser. Minimal, distraction-free, and stays out of the way.",
         link: "https://heliumBrowser.com/",
       },
     ],

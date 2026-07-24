@@ -24,22 +24,22 @@ The real question is simpler:
 
 ### The solution
 
-Orbit is a daily budgeting app built around one number: your **safe-to-spend** for today.
+Orbit is a daily budgeting app built around one number: your safe-to-spend for today.
 
 Set a monthly budget (or custom duration), log expenses as you spend, and Orbit recalculates your available amount in real time, for today and for every remaining day in the cycle.
 
-- **Underspend today?** The extra is redistributed across the remaining days.
-- **Overspend today?** You borrowed from your future self. The remaining days adjust automatically.
-- **Stay on streak.** The app tracks your consecutive on-budget days and success rate, a quiet motivator.
-- **Daily reminders.** Set a time to be nudged if you haven't logged anything yet that day.
-- **Export your data.** Every expense and budget cycle, exportable as JSON or CSV.
-- **No categories. No bank sync. No charts.** Just minimal, fast, low-friction budgeting.
+- Underspend today? The extra is redistributed across the remaining days.
+- Overspend today? You borrowed from your future self. The remaining days adjust automatically.
+- Stay on streak. The app tracks your consecutive on-budget days and success rate, a quiet motivator.
+- Daily reminders. Set a time to be nudged if you haven't logged anything yet that day.
+- Export your data. Every expense and budget cycle, exportable as JSON or CSV.
+- No categories. No bank sync. No charts. Just minimal, fast, low-friction budgeting.
 
 The goal is not financial analytics. It's staying within your limits with minimal effort.
 
 ### Engineering
 
-Building Orbit was a deep dive into **product reasoning** and PWA's.
+Building Orbit was a deep dive into product reasoning and PWA's.
 
 - **Logic over CRUD** The core of the app isn't just saving and retrieving data, it's the calculation that handles overspending, carries totals forward, and adjusts for varying budget cycles.
 - **Offline-first** The app is fully functional without a network connection. Expenses can be created, edited, and budgets managed entirely offline. All writes go into an IndexedDB queue and sync to the server the moment connectivity returns.

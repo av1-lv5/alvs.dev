@@ -14,12 +14,12 @@ featured: true
 
 ### Overview
 
-Photosnap is a multi-page marketing site for a photo-sharing platform built with **Astro**.
+Photosnap is a multi-page marketing site for a photo-sharing platform built with Astro.
 
 ### Learnings
 
 - Implementing the responsive design to the pricing, and features table took a bit of time to plan.
-- Got a bit more familiarised with [Astro](https://astro.build)
+- Got a bit more familiarised with Astro
 
 ### Attributions
 

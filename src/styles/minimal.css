@@ -84,7 +84,6 @@ body {
   font-size: 1rem;
 }
 
-
 main {
   width: min(var(--max-width), 90%);
   min-height: calc(100vh - var(--header-height) - 200px);
@@ -383,5 +382,8 @@ iframe {
   }
   footer {
     flex-direction: column;
+  }
+  ul {
+    padding-inline-start: 24px;
   }
 }

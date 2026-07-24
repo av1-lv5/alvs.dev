@@ -14,6 +14,8 @@ export default {
         "astro",
         "next",
         "supabase",
+        "sanity",
+        "pwa",
         "html",
         "css",
       ]),
