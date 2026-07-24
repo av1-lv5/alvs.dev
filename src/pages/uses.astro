@@ -4,11 +4,15 @@ import PageLayout from "@layouts/PageLayout.astro";
 
 // constants
 import { uses } from "@data/uses";
+import { getGeneratedOgImage } from "@utils/og-image";
+
+const ogImage = getGeneratedOgImage("pages", "uses");
 ---
 
 <PageLayout
   tabTitle="Uses"
   description="The tools, hardware, and software I use daily."
+  image={ogImage}
 >
   <section class="hero">
     <h1>/uses</h1>

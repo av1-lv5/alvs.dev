@@ -10,11 +10,15 @@ import GithubCommitGraph from "@components/GithubCommitGraph.astro";
 import { socials } from "@constants/index";
 import { Icon } from "astro-icon/components";
 import Tooltip from "@components/Tooltip.astro";
+import { getGeneratedOgImage } from "@utils/og-image";
+
+const ogImage = getGeneratedOgImage("pages", "hire-me");
 ---
 
 <PageLayout
   tabTitle="Hire Avi"
   description="Frontend developer available for freelance, contract, or full-time work."
+  image={ogImage}
 >
   <section>
     <h1>Hire me</h1>

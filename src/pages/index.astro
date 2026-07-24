@@ -1,9 +1,16 @@
 ---
 // layout
 import PageLayout from "@layouts/PageLayout.astro";
+import { getGeneratedOgImage } from "@utils/og-image";
+
+const ogImage = getGeneratedOgImage("pages", "home");
 ---
 
-<PageLayout tabTitle="Hello" description="Frontend Engineer based in India">
+<PageLayout
+  tabTitle="Hello"
+  description="Frontend Engineer based in India"
+  image={ogImage}
+>
   <section>
     <h1>Hello, I'm Avinash 👋🏽</h1>
     <p class="hero-text">

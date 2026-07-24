@@ -6,7 +6,9 @@ import BookCard from "@components/BookCard.astro";
 import Tooltip from "@components/Tooltip.astro";
 import { Icon } from "astro-icon/components";
 import { socials } from "@constants/index";
+import { getGeneratedOgImage } from "@utils/og-image";
 
+const ogImage = getGeneratedOgImage("pages", "books");
 const allBooks = await getCollection("books");
 const booksPerPage = 12;
 const totalPages = Math.ceil(allBooks.length / booksPerPage);
@@ -16,7 +18,7 @@ const endIndex = startIndex + booksPerPage;
 const booksToShow = allBooks.slice(startIndex, endIndex);
 ---
 
-<PageLayout tabTitle="Books" description="Reading that stuck.">
+<PageLayout tabTitle="Books" description="Reading that stuck." image={ogImage}>
   <section class="hero">
     <h1>Books I've read</h1>
     <p class="hero-text">

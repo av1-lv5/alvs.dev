@@ -27,6 +27,7 @@
 */
 import PageLayout from "@layouts/PageLayout.astro";
 import { changelog } from "../data/changelog";
+import { getGeneratedOgImage } from "@utils/og-image";
 
 const MONTHS = [
   "January",
@@ -48,11 +49,13 @@ const years = Object.keys(changelog)
   .sort((a, b) => b - a);
 
 const defaultYear = years[0];
+const ogImage = getGeneratedOgImage("pages", "changelog");
 ---
 
 <PageLayout
   tabTitle="Changelog"
   description="Monthly updates to this site: what changed, what was added, what was removed."
+  image={ogImage}
 >
   <section class="hero">
     <h1>Changelog</h1>

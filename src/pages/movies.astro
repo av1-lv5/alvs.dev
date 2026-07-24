@@ -12,6 +12,7 @@ import {
   flushCache,
   type TMDBMedia,
 } from "@utils/tmdb";
+import { getGeneratedOgImage } from "@utils/og-image";
 
 const allItems = recommendations.flatMap((m) => m.items);
 
@@ -62,11 +63,14 @@ const defaultIndex = Math.max(
   months.findIndex((m) => m.monthId === prevMonthId),
   0,
 );
+
+const ogImage = getGeneratedOgImage("pages", "movies");
 ---
 
 <PageLayout
   tabTitle="Movies"
   description="Films and shows I've been watching, a running watchlist, and actors whose work I keep coming back to."
+  image={ogImage}
 >
   <section class="hero">
     <h1>Movies</h1>

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import Layout from "@layouts/Layout.astro";
+import { getGeneratedOgImage } from "@utils/og-image";
 
 // Components
 import BackInHistory from "@components/BackInHistory.astro";
@@ -11,6 +12,8 @@ type Props = {
 
 // props
 const { note } = Astro.props;
+
+const ogImage = getGeneratedOgImage("notes", note.id);
 ---
 
 <Layout
@@ -18,6 +21,7 @@ const { note } = Astro.props;
   pageTabTitle={note.data.title}
   showNav={true}
   description={note.data.description}
+  image={ogImage}
 >
   <div class="sub-navigation">
     <BackInHistory />

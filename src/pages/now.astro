@@ -1,13 +1,16 @@
 ---
 // layout
 import PageLayout from "@layouts/PageLayout.astro";
+import { getGeneratedOgImage } from "@utils/og-image";
 
 const lastUpdated = "Jul 2026";
+const ogImage = getGeneratedOgImage("pages", "now");
 ---
 
 <PageLayout
   tabTitle="Now"
   description="What I'm focused on at this point in my life."
+  image={ogImage}
 >
   <section>
     <h1>/now</h1>

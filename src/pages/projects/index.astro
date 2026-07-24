@@ -2,11 +2,15 @@
 // layout
 import ProjectsList from "@components/ProjectsList.astro";
 import PageLayout from "@layouts/PageLayout.astro";
+import { getGeneratedOgImage } from "@utils/og-image";
+
+const ogImage = getGeneratedOgImage("pages", "projects");
 ---
 
 <PageLayout
   tabTitle="Projects"
   description="Products, experiments, implementations."
+  image={ogImage}
 >
   <section class="hero">
     <h1>Things I've built</h1>

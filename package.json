@@ -18,7 +18,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "og:generate": "node --experimental-strip-types --env-file-if-exists=.env.local scripts/generate-og.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.0.0",
@@ -32,9 +33,11 @@
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.87",
     "@iconify-json/simple-icons": "^1.2.65",
+    "gray-matter": "^4.0.3",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
     "rehype-external-links": "^3.0.0",
+    "satori": "^0.29.0",
     "typescript": "^5.9.3"
   }
 }

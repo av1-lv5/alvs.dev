@@ -8,11 +8,15 @@ import FeedFollowCard from "@components/FeedFollowCard.astro";
 // data
 import { socials } from "@constants/index";
 import { followFeeds } from "@data/feeds";
+import { getGeneratedOgImage } from "@utils/og-image";
+
+const ogImage = getGeneratedOgImage("pages", "feeds");
 ---
 
 <PageLayout
   tabTitle="Feeds"
   description="Follow the pulse. Public activity feeds."
+  image={ogImage}
 >
   <section class="hero">
     <h1>/feeds</h1>

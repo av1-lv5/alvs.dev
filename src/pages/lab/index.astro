@@ -1,7 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import PageLayout from "@layouts/PageLayout.astro";
+import { getGeneratedOgImage } from "@utils/og-image";
 
+const ogImage = getGeneratedOgImage("pages", "lab");
 const allEntries = await getCollection("lab", ({ data }) => {
   return !data.isDraft;
 });
@@ -21,6 +23,7 @@ const sourceLabels = {
 <PageLayout
   tabTitle="Lab"
   description="Small experiments and curiosity-driven builds."
+  image={ogImage}
 >
   <section class="hero">
     <h1>Lab</h1>

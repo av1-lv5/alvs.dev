@@ -8,6 +8,7 @@ import TrackCard from "@components/TrackCard.astro";
 
 // Data
 import { getTopArtists, getTopTracks } from "@utils/spotify";
+import { getGeneratedOgImage } from "@utils/og-image";
 
 let artists: Awaited<ReturnType<typeof getTopArtists>> = [];
 let tracks: Awaited<ReturnType<typeof getTopTracks>> = [];
@@ -18,11 +19,14 @@ try {
 } catch {
   spotifyUnavailable = true;
 }
+
+const ogImage = getGeneratedOgImage("pages", "music");
 ---
 
 <PageLayout
   tabTitle="Music"
   description="My top artists and tracks on Spotify."
+  image={ogImage}
 >
   <section>
     <h1>What's currently on repeat</h1>

@@ -4,13 +4,16 @@ import PageLayout from "@layouts/PageLayout.astro";
 
 // data
 import { radar } from "@data/radar";
+import { getGeneratedOgImage } from "@utils/og-image";
 
 const sortedRadar = [...radar].sort((a, b) => a.localeCompare(b));
+const ogImage = getGeneratedOgImage("pages", "radar");
 ---
 
 <PageLayout
   tabTitle="Radar"
   description="Technologies I know, want to learn, or am just keeping an eye on."
+  image={ogImage}
 >
   <section class="hero">
     <h1>/radar</h1>
