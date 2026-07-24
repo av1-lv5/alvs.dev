@@ -86,6 +86,11 @@ export const sitemapSections: SitemapSection[] = [
         label: "Movies",
         description: "Movies I recommend to watch.",
       },
+      {
+        href: "/podcasts/",
+        label: "Podcasts",
+        description: "Shows worth the commute, and a queue that keeps growing.",
+      },
     ],
   },
   {

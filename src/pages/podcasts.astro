@@ -3,12 +3,59 @@
 import PageLayout from "@layouts/PageLayout.astro";
 
 // Components
-import ComingSoon from "@components/ComingSoon.astro";
+import PodcastCard from "@components/PodcastCard.astro";
+
+// Data
+import { podcasts } from "@data/podcasts";
+import { getPodcastByItunesId } from "@utils/itunes";
+import { getGeneratedOgImage } from "@utils/og-image";
+
+const itunesResults = await Promise.all(
+  podcasts.map((podcast) => getPodcastByItunesId(podcast.itunesId)),
+);
+
+const items = podcasts
+  .map((podcast, i) => {
+    const itunes = itunesResults[i];
+    if (!itunes) return null;
+
+    return {
+      ...itunes,
+      description: podcast.description,
+      website: podcast.website,
+      youtube: podcast.youtube,
+      spotifyUrl: podcast.spotify,
+    };
+  })
+  .filter((item): item is NonNullable<typeof item> => item !== null);
+
+const ogImage = getGeneratedOgImage("pages", "podcasts");
 ---
 
 <PageLayout
   tabTitle="Podcasts"
-  description="Frontend Developer. Builder of small things that compound."
+  description="Shows worth the commute, and a queue that keeps growing."
+  image={ogImage}
 >
-  <ComingSoon />
+  <section class="hero">
+    <h1>Podcasts</h1>
+    <p class="hero-text">
+      Podcasts I actually listen to, not just subscribe to and forget. Some on
+      repeat, some sitting in the queue getting longer every week.
+    </p>
+  </section>
+
+  <section>
+    <div class="podcast-list">
+      {items.map((item) => <PodcastCard {...item} />)}
+    </div>
+  </section>
 </PageLayout>
+
+<style>
+  .podcast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+</style>
