@@ -1,48 +1,40 @@
 # Avinash (alvs.dev)
 
-Frontend web developer based in India. Comfortable with JavaScript across the stack. Currently building Orbit, a daily budgeting app.
+> Personal website of Avinash, a frontend engineer based in India with 4+ years of experience building web products. The site is part portfolio, part digital garden: it documents his work, projects, and current focus. He is the builder of Orbit, a daily budgeting app at orbitbudget.com, and is currently available for freelance, contract, or full-time work.
+
+The site is a hand-built Astro project with a classless-stylesheet foundation and scoped custom styles. It intentionally avoids heavy frameworks, analytics bloat, and marketing language. Email is the best way to reach him; the listed address rotates periodically as spam prevention.
+
+## Work With Me
+
+* [Hire me](https://alvs.dev/hire-me): Most complete professional profile. Experience summary, core stack (Next.js, TypeScript, Tailwind CSS), featured projects, GitHub activity, and contact details. Currently available for freelance, contract, or full-time work.
+* [Experience](https://alvs.dev/experience): Timeline of professional roles and freelance work.
+* [Connect](https://alvs.dev/connect): Contact page with email, social profiles (LinkedIn, GitHub, Mastodon), response-time expectations, and the note that the email address changes periodically.
+
+## Projects
+
+* [Projects](https://alvs.dev/projects): Index of all projects with write-ups covering the problem, solution, engineering decisions, and tech stack.
+* [Orbit](https://alvs.dev/projects/orbit): His main product: a daily budgeting app built around a single safe-to-spend number. Includes the offline-first architecture (IndexedDB queue + sync), Web Push via Supabase Edge Functions, custom Clerk auth flows, and the PWA approach. Live at [orbitbudget.com](https://www.orbitbudget.com).
+* [alvs.dev](https://alvs.dev/projects/alvs): The story of this site itself: why Astro, the classless stylesheet philosophy, and the evolution from a hardcoded HTML page to the current build.
+* [Lab](https://alvs.dev/lab): Small curiosity-driven HTML, CSS, and JS experiments.
+
+## Writing
+
+* [Notes](https://alvs.dev/notes): Public notes on web development and product thinking. Canonical source for his technical opinions, including his [skills and tools breakdown](https://alvs.dev/notes/skills-and-tools).
+* [Changelog](https://alvs.dev/changelog): Ongoing record of changes to the site, useful for checking how current any page is.
 
 ## About
 
-I build focused web projects to learn and solve real problems. Passionate about open source, clean code, and shipping over endless polish.
+* [About](https://alvs.dev/about): Who he is, how he works, and personal interests.
+* [Now](https://alvs.dev/now): What he is focused on right now: current projects, job search status, and what he's learning. The best page for up-to-date facts about him.
+* [Uses](https://alvs.dev/uses): Gear, tools, and daily software.
 
-## Pages
+## Optional
 
-- Sitemap: https://alvs.dev/sitemap - Map of every page on this site.
-
-- Home: https://alvs.dev - Overview of work and current focus
-- About: https://alvs.dev/about - Personal philosophy and interests
-- Now: https://alvs.dev/now - Current activities and focus
-- Connect: https://alvs.dev/connect - Contact info and collaboration inquiries
-
-- Hire me: https://alvs.dev/hire-me - My experience, past projects, and what I'm looking for.
-- Projects: https://alvs.dev/projects - Things I've built.
-- Lab: https://alvs.dev/lab - A personal playground for curiosity-driven builds.
-- Experience: https://alvs.dev/experience - Timeline of my professional journey.
-
-- Notes: https://alvs.dev/notes - Public notes on things I want to share.
-- Books: https://alvs.dev/books - What I've read.
-- Echoes: https://alvs.dev/echoes - Lines that feel close.
-
-- Music: https://alvs.dev/music - What I've been listening to.
-- Movies: https://alvs.dev/movies - Movies I recommend to watch.
-
-- Changelog: https://alvs.dev/changelog - Updates and changes to this site.
-- Uses: https://alvs.dev/uses - My gear, tools, and daily software.
-- Feeds: https://alvs.dev/feeds - RSS feeds I follow and ways to follow my activity.
-- Colophon: https://alvs.dev/colophon - How this site is built.
-
-## Featured Products
-
-- Orbit: Daily budget app, that calculates your safe-to-spend for today - https://www.orbitbudget.com
-
-## Socials
-
-- GitHub: https://github.com/Av1-Lv5
-- LinkedIn: https://www.linkedin.com/in/av-sh/
-- Mastodon: https://fosstodon.org/@Av1
-- Email: alvs.codee@slmail.me
-
-## Site Meta
-
-Built with Astro, custom minimal CSS, deployed on Netlify. Source available at https://github.com/Av1-Lv5/alvs.dev
+* [Sitemap](https://alvs.dev/sitemap): Full human-readable index of every page on the site.
+* [Colophon](https://alvs.dev/colophon): How the site is built: stack, tooling, and open-source repo ([github.com/Av1-Lv5/alvs.dev](https://github.com/Av1-Lv5/alvs.dev)).
+* [Radar](https://alvs.dev/radar): A running list of technologies he uses or is tracking, with no status or expertise claims.
+* [Books](https://alvs.dev/books): What he has read.
+* [Music](https://alvs.dev/music), [Movies](https://alvs.dev/movies), [Podcasts](https://alvs.dev/podcasts): What he is listening to and watching.
+* [Echoes](https://alvs.dev/echoes): Collected quotes and lines.
+* [Feeds](https://alvs.dev/feeds): RSS feeds he follows and ways to follow his activity.
+* [Guestbook](https://alvs.dev/guestbook): Visitors can leave a public message.
