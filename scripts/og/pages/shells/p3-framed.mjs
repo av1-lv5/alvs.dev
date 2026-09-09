@@ -63,7 +63,12 @@ export function buildP3({ route, tagline, rightBuilder }) {
         [
           h(
             "div",
-            { display: "flex", flexDirection: "column", gap: "18px", maxWidth: "560px" },
+            {
+              display: "flex",
+              flexDirection: "column",
+              gap: "18px",
+              maxWidth: "560px",
+            },
             [
               h(
                 "div",
@@ -78,7 +83,12 @@ export function buildP3({ route, tagline, rightBuilder }) {
               ),
               h(
                 "div",
-                { display: "flex", fontSize: "20px", lineHeight: 1.5, color: theme.textLight },
+                {
+                  display: "flex",
+                  fontSize: "20px",
+                  lineHeight: 1.5,
+                  color: theme.textLight,
+                },
                 tagline,
               ),
             ],

@@ -5,9 +5,11 @@ import { getCollection } from "astro:content";
 import PageLayout from "@layouts/PageLayout.astro";
 
 // fetching notes to display; drafts are shown in dev only
-const allNotes = (await getCollection("notes", ({ data }) => {
-  return !data.draft || import.meta.env.DEV;
-})).sort((a, b) => {
+const allNotes = (
+  await getCollection("notes", ({ data }) => {
+    return !data.draft || import.meta.env.DEV;
+  })
+).sort((a, b) => {
   const dateA = a.data.publishedAt ?? "";
   const dateB = b.data.publishedAt ?? "";
   return dateB.localeCompare(dateA);

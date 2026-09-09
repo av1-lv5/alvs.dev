@@ -38,7 +38,7 @@ export const experiences = [
       {
         label: "Sole frontend owner",
         text: "Owned frontend architecture. Grew the team from solo: mentored a junior dev, set up git branching and PR review workflows, and handed off to a senior engineer 3 months before leaving.",
-      }
+      },
     ],
   },
   {

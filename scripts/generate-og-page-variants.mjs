@@ -37,7 +37,8 @@ async function main() {
     {
       slug: "radar",
       route: "/radar",
-      tagline: "Technologies I know, want to learn, or am just keeping an eye on.",
+      tagline:
+        "Technologies I know, want to learn, or am just keeping an eye on.",
       rightBuilder: (box) => buildChipCloud(tags, box, { radius: 999 }),
     },
     {

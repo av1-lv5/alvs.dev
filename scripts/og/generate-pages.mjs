@@ -3,7 +3,12 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import satori from "satori";
 import sharp from "sharp";
-import { loadRadarTags, loadFeaturedPosters, loadBookCovers, loadSkills } from "./pages/data.mjs";
+import {
+  loadRadarTags,
+  loadFeaturedPosters,
+  loadBookCovers,
+  loadSkills,
+} from "./pages/data.mjs";
 import { buildChipCloud } from "./pages/right/chip-cloud.mjs";
 import { buildPosterWall } from "./pages/right/poster-wall.mjs";
 import { buildSlashMark } from "./pages/right/slash-mark.mjs";
@@ -30,13 +35,15 @@ async function buildContentPages() {
       slug: "home",
       render: buildHome,
       title: "Avinash",
-      description: "I'm a Frontend Engineer based in India, who builds for the web.",
+      description:
+        "I'm a Frontend Engineer based in India, who builds for the web.",
       skillsBuilder: (box) => buildSkillChips(skills, box),
     },
     {
       slug: "radar",
       route: "/radar",
-      tagline: "Technologies I know, want to learn, or am just keeping an eye on.",
+      tagline:
+        "Technologies I know, want to learn, or am just keeping an eye on.",
       rightBuilder: (box) => buildChipCloud(tags, box, { radius: 999 }),
     },
     {
@@ -79,7 +86,8 @@ const SLASH_MARK_PAGES = [
   {
     slug: "hire-me",
     route: "/hire-me",
-    tagline: "Frontend developer available for freelance, contract, or full-time work.",
+    tagline:
+      "Frontend developer available for freelance, contract, or full-time work.",
   },
   {
     slug: "lab",
@@ -89,7 +97,8 @@ const SLASH_MARK_PAGES = [
   {
     slug: "changelog",
     route: "/changelog",
-    tagline: "Monthly updates to this site: what changed, what was added, what was removed.",
+    tagline:
+      "Monthly updates to this site: what changed, what was added, what was removed.",
   },
   {
     slug: "now",

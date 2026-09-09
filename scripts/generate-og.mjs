@@ -27,7 +27,9 @@ async function main() {
     return;
   }
 
-  console.log(`\n${generated} generated, ${skipped} skipped (already exist, use --force to regenerate)`);
+  console.log(
+    `\n${generated} generated, ${skipped} skipped (already exist, use --force to regenerate)`,
+  );
 }
 
 main().catch((err) => {

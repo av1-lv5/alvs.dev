@@ -6,7 +6,10 @@ import bookSchema from "@schemas/bookSchema";
 import labSchema from "@schemas/labSchema";
 
 const projectsCollection = defineCollection({
-  loader: glob({ pattern: ["**/*.{md,mdx}", "!**/_*"], base: "./src/content/projects" }),
+  loader: glob({
+    pattern: ["**/*.{md,mdx}", "!**/_*"],
+    base: "./src/content/projects",
+  }),
   schema: z.object(projectSchema),
 });
 

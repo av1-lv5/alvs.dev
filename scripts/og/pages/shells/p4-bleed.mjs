@@ -95,10 +95,20 @@ export function buildP4({ route, tagline, rightBuilder, dim = 0 }) {
           ),
           h(
             "div",
-            { display: "flex", fontSize: "21px", lineHeight: 1.5, color: theme.textLight },
+            {
+              display: "flex",
+              fontSize: "21px",
+              lineHeight: 1.5,
+              color: theme.textLight,
+            },
             tagline,
           ),
-          h("div", { display: "flex", width: "40px", height: "3px", backgroundColor: theme.accent }),
+          h("div", {
+            display: "flex",
+            width: "40px",
+            height: "3px",
+            backgroundColor: theme.accent,
+          }),
         ],
       ),
     ].filter(Boolean),

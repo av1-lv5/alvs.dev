@@ -41,7 +41,6 @@ mediaResults.forEach((media) => {
   if (media) mediaMap.set(media.id, media);
 });
 
-
 const releaseKey = (media: TMDBMedia) =>
   media.releaseDate || (media.year ? `${media.year}-00-00` : "");
 

@@ -39,7 +39,10 @@ export default function rehypeExternalArrow() {
         /↗\s*$/.test(child.value)
       ) {
         child.value = child.value.replace(/↗\s*$/, "");
-        node.children.push({ ...ARROW_SVG, children: ARROW_SVG.children.map((c) => ({ ...c })) });
+        node.children.push({
+          ...ARROW_SVG,
+          children: ARROW_SVG.children.map((c) => ({ ...c })),
+        });
         break;
       }
     }

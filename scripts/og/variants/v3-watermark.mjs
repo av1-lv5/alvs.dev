@@ -43,31 +43,27 @@ export function buildV3({ title, tag, date }) {
           padding: "80px",
         },
         [
-          h(
-            "div",
-            { display: "flex", alignItems: "center", gap: "14px" },
-            [
-              h("div", {
+          h("div", { display: "flex", alignItems: "center", gap: "14px" }, [
+            h("div", {
+              display: "flex",
+              width: "10px",
+              height: "10px",
+              borderRadius: "999px",
+              backgroundColor: theme.accent,
+            }),
+            h(
+              "span",
+              {
                 display: "flex",
-                width: "10px",
-                height: "10px",
-                borderRadius: "999px",
-                backgroundColor: theme.accent,
-              }),
-              h(
-                "span",
-                {
-                  display: "flex",
-                  fontFamily: "Geist Mono",
-                  fontSize: "18px",
-                  letterSpacing: "3px",
-                  textTransform: "uppercase",
-                  color: theme.textMuted,
-                },
-                "alvs.dev / notes",
-              ),
-            ],
-          ),
+                fontFamily: "Geist Mono",
+                fontSize: "18px",
+                letterSpacing: "3px",
+                textTransform: "uppercase",
+                color: theme.textMuted,
+              },
+              "alvs.dev / notes",
+            ),
+          ]),
           h(
             "div",
             {

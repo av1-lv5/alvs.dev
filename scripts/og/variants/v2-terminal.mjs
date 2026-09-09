@@ -22,7 +22,10 @@ const CARET_GAP = 20;
 // line and the cursor as siblings in one row, guaranteeing the cursor
 // trails the actual last word instead of the first line.
 function wrapMonospace(text, maxWidthPx, fontSize) {
-  const maxChars = Math.max(1, Math.floor(maxWidthPx / (fontSize * CHAR_WIDTH_RATIO)));
+  const maxChars = Math.max(
+    1,
+    Math.floor(maxWidthPx / (fontSize * CHAR_WIDTH_RATIO)),
+  );
   const words = text.split(" ");
   const lines = [];
   let current = "";

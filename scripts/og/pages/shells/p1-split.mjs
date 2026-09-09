@@ -7,7 +7,10 @@ const RIGHT_PADDING = 56;
 // Even split: narrow left text column, thin accent divider, wide right
 // visual zone.
 export function buildP1({ route, tagline, rightBuilder }) {
-  const rightBox = { width: 1200 - LEFT_WIDTH - 2 - RIGHT_PADDING * 2, height: 630 - RIGHT_PADDING * 2 };
+  const rightBox = {
+    width: 1200 - LEFT_WIDTH - 2 - RIGHT_PADDING * 2,
+    height: 630 - RIGHT_PADDING * 2,
+  };
 
   return h(
     "div",
@@ -41,34 +44,35 @@ export function buildP1({ route, tagline, rightBuilder }) {
             },
             "alvs.dev",
           ),
-          h(
-            "div",
-            { display: "flex", flexDirection: "column", gap: "20px" },
-            [
-              h(
-                "div",
-                {
-                  display: "flex",
-                  fontSize: "56px",
-                  fontWeight: 700,
-                  letterSpacing: "-2px",
-                  color: theme.text,
-                },
-                route,
-              ),
-              h(
-                "div",
-                {
-                  display: "flex",
-                  fontSize: "21px",
-                  lineHeight: 1.5,
-                  color: theme.textLight,
-                },
-                tagline,
-              ),
-            ],
-          ),
-          h("div", { display: "flex", width: "40px", height: "3px", backgroundColor: theme.accent }),
+          h("div", { display: "flex", flexDirection: "column", gap: "20px" }, [
+            h(
+              "div",
+              {
+                display: "flex",
+                fontSize: "56px",
+                fontWeight: 700,
+                letterSpacing: "-2px",
+                color: theme.text,
+              },
+              route,
+            ),
+            h(
+              "div",
+              {
+                display: "flex",
+                fontSize: "21px",
+                lineHeight: 1.5,
+                color: theme.textLight,
+              },
+              tagline,
+            ),
+          ]),
+          h("div", {
+            display: "flex",
+            width: "40px",
+            height: "3px",
+            backgroundColor: theme.accent,
+          }),
         ],
       ),
       h("div", {

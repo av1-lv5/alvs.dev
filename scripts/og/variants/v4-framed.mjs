@@ -93,11 +93,7 @@ export function buildV4({ title, tag, date }) {
               color: theme.textMuted,
               gap: "14px",
             },
-            [
-              "alvs.dev",
-              tag ? `· ${tag}` : null,
-              date ? `· ${date}` : null,
-            ]
+            ["alvs.dev", tag ? `· ${tag}` : null, date ? `· ${date}` : null]
               .filter(Boolean)
               .join("  "),
           ),

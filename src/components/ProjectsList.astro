@@ -10,14 +10,19 @@ interface Props {
 
 const { count } = Astro.props;
 
-const allProjects = await getCollection("projects", ({ data }) => !data.isDraft && data.featured);
+const allProjects = await getCollection(
+  "projects",
+  ({ data }) => !data.isDraft && data.featured,
+);
 
 const sortedProjects = allProjects.sort((a, b) => {
   if (b.data.year !== a.data.year) return b.data.year - a.data.year;
   return a.data.title.localeCompare(b.data.title);
 });
 
-const displayedProjects = count ? sortedProjects.slice(0, count) : sortedProjects;
+const displayedProjects = count
+  ? sortedProjects.slice(0, count)
+  : sortedProjects;
 ---
 
 <div class="projects-list">

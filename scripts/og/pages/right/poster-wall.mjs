@@ -7,7 +7,10 @@ import { h, img } from "../../h.mjs";
 // covers, project screenshots).
 const COLUMN_OFFSETS = [0, 56, 24];
 
-export function buildPosterWall(images, { width, height, columns = 3, gap = 16 }) {
+export function buildPosterWall(
+  images,
+  { width, height, columns = 3, gap = 16 },
+) {
   const colWidth = Math.floor((width - gap * (columns - 1)) / columns);
   const posterHeight = Math.round(colWidth * 1.5);
 
@@ -15,10 +18,15 @@ export function buildPosterWall(images, { width, height, columns = 3, gap = 16 }
   // than its declared height, so cap rows per column up front instead of
   // relying on clipping (same issue as the chip-cloud builder).
   const maxOffset = Math.max(...COLUMN_OFFSETS.slice(0, columns));
-  const rows = Math.max(1, Math.floor((height - maxOffset + gap) / (posterHeight + gap)));
+  const rows = Math.max(
+    1,
+    Math.floor((height - maxOffset + gap) / (posterHeight + gap)),
+  );
 
   const cols = Array.from({ length: columns }, (_, colIndex) => {
-    const colImages = images.filter((_, i) => i % columns === colIndex).slice(0, rows);
+    const colImages = images
+      .filter((_, i) => i % columns === colIndex)
+      .slice(0, rows);
 
     return h(
       "div",

@@ -9,5 +9,7 @@ export function getGeneratedOgImage(
   slug: string,
 ): string | undefined {
   const diskPath = `public/assets/img/og/${kind}/${slug}.png`;
-  return existsSync(diskPath) ? `/assets/img/og/${kind}/${slug}.png` : undefined;
+  return existsSync(diskPath)
+    ? `/assets/img/og/${kind}/${slug}.png`
+    : undefined;
 }

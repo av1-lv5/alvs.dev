@@ -34,32 +34,38 @@ export function buildP2({ route, tagline, rightBuilder }) {
         [
           h(
             "div",
-            { display: "flex", flexDirection: "column", gap: "20px", maxWidth: "520px" },
+            {
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+              maxWidth: "520px",
+            },
             [
+              h("div", { display: "flex", alignItems: "center", gap: "16px" }, [
+                h(
+                  "span",
+                  { display: "flex", fontSize: "48px", color: theme.accent },
+                  ">",
+                ),
+                h(
+                  "span",
+                  {
+                    display: "flex",
+                    fontSize: "48px",
+                    fontWeight: 500,
+                    color: theme.text,
+                  },
+                  route,
+                ),
+              ]),
               h(
                 "div",
-                { display: "flex", alignItems: "center", gap: "16px" },
-                [
-                  h(
-                    "span",
-                    { display: "flex", fontSize: "48px", color: theme.accent },
-                    ">",
-                  ),
-                  h(
-                    "span",
-                    {
-                      display: "flex",
-                      fontSize: "48px",
-                      fontWeight: 500,
-                      color: theme.text,
-                    },
-                    route,
-                  ),
-                ],
-              ),
-              h(
-                "div",
-                { display: "flex", fontSize: "19px", lineHeight: 1.6, color: theme.textMuted },
+                {
+                  display: "flex",
+                  fontSize: "19px",
+                  lineHeight: 1.6,
+                  color: theme.textMuted,
+                },
                 tagline,
               ),
             ],

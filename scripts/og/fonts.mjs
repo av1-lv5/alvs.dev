@@ -18,7 +18,9 @@ async function fetchGoogleFontWoff(family, weight) {
 
   const [, url] = css.match(/url\(([^)]+)\)/) ?? [];
   if (!url) {
-    throw new Error(`Could not resolve a font file URL for ${family} ${weight}`);
+    throw new Error(
+      `Could not resolve a font file URL for ${family} ${weight}`,
+    );
   }
 
   const buffer = await fetch(url).then((res) => res.arrayBuffer());
@@ -27,7 +29,10 @@ async function fetchGoogleFontWoff(family, weight) {
 
 async function loadFont(family, weight) {
   await mkdir(CACHE_DIR, { recursive: true });
-  const cachePath = path.join(CACHE_DIR, `${family.replace(/\s+/g, "-")}-${weight}.woff`);
+  const cachePath = path.join(
+    CACHE_DIR,
+    `${family.replace(/\s+/g, "-")}-${weight}.woff`,
+  );
 
   if (existsSync(cachePath)) {
     return readFile(cachePath);
@@ -42,15 +47,21 @@ async function loadFont(family, weight) {
 // (see src/styles/minimal.css). Both ship on Google Fonts as static weights,
 // so we pull those directly instead of trying to feed Satori a variable font.
 export async function loadOgFonts() {
-  const [sansRegular, sansMedium, sansSemibold, sansBold, monoRegular, monoMedium] =
-    await Promise.all([
-      loadFont("Geist", 400),
-      loadFont("Geist", 500),
-      loadFont("Geist", 600),
-      loadFont("Geist", 700),
-      loadFont("Geist Mono", 400),
-      loadFont("Geist Mono", 500),
-    ]);
+  const [
+    sansRegular,
+    sansMedium,
+    sansSemibold,
+    sansBold,
+    monoRegular,
+    monoMedium,
+  ] = await Promise.all([
+    loadFont("Geist", 400),
+    loadFont("Geist", 500),
+    loadFont("Geist", 600),
+    loadFont("Geist", 700),
+    loadFont("Geist Mono", 400),
+    loadFont("Geist Mono", 500),
+  ]);
 
   return [
     { name: "Geist", data: sansRegular, weight: 400, style: "normal" },

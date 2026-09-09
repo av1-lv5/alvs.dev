@@ -55,7 +55,12 @@ const pathName = Astro.url.pathname;
             >
               <Icon name="lucide:search" size={14} />
               <span class="cmdk-keys">
-                <kbd><Icon name="lucide:command" size={12} /></kbd><kbd>K</kbd>
+                <>
+                  <kbd>
+                    <Icon name="lucide:command" size={12} />
+                  </kbd>
+                  <kbd>K</kbd>
+                </>
               </span>
             </button>
           </nav>
@@ -73,7 +78,11 @@ const pathName = Astro.url.pathname;
 {
   showNav && (
     <div id="mobile-overlay" class="mobile-overlay">
-      <div id="close-btn" aria-label="Close mobile menu" class="close-btn no-select">
+      <div
+        id="close-btn"
+        aria-label="Close mobile menu"
+        class="close-btn no-select"
+      >
         <Icon name="lucide:x" size={24} />
       </div>
 
@@ -90,7 +99,12 @@ const pathName = Astro.url.pathname;
           >
             <Icon name="simple-icons:github" size={20} />
           </a>
-          <a href={socials.mastodon} target="_blank" aria-label="Mastodon" class="no-select">
+          <a
+            href={socials.mastodon}
+            target="_blank"
+            aria-label="Mastodon"
+            class="no-select"
+          >
             <Icon name="simple-icons:mastodon" size={20} />
           </a>
           <a

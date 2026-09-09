@@ -28,99 +28,91 @@ export async function buildHome({ title, description, skillsBuilder }) {
       fontFamily: "Geist",
     },
     [
-        h(
-          "div",
-          { display: "flex", justifyContent: "space-between", alignItems: "center" },
-          [
+      h(
+        "div",
+        {
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        },
+        [
+          h(
+            "span",
+            {
+              display: "flex",
+              fontFamily: "Geist Mono",
+              fontSize: "18px",
+              letterSpacing: "1px",
+              color: theme.textMuted,
+            },
+            "alvs.dev",
+          ),
+          h("div", { display: "flex", alignItems: "center", gap: "10px" }, [
+            h("div", {
+              display: "flex",
+              width: "8px",
+              height: "8px",
+              borderRadius: "999px",
+              backgroundColor: theme.accent,
+            }),
             h(
               "span",
               {
                 display: "flex",
                 fontFamily: "Geist Mono",
-                fontSize: "18px",
+                fontSize: "16px",
                 letterSpacing: "1px",
-                color: theme.textMuted,
-              },
-              "alvs.dev",
-            ),
-            h(
-              "div",
-              { display: "flex", alignItems: "center", gap: "10px" },
-              [
-                h("div", {
-                  display: "flex",
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "999px",
-                  backgroundColor: theme.accent,
-                }),
-                h(
-                  "span",
-                  {
-                    display: "flex",
-                    fontFamily: "Geist Mono",
-                    fontSize: "16px",
-                    letterSpacing: "1px",
-                    textTransform: "uppercase",
-                    color: theme.textMuted,
-                  },
-                  "Available for work",
-                ),
-              ],
-            ),
-          ],
-        ),
-        h(
-          "div",
-          { display: "flex", flexDirection: "column", gap: "20px" },
-          [
-            h(
-              "div",
-              {
-                display: "flex",
-                fontSize: "88px",
-                fontWeight: 700,
-                letterSpacing: "-4px",
-                color: theme.text,
-              },
-              title,
-            ),
-            h(
-              "div",
-              {
-                display: "flex",
-                fontSize: "34px",
-                fontWeight: 400,
-                lineHeight: 1.4,
-                color: theme.textMuted,
-                maxWidth: "900px",
-              },
-              description,
-            ),
-          ],
-        ),
-        h(
-          "div",
-          { display: "flex", flexDirection: "column", gap: "20px" },
-          [
-            h(
-              "span",
-              {
-                display: "flex",
-                fontFamily: "Geist Mono",
-                fontSize: "14px",
-                letterSpacing: "2px",
                 textTransform: "uppercase",
-                color: theme.textLight,
-                borderBottom: `1px solid ${theme.border}`,
-                paddingBottom: "16px",
-                width: `${innerWidth}px`,
+                color: theme.textMuted,
               },
-              "Toolkit",
+              "Available for work",
             ),
-            skillsNode,
-          ],
+          ]),
+        ],
+      ),
+      h("div", { display: "flex", flexDirection: "column", gap: "20px" }, [
+        h(
+          "div",
+          {
+            display: "flex",
+            fontSize: "88px",
+            fontWeight: 700,
+            letterSpacing: "-4px",
+            color: theme.text,
+          },
+          title,
         ),
-      ],
+        h(
+          "div",
+          {
+            display: "flex",
+            fontSize: "34px",
+            fontWeight: 400,
+            lineHeight: 1.4,
+            color: theme.textMuted,
+            maxWidth: "900px",
+          },
+          description,
+        ),
+      ]),
+      h("div", { display: "flex", flexDirection: "column", gap: "20px" }, [
+        h(
+          "span",
+          {
+            display: "flex",
+            fontFamily: "Geist Mono",
+            fontSize: "14px",
+            letterSpacing: "2px",
+            textTransform: "uppercase",
+            color: theme.textLight,
+            borderBottom: `1px solid ${theme.border}`,
+            paddingBottom: "16px",
+            width: `${innerWidth}px`,
+          },
+          "Toolkit",
+        ),
+        skillsNode,
+      ]),
+    ],
   );
 }
