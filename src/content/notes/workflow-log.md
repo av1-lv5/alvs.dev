@@ -15,7 +15,7 @@ At the moment, my setup is deliberately small: one Ghostty window, one Zed windo
 - **Ghostty:** My terminal workspace. The first tab is the main project and is available with `Cmd+1`. Other projects and separate codebases get their own tabs.
 - **OpenCode:** My main coding agent, kept in project-specific Ghostty tabs.
 - **Codex:** The desktop app has become a serious part of my coding workflow, especially for frontend work and codebase refactors.
-- **Obsidian:** An OpenCode instance runs in its own persistent Ghostty tab with my Obsidian vault as its working folder. It uses a lower model for capturing thoughts, lightweight note changes, and end-of-day review.
+- **Obsidian:** An OpenCode instance runs in its own persistent Ghostty tab with my Obsidian vault as its working folder. It uses a lower model for capturing thoughts, lightweight note changes, and end-of-day review. The quick terminal version of it is my fast lane for capture.
 - **Development servers:** A second persistent Ghostty tab, arranged in project rows with terminal splits.
 - **Zed:** My code editor. I use one window and switch projects inside it instead of opening a window for every codebase.
 - **Dictation:** Hex with the local Parakeet model.
@@ -24,6 +24,10 @@ At the moment, my setup is deliberately small: one Ghostty window, one Zed windo
 ## Workflow log
 
 ### September 2026
+
+#### The quick terminal capture loop
+
+The persistent Obsidian OpenCode tab got a faster sibling. Ghostty's quick terminal now slides down with OpenCode running inside it, vault as the working folder and the Todoist MCP connected. I pop it open, talk, and the agent routes the thought: tasks go straight into Todoist, note updates land in the right note, and journaling happens by just talking. I wrote a full note about it: [Just blabber, and it lands where it should](/notes/just-blabber-and-it-lands).
 
 #### Codex became a place to stay for the whole loop
 
