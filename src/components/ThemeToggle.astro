@@ -3,10 +3,10 @@ import { Icon } from "astro-icon/components";
 ---
 
 <div class="theme-toggle-container">
-  <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+  <button id="theme-toggle" aria-label="Theme: System" title="Theme: System">
     <Icon name="lucide:sun" class="sun-icon" size={20} />
     <Icon name="lucide:moon" class="moon-icon" size={20} />
-    <!-- <Icon name="lucide:monitor" class="system-icon" size={20} /> -->
+    <Icon name="lucide:monitor" class="system-icon" size={20} />
   </button>
 </div>
 
@@ -14,31 +14,48 @@ import { Icon } from "astro-icon/components";
   import { switchOffSound } from "@utils/sound/switch-off.ts";
   import { playSound } from "@utils/sound/sound-engine.ts";
 
-  if (localStorage.getItem("theme") === "system") {
-    localStorage.removeItem("theme");
-  }
-
   const toggle = document.getElementById("theme-toggle");
 
-  const getTheme = () => {
-    return localStorage.getItem("theme") || "dark";
+  type Theme = "system" | "light" | "dark";
+
+  const getTheme = (): Theme => {
+    const theme = localStorage.getItem("theme");
+    return theme === "light" || theme === "dark" ? theme : "system";
   };
 
-  const setTheme = (theme: string) => {
+  const updateThemeControl = (theme: Theme) => {
+    if (!toggle) return;
+
+    const nextTheme =
+      theme === "system" ? "light" : theme === "light" ? "dark" : "system";
+    const label = `Theme: ${theme[0].toUpperCase()}${theme.slice(1)}. Switch to ${nextTheme} theme`;
+    toggle.setAttribute("aria-label", label);
+    toggle.setAttribute("title", label);
+  };
+
+  const setTheme = (theme: Theme) => {
     localStorage.setItem("theme", theme);
     if (theme === "dark") {
       document.documentElement.setAttribute("data-theme", "dark");
     } else if (theme === "light") {
       document.documentElement.setAttribute("data-theme", "light");
     } else {
-      document.documentElement.setAttribute("data-theme", "dark");
+      document.documentElement.removeAttribute("data-theme");
     }
+    updateThemeControl(theme);
   };
+
+  updateThemeControl(getTheme());
 
   toggle?.addEventListener("click", async () => {
     await playSound(switchOffSound.dataUri, { volume: 0.04 });
     const currentTheme = getTheme();
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+    const nextTheme: Theme =
+      currentTheme === "system"
+        ? "light"
+        : currentTheme === "light"
+          ? "dark"
+          : "system";
 
     if (!("startViewTransition" in document)) {
       setTheme(nextTheme);
