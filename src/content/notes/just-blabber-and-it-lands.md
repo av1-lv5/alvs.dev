@@ -5,47 +5,41 @@ draft: false
 publishedAt: "2026-09-09"
 ---
 
-_The quick terminal capture loop: how thoughts go from my mouth to the right place in a few seconds, without me deciding where that place is._
+_The quick terminal capture loop: how thoughts go from my mouth to the right place in a few seconds._
 
 ## Why
 
-Ideas don't arrive at convenient times, and they don't arrive in finished sentences. The old flow for capturing one looked like this: think of something, remember to write it down, switch to the right window, find the right note, then decide on the wording and the structure. Every step is small. Together they are enough to kill the thought before it lands anywhere.
+Ideas do not arrive at convenient times or in finished sentences. The old flow for capturing one was to remember it, switch to the right window, find the right note, and then decide how to phrase and structure it. Each step was small, but together they were enough to make a thought disappear.
 
-I already had an OpenCode instance running against my Obsidian vault in a persistent Ghostty tab. It helped, but it still meant switching tabs, finding the right window, and mentally switching gears. The capture friction was lower, not gone.
+I already had an OpenCode instance running against my Obsidian vault in a persistent Ghostty tab. That reduced some of the friction, but I still had to switch tabs and mentally change context before I could start.
 
 ## The loop
 
-Now I press `Cmd+\``, and Ghostty's quick terminal slides down over whatever I am doing. OpenCode is already running inside it, with the Obsidian vault as its working folder and the Todoist MCP connected. I just talk. Hex with the local Parakeet model turns the talking into text, and from there the agent takes over.
+Now I press <code>Cmd + `</code>, and Ghostty's quick terminal slides down over the window I am using. OpenCode is already running inside it, with the Obsidian vault as its working folder and the Todoist MCP connected. Handy transcribes what I say locally with the Parakeet TDT 110M model, then OpenCode handles the result.
 
-What I actually use it for:
+That result can become different kinds of work:
 
-- **Adding tasks.** Something I need to do crosses my mind, I say it, it ends up in the right Todoist list. I don't pick the project or the section; the agent does.
-- **Picking up work.** Instead of opening Todoist and scanning, I ask for the next task and it pulls the right one with its context.
-- **Updating notes.** A thought belongs in an existing note, I say it, the agent edits the note on the spot.
-- **Journaling.** End of the day, or mid-day, I just talk. The agent structures it, writes it into the vault, and I never see the blank-page problem.
+- **Tasks:** I describe something I need to do, and it ends up in the appropriate Todoist project and section.
+- **Picking up work:** I ask for the next task, and OpenCode finds it with its existing context.
+- **Notes:** I describe a thought that belongs in an existing note, and the agent edits it in place.
+- **Journaling:** I talk through the day, and the agent turns it into a structured entry in the vault.
 
-The common thread: I stopped deciding where things go. The agent knows the vault, knows the lists, and routes the thought. I only blabber, and it lands where it should.
+## Choosing the dictation model
 
-## What it runs on
+I started with Hex and its local Parakeet model. Hex could be buggy, and it did not give me much choice over smaller models. Its best suggestion was Parakeet TDT 0.6B, which used roughly 1.5 to 2 GB of memory. That is too much for dictation on an 8 GB MacBook. Apple's native dictation was not good enough either, so I started looking at other apps and models.
 
-- **Ghostty's quick terminal**, toggled with `Cmd+\``, sliding over the current window. It is fast enough that opening it feels cheaper than keeping the thought in my head.
-- **OpenCode** inside it, pointed at the Obsidian vault, using a lower model. This is capture work, not code generation, so the model doesn't need to be the biggest one I have.
-- **Todoist MCP**, which is what lets the same conversation reach my task lists instead of only the vault.
+I had heard about Handy for a while. It did not feel polished enough when I tried it previously, but it has improved considerably. It offers smaller models, so I tried Moonshine Base, Moonshine Tiny, and Canary-180M-Flash. Canary is only around 200 MB, but it did not work well for me. That might be related to my Indian accent, though it consistently struggled more than the other options.
 
-## Nothing new was installed
+I settled on Parakeet TDT 110M. It is small enough to keep the memory cost reasonable and works well most of the time. It occasionally misses a word, usually a software name or another proper noun, but that is a limitation I can live with.
 
-This is the part I like most about it. I did not install a new tool, write a plugin, or script anything together. Every piece here was already in the setup: Ghostty was already my terminal and its quick terminal shipped with it, OpenCode was already running against the vault, and the Todoist MCP was already connected. All I did was arrange them into a flow where the loop closes, and notice that the friction was gone.
+Handy can unload the model immediately after each use. The default is five minutes, but I changed it to immediate unloading so the model only occupies memory while I am dictating. I am still not sure whether loading it for every capture is worth the tradeoff, but the memory savings matter on an 8 GB machine.
 
 ## AGENTS.md does the remembering
 
-The reason this works with zero explanation per session is a single `AGENTS.md` file at the root of the vault. OpenCode suggests it, and most agentic tools do the same: when a session starts in a folder, the agent reads that file first and inherits its context.
+The part that makes this work without explanation every time is an `AGENTS.md` file at the root of the vault. When OpenCode starts in that folder, it reads the file and inherits the context.
 
-So the file carries the purpose of the whole setup. It says what this folder is for, that anything task-shaped I blabber should go to Todoist through the MCP, into the respective project and the respective section. It does not need me to mention any of that each time; a new session opens, reads the file, and already knows.
-
-It also carries everything about the notes themselves: how a note is structured, the writing style, which folder it belongs in, what tags apply, what the frontmatter metadata looks like, and how a note links back to other notes. When I talk about an Obsidian vault note, the agent does not guess. It follows the conventions already written down.
-
-That is the quiet trick of this whole loop. The intelligence is not in the moment of capture; it is in the standing instructions. I set them up once, and every blabber after that just lands.
+The file describes what the vault is for, where task-shaped thoughts should go in Todoist, and how notes should be written. It also defines the metadata, folders, tags, and linking conventions. OpenCode does not need to infer those rules from each new dictation; it can follow the ones already written down.
 
 ## What changed
 
-The unit of effort for a capture went from "open the right place, phrase it properly" to "say the sentence". That sounds tiny, but it is the difference between thoughts that get captured and thoughts that evaporate. I don't fiddle with wording or note structure anymore, because by the time I would have started fiddling, the thing is already written down.
+The unit of effort for a capture went from opening the right place and phrasing the thought properly to simply saying the sentence. The system handles the destination, structure, and follow-up, while I stay with the idea long enough to get it out.

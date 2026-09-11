@@ -18,7 +18,7 @@ At the moment, my setup is deliberately small: one Ghostty window, one Zed windo
 - **Obsidian:** An OpenCode instance runs in its own persistent Ghostty tab with my Obsidian vault as its working folder. It uses a lower model for capturing thoughts, lightweight note changes, and end-of-day review. The quick terminal version of it is my fast lane for capture.
 - **Development servers:** A second persistent Ghostty tab, arranged in project rows with terminal splits.
 - **Zed:** My code editor. I use one window and switch projects inside it instead of opening a window for every codebase.
-- **Dictation:** Hex with the local Parakeet model.
+- **Dictation:** Handy with the local Parakeet TDT 110M model, unloaded immediately after use.
 - **Browser:** Helium when I am working on frontend interfaces.
 
 ## Workflow log
@@ -61,7 +61,9 @@ Zed is fast enough that this does not create much friction. Keeping one window a
 
 #### Dictation and the browser
 
-Hex is my dictation app. It uses the local Parakeet model, which lets me get thoughts into the workflow without stopping to type everything out.
+I used Hex for dictation for a while, with its local Parakeet model. It was useful, but it could be buggy and its model choices were not flexible enough for an 8 GB MacBook. The Parakeet TDT 0.6B model it suggested used roughly 2.5 to 3 GB of memory, which felt excessive for dictation.
+
+I switched to Handy, which now feels much more polished than when I first tried it. It lets me choose smaller models, and I settled on Parakeet TDT 110M after trying Moonshine Base, Moonshine Tiny, and Canary-180M-Flash. Canary was small at around 200 MB but did not work well for me. Handy also lets me unload the model immediately after use, instead of keeping it loaded for the default five minutes, so I only pay the memory cost while dictating. The 110M model is good most of the time; the misses are usually software names or other proper nouns.
 
 When I am doing frontend work, Helium is usually the only other window I need. The browser, Zed, and Ghostty cover most of the loop: seeing the result, changing the code, and working with the agent or the development server.
 
