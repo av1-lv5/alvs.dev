@@ -76,6 +76,64 @@ const ogImage = getGeneratedOgImage("notes", note.id);
       }, 2000);
     });
   });
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  document
+    .querySelectorAll<HTMLDetailsElement>("details.note-disclosure")
+    .forEach((details) => {
+      const summary = details.querySelector("summary");
+      if (!summary) return;
+
+      const content = document.createElement("div");
+      content.className = "disclosure-content";
+      Array.from(details.children)
+        .filter((child) => child !== summary)
+        .forEach((child) => content.appendChild(child));
+      details.appendChild(content);
+
+      if (prefersReducedMotion) return;
+
+      let animating = false;
+      summary.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (animating) return;
+
+        animating = true;
+        details.style.height = `${details.offsetHeight}px`;
+
+        if (details.open) {
+          requestAnimationFrame(() => {
+            details.style.height = `${summary.offsetHeight}px`;
+          });
+
+          const finishClosing = (transitionEvent: TransitionEvent) => {
+            if (transitionEvent.propertyName !== "height") return;
+            details.open = false;
+            details.style.height = "";
+            animating = false;
+            details.removeEventListener("transitionend", finishClosing);
+          };
+          details.addEventListener("transitionend", finishClosing);
+          return;
+        }
+
+        details.open = true;
+        requestAnimationFrame(() => {
+          details.style.height = `${details.scrollHeight}px`;
+        });
+
+        const finishOpening = (transitionEvent: TransitionEvent) => {
+          if (transitionEvent.propertyName !== "height") return;
+          details.style.height = "";
+          animating = false;
+          details.removeEventListener("transitionend", finishOpening);
+        };
+        details.addEventListener("transitionend", finishOpening);
+      });
+    });
 </script>
 
 <style>
@@ -128,6 +186,92 @@ const ogImage = getGeneratedOgImage("notes", note.id);
     display: flex;
     align-items: center;
   }
+
+  /* Reusable disclosure pattern for long note sections. */
+  .note-content :global(details.note-disclosure) {
+    margin: 0 0 0.75rem;
+    border: 1px solid var(--border-muted);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: color-mix(in srgb, var(--bg-soft) 32%, transparent);
+    transition: height 180ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: height;
+  }
+
+  .note-content :global(h2#workflow-log) {
+    margin-top: 3.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .note-content :global(details.note-disclosure > summary) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 2.75rem;
+    padding: 0.55rem 1rem;
+    color: var(--text);
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .note-content :global(details.note-disclosure > summary::-webkit-details-marker) {
+    display: none;
+  }
+
+  .note-content :global(details.note-disclosure > summary::after) {
+    content: "+";
+    color: var(--text-light);
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+
+  .note-content :global(details.note-disclosure[open] > summary) {
+    border-bottom: 1px solid var(--border-muted);
+  }
+
+  .note-content :global(details.note-disclosure[open] > summary::after) {
+    content: "−";
+  }
+
+  .note-content :global(details.note-disclosure[open] > .disclosure-content) {
+    margin-inline: 1rem;
+  }
+
+  .note-content :global(
+      details.note-disclosure[open] > .disclosure-content > h4:first-of-type
+    ) {
+    margin-top: 1.25rem;
+  }
+
+  .note-content :global(details.note-disclosure[open] > .disclosure-content > h4) {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .note-content :global(
+      details.note-disclosure[open] > .disclosure-content > :last-child
+    ) {
+    margin-bottom: 1rem;
+  }
+
+  .note-content :global(details.note-disclosure + p:last-child) {
+    margin-top: 1.5rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .note-content :global(details.note-disclosure > summary:hover) {
+      background: var(--bg-soft);
+    }
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .note-content :global(.copy-btn:hover) {
       opacity: 0.8;

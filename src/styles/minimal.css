@@ -87,7 +87,7 @@ html {
 .ext-arrow svg,
 svg.ext-arrow {
   vertical-align: -0.125em;
-  margin-inline-start: 0.25em;
+  margin-inline-start: 0;
 }
 
 svg.ext-arrow--tight,
