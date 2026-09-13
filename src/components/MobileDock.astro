@@ -259,7 +259,10 @@ const pages = getSitePages();
     update("");
     document.body.style.overflow = "hidden";
     updateViewportOffset();
-    requestAnimationFrame(() => input?.focus());
+    // Keep the panel open without focusing the input. On mobile, focusing a
+    // text input immediately opens the keyboard and causes an avoidable
+    // layout shift. The user can tap the input when they are ready to search.
+    requestAnimationFrame(() => backBtn?.focus({ preventScroll: true }));
   }
 
   function collapse() {
