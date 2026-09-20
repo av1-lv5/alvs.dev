@@ -1,71 +1,63 @@
 ---
-title: "Words are the first draft of the code"
+title: "Why I Keep Product Decisions in Markdown"
 tags: ["process", "writing", "ai"]
 publishedAt: "2026-08-03"
 draft: false
 ---
 
-_A folder of markdown next to the code, where the thinking happens before the code does._
+_A small folder of notes next to the code, mostly because I got tired of forgetting why I had made decisions._
 
-Next to the code for Orbit, my budgeting app, there is a folder with markdown files. It has more words in it than some of the source files have lines. Decisions, feature specs, a competitor teardown, an audit tracker, a few documents that are really just me arguing with myself. A lot of the thinking ends up there before it ends up in code.
+Next to the code for Orbit, my budgeting app, there is a folder of Markdown files. It contains decisions, feature proposals, a competitor teardown, an audit tracker, and a few documents that are mostly me arguing with myself. It is not a framework or a particularly original process. It is just where I write things down before I build them.
 
-I didn't plan this folder. It grew because I kept hitting the same wall: I'd make a hard call on a Tuesday, and a month later I could remember the choice but not the reasoning behind it. So I'd re-open the question, re-argue it, and land in the same place, having spent an evening re-deriving something I already knew. I build Orbit solo, so there's no teammate holding that context for me, the files stand in for the colleague I'd otherwise turn to and ask why we did it this way. Writing it down once was cheaper.
+I did not plan the folder. It grew after I kept making a decision on a Tuesday, forgetting the reasoning by the next month, and spending an evening reconsidering the same question. I build Orbit alone, so there is no teammate I can ask, "Why did we do it this way?" The notes are a rough substitute for that conversation. Writing the answer down once is cheaper than repeatedly reconstructing it.
 
-Then a second thing happened. I started building with an AI in the loop, and the quality of what it produced was capped by the quality of what I could articulate. A vague prompt got vague code. The same documents that were saving me from myself turned out to be the best possible context to hand a model. The folder has two readers now: a future version of me, and whatever LLM I'm pairing with that day. Both need the reasoning, not just the result.
+The folder became more useful once I started building with an AI in the loop. A vague request usually produced vague work. The notes gave me somewhere to work out the actual request before turning it into a prompt. They also gave the model more useful context than a list of isolated instructions: not just what I wanted, but why some obvious alternatives were off the table.
 
-## A log of the decisions that took thought
+## Decisions worth remembering
 
-The most important file is `decisions.md`, a running log of the calls that took real thought. The format is deliberate:
+The most useful file is `decisions.md`, a running log of decisions that took real thought. Each entry has four parts:
 
 - **Decision**: what I chose
 - **Context**: the situation that forced it
 - **Rejected**: the alternatives, and why not
 - **Status**: Active, Superseded, or Revisit-if
 
-The `Rejected` section is the part I lean on most. Writing down what I chose is easy; what I lose track of is what I decided _against_, and why the tempting alternative didn't win.
+The `Rejected` section is the part I use most. Writing down what I chose is easy. What I forget is what I considered and why the tempting alternative did not win.
 
-An example. Users overspend, and the obvious request is "let me just add a bit more to my budget this month." Every budgeting app has a top-up button. I don't, and the entry says why: if you can bump the number whenever you exceed it, the number stops meaning anything. It becomes a thing you adjust to feel okay rather than a constraint that changes your behavior. That entry has saved me from re-litigating top-ups at least three times, because the reasoning is sitting there with the alternatives already knocked down.
+One example is the question of whether users should be able to add more money to a budget after overspending. It is an obvious feature, and many budgeting apps have a top-up button. Orbit does not. The decision entry says that if the number can be increased whenever it becomes uncomfortable, it stops functioning as a constraint. It becomes a number adjusted to make the current month feel better.
 
-The rule I hold myself to: if a decision is later reversed, I don't delete it. I mark it `Superseded` and write a new entry pointing back. The trail is the point. Deleting the old reasoning throws away the record of why I used to think differently.
+That entry has stopped me from reopening the same debate several times. If I eventually change the decision, I will mark the old entry `Superseded` and link to the new one instead of deleting it. The old reasoning is still useful, even when it is no longer current.
 
-## Features start as words, not as tickets
+## Before the code
 
-An idea doesn't go straight into code. It moves through three stages, each a different file at a higher resolution than the last.
+Features usually pass through three increasingly specific forms.
 
-**Words first.** `ideas.md` is loose, plain-English sketches. "If a user has a goal, buy something next month for X, show them how much to save today." No schema, no components. Just the shape of the thing in a couple of sentences. Most ideas die here, which is what this stage is for. Over time it becomes a catch-all for every product idea I have.
+**An idea.** `ideas.md` contains loose sketches in plain English. For example: “If a user wants to buy something next month, show how much they need to save today.” There are no schemas or components yet. Most ideas stop here, which is useful. It is cheaper to abandon a sentence than a half-built feature.
 
-**Then a proposal.** When an idea turns out to be worth pursuing, it graduates to a doc in `features/proposed`. This is where the arguing happens. The goals doc is where I worked out that a goal is a wish funded entirely by redirected underspend, never a deposit and never linked to income. That sounds like a small distinction until you notice the tempting version, a balance you top up, turns a budgeting app into a savings account, which is a different product.
+**A proposal.** An idea that survives gets a document in `features/proposed`. This is where I work through its boundaries. For example, I decided that a goal in Orbit is funded by redirected underspending, not by a deposit and not by an income stream. The distinction sounds small, but a top-up balance would turn the feature into part of a savings account. That is a different product.
 
-**Then a task.** Only when the what and the why are settled does it become a file in `tasks/`. If there are still open product questions, it isn't a task yet, it's still a proposal. And task files get deleted the moment the work is done. They're scaffolding, not history. The history lives in the decision log and in `features/` itself: once a feature ships, its doc graduates out of `features/proposed` into the living record of how that feature actually works, the files involved, the flow, the conditions, the architecture around it.
+**A task.** Once the product questions are settled, the work becomes a file in `tasks/`. If I am still deciding what the feature should do, it is not a task yet. Task files are temporary scaffolding and can be deleted when the work is finished. The proposal and decision log hold the parts that are worth keeping.
 
-Commitment goes up at each step. A sketch costs nothing, a proposal costs an argument, a task is a commitment to build. I don't want to discover an unresolved product question halfway through writing code, so I try to resolve it on the page first.
+The point is not to make every change ceremonial. It is to catch unresolved product questions before they become implementation details.
 
-## An issue tracker that is also a document
+## Other notes
 
-Every so often I run a wide audit, code and security and reliability, and the findings go into `codebase-improvement-tracker.md`. It reads like a bug tracker: each finding has a status (`NOT STARTED`, `IN PROGRESS`, `FIXED`, `WONT FIX`), a severity, the exact files, the fix, and crucially an acceptance-criteria line. Not "fix the RLS policy" but "two-user tests reject cross-user inserts for expenses and limit history." When a finding doesn't have a testable definition of done, I've noticed it tends to just sit there instead of getting fixed.
+I also keep a codebase improvement tracker. It records audit findings, their severity, affected files, status, and an acceptance criterion. “Fix the RLS policy” is easy to leave unfinished. “Two-user tests reject cross-user inserts for expenses and limit history” gives me something I can verify.
 
-`WONT FIX` is a real status, not a failure. If I consciously accept a risk, I write down why, so the next audit doesn't re-flag it as new.
+`WONT FIX` is a real status too. If I knowingly accept a risk, I record why, so the next audit does not rediscover the same decision.
 
-## I tell the AI how to work with me
+There are also a few files describing how I want an AI assistant to work with me. Pair mode asks for small changes and surfaced assumptions. Teach mode means I want an explanation or guidance instead of a completed solution. These are not sophisticated instructions, but naming the mode is quicker than restating the preference every time.
 
-There's a `modes/` folder. Telling an AI how to work with you isn't new, most tools have some version of it now, a rules file or a system prompt you set once. Mine are collaboration contracts I can invoke by name instead of re-explaining my preferences every session.
+The competitor notes serve a similar purpose. Writing down how another budgeting app handles a feature often makes Orbit's difference clearer. One competitor rolls an unspent budget into the next day, so spending less today gives you more tomorrow. Orbit redistributes the remaining balance across the days left in the cycle. I want the daily number to stay relatively stable, and I understood that choice better once I had described the alternative precisely.
 
-Pair mode says: write code, but narrate every significant decision before committing to it, make small moves, one function at a time, surface assumptions immediately. There's a teach mode and a guide mode for when I want to learn the thing myself rather than have it done for me. This is a learning project as much as a shipping one, so "do it for me" isn't always what I want, and being able to say "guide mode" and have the assistant know exactly what that means is worth the file it's written in.
+## Why keep doing it?
 
-## Teardowns of the apps nearest mine
+The benefit is modest but consistent.
 
-`competitor-analysis/` is a folder of long, honest teardowns of the apps closest to mine. Not marketing documents. They exist to sharpen my own decisions by forcing me to state, precisely, where I differ and why.
+Writing exposes the parts of an idea that are still vague. A sentence like “add goals” can survive in my head for weeks. Writing down what a goal can contain, how it is funded, and what it must not become forces the open questions into view.
 
-The best example is a single line in the analysis of the closest competitor. Their unspent budget rolls over to tomorrow specifically, so underspending today gives you a bigger number tomorrow. Mine redistributes the remaining balance evenly across all remaining days in the cycle. It's a subtle mechanical difference, and writing their version down is what made mine legible to me: I want the daily number to stay _stable_, not balloon after a frugal day. I couldn't articulate what made mine different until I'd written down, in detail, what it was different _from_.
+The notes also make delegation easier. An AI assistant can implement a clear decision, but it cannot reliably infer the product boundary I have not worked out. A proposal gives it context without pretending that context is a substitute for judgment.
 
-## Why words, and why it holds
+Most importantly, the notes preserve decisions that would otherwise disappear. When I ask “why did we not just do X?”, I can usually find the answer instead of starting the argument again.
 
-The through-line is that I do my thinking on the page, in sentences, before I do it in code. Three reasons it keeps paying off.
-
-Writing forces the decision. It's easy to hold a fuzzy intention in your head and believe it's a plan. The moment you have to write "here's what I chose and here's the alternative I rejected and why," the fuzzy bits stop hiding. Half my decision entries changed shape in the act of being written, because writing the rejected alternative down honestly revealed it wasn't actually worse.
-
-You can't delegate what you can't articulate. I didn't really notice this until I started building with an AI: the clearer my intent on the page, the better the result, and a half-formed intent got half-formed work back. Every hour spent making the reasoning legible for a future me turned out to be an hour spent making it legible for the assistant too.
-
-And memory is cheaper than re-derivation. The single question this whole folder answers is "why didn't we just do X?" Answering it once, in writing, next to the code, has probably saved me more time than anything else on this project. The code is downstream of the reasoning. I'd rather keep the reasoning than keep re-earning it.
-
-None of this is a system, and I wouldn't hand it to anyone as one. It's just a folder of markdown that grew because writing things down kept being worth it. If you're building with an AI in the loop, the thing that helped me most wasn't a better prompt, it was having a document for the prompt to read from.
+That is all the system is: a folder of Markdown that grew because writing things down kept being useful. It does not make the code better by itself. It gives the code a better chance of matching a decision I have actually thought through.
