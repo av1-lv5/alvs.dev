@@ -64,9 +64,9 @@ I was interested in Bash scripting but never got good at it. With AI I can now p
 
 ### The workshop
 
-Cursor is my primary editor. I've tried Zed, and Kiro. None of them grew on me, but I might revisit them later.
+Zed is my primary code editor. OpenChamber is my main development workspace for agent work, with its integrated browser handling frontend tasks, while I use the OpenCode TUI in Ghostty when I want a terminal-first session.
 
-Mostly Claude Code, but Codex pulls me over every now and then
+I have moved on from Claude Code. OpenCode is now my coding agent, through OpenChamber or its TUI.
 
 Figma for design and wireframing, Excalidraw when I need something faster, Mermaid when I'm thinking through logic in a dev context.
 

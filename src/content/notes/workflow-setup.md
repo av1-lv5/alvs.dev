@@ -10,33 +10,38 @@ _A running note on the tools and arrangements that have stuck. Not a recommendat
 
 ## Current setup
 
-At the moment, it is deliberately small: one Ghostty window, one Zed window, and, for frontend work, one Helium window.
+At the moment, most of my work happens in OpenChamber, with Zed and Ghostty alongside it. OpenChamber and the OpenCode TUI are the two interfaces I use for agent work.
 
-- **Ghostty:** My terminal workspace. The first tab is the main project (`Cmd+1`); other projects get tabs when useful.
-- **OpenCode:** My main coding agent. OpenCode v2 gives me one interface for switching between projects and sessions, so I no longer need a separate instance for every project.
-- **Codex:** A second home for frontend work and codebase refactors.
-- **Obsidian:** A separate OpenCode instance runs in a persistent Ghostty tab with my vault as its working folder. The Quick Terminal instance is my fast lane for capture.
-- **Development servers:** A persistent Ghostty tab arranged in project rows with terminal splits.
-- **Zed:** One editor window, with projects switched inside it.
+- **OpenChamber:** My main workspace for OpenCode. Its integrated browser handles frontend work, and I can inspect files, review code and changes, and make commits without leaving it.
+- **Zed:** My primary code editor.
+- **Ghostty:** Development servers run here, and I open the OpenCode TUI here when I want a terminal-first session. I do not keep a separate persistent TUI instance for every project.
+- **Obsidian:** A separate OpenCode instance runs in a persistent Ghostty tab with my vault as its working folder. Its Quick Terminal instance is my fast lane for capture.
 - **Dictation:** [Handy &#x2197;](https://handy.computer/) with the local [Parakeet TDT 110M &#x2197;](https://catalog.ngc.nvidia.com/orgs/nvidia/nemo/models/parakeet-tdt_ctc-110m/-) model, unloaded immediately after use.
-- **Browser:** Helium when I am working on frontend interfaces.
 
 ## Workflow log
 
 <details class="note-disclosure">
 <summary>September 2026</summary>
 
+#### OpenChamber is now the main workspace
+
+I moved the main agent loop into OpenChamber. Its integrated browser means frontend work, file review, code review, and making commits can all happen in the same place. Zed remains my primary code editor alongside it, while Ghostty continues to handle development servers and terminal-first work.
+
+The OpenCode TUI is available when I want a terminal-first session. I start it from Ghostty rather than keeping one instance per project. The separate Obsidian OpenCode instance is the intentional persistent exception and continues to run in its own Ghostty quick terminal.
+
 #### The quick terminal capture loop
 
 Ghostty's Quick Terminal gave the Obsidian OpenCode session a faster front door. I press <code>Cmd + `</code>, speak, and the agent sends the thought to Todoist, the right note, or a journal entry. I wrote about it here: [Just blabber, and it lands where it should](/notes/just-blabber-and-it-lands).
 
-#### One OpenCode instance is enough now
+#### One main OpenCode instance is enough now
 
-OpenCode v2 changed my main setup. Session switching existed before, but now projects and sessions are together in one interface. I no longer start a separate instance for every project. The Quick Terminal instance stays separate because capture benefits from its own context.
+OpenCode v2 changed my main setup. Session switching existed before, but now projects and sessions are together in one interface. I no longer start a separate instance for every project. The Obsidian and Quick Terminal instances stay separate because capture benefits from its own context.
 
-#### Codex became a place to stay for the whole loop
+#### OpenChamber replaced the Codex desktop app
 
-Codex moved from an occasional tool to one of the places I stay. I can annotate the UI or code, inspect files, make the change, and review the diff without leaving the same flow. That makes it especially good for frontend work and refactors.
+I used to reach for the Codex desktop app for frontend work and codebase refactors. I have switched to OpenChamber instead. It wraps OpenCode in a desktop application, so I can keep the same agent workflow while getting the richer interface that suits this kind of work better.
+
+The OpenCode TUI remains the other half of the setup. I use either OpenChamber or the TUI now; Codex is no longer part of my day-to-day workflow.
 
 </details>
 

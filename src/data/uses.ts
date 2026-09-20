@@ -30,10 +30,15 @@ export const uses: UseCategory[] = [
         link: "https://zed.dev/",
       },
       {
-        name: "Open Code",
+        name: "OpenCode",
         description:
-          "My coding agent of choice when I want to move fast and run multiple experiments in parallel.",
+          "My coding agent of choice. I use its TUI in Ghostty and OpenChamber as its desktop interface.",
         link: "https://opencode.ai/",
+      },
+      {
+        name: "OpenChamber",
+        description:
+          "My main workspace for OpenCode, with an integrated browser for frontend work and a complete loop for reviewing files, code, and commits.",
       },
       {
         name: "AI Models",
