@@ -32,23 +32,18 @@ export const uses: UseCategory[] = [
       {
         name: "OpenCode",
         description:
-          "My coding agent of choice. I use its TUI in Ghostty and OpenChamber as its desktop interface.",
+          "My coding agent of choice. I use TUI and OpenChamber for GUI.",
         link: "https://opencode.ai/",
       },
       {
         name: "OpenChamber",
         description:
-          "My main workspace for OpenCode, with an integrated browser for frontend work and a complete loop for reviewing files, code, and commits.",
-      },
-      {
-        name: "AI Models",
-        description:
-          "I've been using Claude models for a long time, Sonnet being the default. Since switching to OpenCode, I use the open models GLM 5.2 for UI, DeepSeek v4 Flash for text generation, and Kimi K2.7 for planning, alongside GPT 5.6 Terra and Luna.",
+          "My main workspace, with an integrated browser and a complete loop for reviewing files, code, and commits.",
       },
       {
         name: "Ghostty",
         description:
-          "Not a big terminal user, but for the little work I do on it, Ghostty fits my workflows better than anything else I've tried.",
+          "Not a big terminal user, but for the little work I do on it, Ghostty fits my workflows better.",
         link: "https://ghostty.org/",
       },
       {
