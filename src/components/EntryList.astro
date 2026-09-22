@@ -1,0 +1,101 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+  entries: Array<CollectionEntry<"notes"> | CollectionEntry<"workflow">>;
+  collection: "notes" | "workflow";
+};
+
+const { entries, collection } = Astro.props;
+
+function entryDate(
+  entry: CollectionEntry<"notes"> | CollectionEntry<"workflow">,
+) {
+  if (collection === "notes") {
+    return entry.data.updatedAt ? `Updated ${entry.data.updatedAt}` : undefined;
+  }
+
+  return entry.data.publishedAt;
+}
+---
+
+<div class="entry-list-shell">
+  <ul class="entry-list">
+    {
+      entries.map((entry) => {
+        const date = entryDate(entry);
+
+        return (
+          <li class="entry-item">
+            <a class="entry-link" href={`/${collection}/${entry.id}`}>
+              {entry.data.title}
+            </a>
+            <div class:list={["entry-meta", `${collection}-meta`]}>
+              {entry.data.draft && <span class="draft-tag">Draft</span>}
+              {date && <time datetime={entry.data.publishedAt}>{date}</time>}
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>
+
+<style>
+  .entry-list {
+    padding: 0;
+    list-style: none;
+  }
+
+  .entry-item {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    margin: 0;
+    padding: 0.75rem 0;
+  }
+
+  .entry-item + .entry-item {
+    border-top: 1px solid var(--divider-neutral);
+  }
+
+  .entry-link {
+    min-width: 0;
+  }
+
+  .entry-meta {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.6rem;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .workflow-meta {
+    color: var(--text-light);
+    font: 0.7rem var(--mono);
+  }
+
+  .notes-meta {
+    font-size: 0.7rem;
+    opacity: 0.4;
+  }
+
+  .draft-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    opacity: 0.4;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 640px) {
+    .entry-item {
+      display: block;
+    }
+
+    .entry-meta {
+      margin-top: 0.35rem;
+      margin-left: 0;
+    }
+  }
+</style>

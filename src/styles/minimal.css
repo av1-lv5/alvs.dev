@@ -10,6 +10,7 @@
   --text-light: hsl(222, 9%, 43%);
   --border: hsl(220, 20%, 90%);
   --border-muted: hsl(220, 15%, 90%);
+  --divider-neutral: hsl(0, 0%, 93%);
   --accent: hsl(220, 83%, 53%);
   --accent-hover: hsl(224, 76%, 48%);
   --link-visited: hsl(263, 70%, 50%);
@@ -37,6 +38,7 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --divider-neutral: hsl(0, 0%, 8%);
 }
 
 :root[data-theme="light"] {
@@ -59,6 +61,7 @@
     --text-light: hsl(220, 3%, 55%);
     --border: hsl(220, 20%, 10%);
     --border-muted: hsla(220, 15%, 10%);
+    --divider-neutral: hsl(0, 0%, 8%);
     --accent: hsl(220, 91%, 60%);
     --accent-hover: hsl(210, 94%, 68%);
     --link-visited: hsl(255, 92%, 76%);

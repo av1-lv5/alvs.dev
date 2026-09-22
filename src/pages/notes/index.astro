@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 
 // layout
 import PageLayout from "@layouts/PageLayout.astro";
+import EntryList from "@components/EntryList.astro";
 
 // fetching notes to display; drafts are shown in dev only
 const allNotes = (
@@ -27,46 +28,6 @@ const allNotes = (
       may be unfinished, unpolished. I write to record my thoughts, ideas and
       opinions.
     </p>
-    <ul>
-      {
-        allNotes.map((note) => {
-          return (
-            <li>
-              <a href={`/notes/${note.id}`}>{note.data.title}</a>
-              {note.data.draft && <span class="draft-tag">draft</span>}
-              {note.data.updatedAt && (
-                <span class="updated-at">Updated {note.data.updatedAt}</span>
-              )}
-            </li>
-          );
-        })
-      }
-    </ul>
+    <EntryList entries={allNotes} collection="notes" />
   </section>
 </PageLayout>
-
-<style>
-  ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  li {
-    display: flex;
-    padding-left: 0;
-    align-items: baseline;
-  }
-  .updated-at {
-    font-size: 0.7rem;
-    opacity: 0.4;
-    flex-shrink: 0;
-    margin-left: 1rem;
-  }
-  .draft-tag {
-    font-size: 0.7rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    opacity: 0.4;
-    flex-shrink: 0;
-    margin-left: 0.6rem;
-  }
-</style>
