@@ -8,6 +8,7 @@ import MobileDock from "@components/MobileDock.astro";
 import CommandPalette from "@components/CommandPalette.astro";
 import PixelStrip from "@components/PixelStrip.astro";
 import BaseHead from "@components/BaseHead.astro";
+import { Agentation } from "agentation";
 // import "@fontsource-variable/space-grotesk";
 import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
@@ -37,6 +38,7 @@ const {
 } = Astro.props;
 
 const fullTitle = `${pageTabTitle} • ${categoryTabTitle}`;
+const isDev = import.meta.env.DEV;
 ---
 
 <!doctype html>
@@ -81,5 +83,6 @@ const fullTitle = `${pageTabTitle} • ${categoryTabTitle}`;
     <Footer />
     {showNav && <MobileDock />}
     {showNav && <CommandPalette />}
+    {isDev && <Agentation client:only="react" />}
   </body>
 </html>

@@ -6,6 +6,7 @@ import rehypeExternalArrow from "./src/utils/rehype-external-arrow.mjs";
 import icon from "astro-icon";
 
 import mdx from "@astrojs/mdx";
+import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
@@ -33,7 +34,7 @@ export default defineConfig({
       },
     },
   },
-  integrations: [icon(), mdx()],
+  integrations: [icon(), mdx(), react()],
   site: "https://alvs.dev",
   vite: {
     build: {

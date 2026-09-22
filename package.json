@@ -31,11 +31,15 @@
     "sharp": "^0.33.3"
   },
   "devDependencies": {
+    "@astrojs/react": "^6.0.6",
     "@iconify-json/lucide": "^1.2.87",
     "@iconify-json/simple-icons": "^1.2.65",
+    "agentation": "^3.1.1",
     "gray-matter": "^4.0.3",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "rehype-external-links": "^3.0.0",
     "satori": "^0.29.0",
     "typescript": "^5.9.3"
