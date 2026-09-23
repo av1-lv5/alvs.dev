@@ -1,6 +1,5 @@
 ---
 title: "Why I Keep Product Decisions in Markdown"
-tags: ["process", "writing", "ai"]
 publishedAt: "2026-08-03"
 draft: false
 ---
