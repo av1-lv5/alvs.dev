@@ -47,28 +47,43 @@ import { Icon } from "astro-icon/components";
 
   updateThemeControl(getTheme());
 
+  let isThemeSwitching = false;
+
   toggle?.addEventListener("click", async () => {
-    await playSound(switchOffSound.dataUri, { volume: 0.04 });
-    const currentTheme = getTheme();
-    const nextTheme: Theme =
-      currentTheme === "system"
-        ? "light"
-        : currentTheme === "light"
-          ? "dark"
-          : "system";
+    if (isThemeSwitching) return;
+    isThemeSwitching = true;
 
-    if (!("startViewTransition" in document)) {
-      setTheme(nextTheme);
-      return;
+    try {
+      // Sound is best-effort; it should not delay or race the theme update.
+      void playSound(switchOffSound.dataUri, { volume: 0.04 }).catch(() => {});
+
+      const currentTheme = getTheme();
+      const nextTheme: Theme =
+        currentTheme === "system"
+          ? "light"
+          : currentTheme === "light"
+            ? "dark"
+            : "system";
+
+      if (!("startViewTransition" in document)) {
+        setTheme(nextTheme);
+        return;
+      }
+
+      const root = document.documentElement;
+      root.classList.add("theme-transitioning");
+      try {
+        const transition = (document as any).startViewTransition(() => {
+          setTheme(nextTheme);
+        });
+        // A browser may abort a view transition; still release the click lock.
+        await transition.finished.catch(() => {});
+      } finally {
+        root.classList.remove("theme-transitioning");
+      }
+    } finally {
+      isThemeSwitching = false;
     }
-
-    document.documentElement.classList.add("theme-transitioning");
-    const transition = (document as any).startViewTransition(() => {
-      setTheme(nextTheme);
-    });
-    transition.finished.finally(() => {
-      document.documentElement.classList.remove("theme-transitioning");
-    });
   });
 </script>
 

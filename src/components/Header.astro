@@ -225,6 +225,10 @@ const pathName = Astro.url.pathname;
     font: inherit;
   }
 
+  :global(html.theme-transitioning) .cmdk-trigger {
+    transition-property: color;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .cmdk-trigger:hover {
       border-color: var(--text-muted);

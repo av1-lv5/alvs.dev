@@ -77,6 +77,10 @@ const pages = getSitePages();
     createResultLink,
     type SitePage,
   } from "@utils/pageSearch";
+  import {
+    commandActions,
+    type CommandAction as CommandActionData,
+  } from "@data/commandActions";
 
   const cmdk = document.getElementById("cmdk");
   const panel = cmdk?.querySelector(".cmdk-panel");
@@ -92,16 +96,66 @@ const pages = getSitePages();
     document.getElementById("cmdk-data")?.textContent || "[]",
   );
 
+  type CommandAction = SitePage & {
+    command: CommandActionData["id"];
+    icon: CommandActionData["icon"];
+  };
+  const actions: CommandAction[] = commandActions.map((action) => ({
+    title: action.label,
+    path: `#${action.id}`,
+    description: action.description,
+    category: "Actions",
+    keywords: action.keywords,
+    command: action.id,
+    icon: action.icon,
+  }));
+  const paletteEntries: (SitePage | CommandAction)[] = [...pages, ...actions];
+
   let activeIndex = -1;
   let lastFocused: HTMLElement | null = null;
 
   // Wrap the shared link builder with the ARIA option semantics the
   // combobox/listbox pattern needs (id, role, selection, hover sync).
-  function makeResultLink(entry: SitePage, index: number) {
+  function makeResultLink(entry: SitePage | CommandAction, index: number) {
     const link = createResultLink(entry, "cmdk");
     link.id = `cmdk-option-${index}`;
     link.setAttribute("role", "option");
     link.setAttribute("aria-selected", "false");
+    if ("command" in entry) {
+      link.dataset.command = entry.command;
+      link.classList.add("cmdk-result-link--action");
+
+      const themeToggle = document.getElementById("theme-toggle");
+      const visibleThemeIcon =
+        entry.icon === "theme"
+          ? Array.from(themeToggle?.querySelectorAll("svg") ?? []).find(
+              (svg) => getComputedStyle(svg).display !== "none",
+            )
+          : undefined;
+      const icon = visibleThemeIcon?.cloneNode(true) as
+        | SVGSVGElement
+        | undefined;
+      const title = link.querySelector(".cmdk-result-title");
+      const description = link.querySelector(".cmdk-result-desc");
+      if (icon && title && description) {
+        icon.classList.remove("sun-icon", "moon-icon", "system-icon");
+        icon.classList.add("cmdk-action-icon");
+        icon.setAttribute("aria-hidden", "true");
+        icon.setAttribute("focusable", "false");
+        const copy = document.createElement("span");
+        copy.className = "cmdk-action-copy";
+        copy.append(title, description);
+        link.replaceChildren(copy, icon);
+      }
+
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        close();
+        if (entry.command === "toggle-theme") {
+          document.getElementById("theme-toggle")?.click();
+        }
+      });
+    }
     const activate = () => {
       setActive(getResultLinks().indexOf(link));
     };
@@ -138,7 +192,7 @@ const pages = getSitePages();
     if (input) input.setAttribute("aria-activedescendant", active?.id ?? "");
   }
 
-  function renderList(items: SitePage[]) {
+  function renderList(items: (SitePage | CommandAction)[]) {
     if (!resultsEl) return;
     resultsEl.classList.remove("is-flat");
     resultsEl.innerHTML = "";
@@ -163,7 +217,7 @@ const pages = getSitePages();
     }
   }
 
-  function renderFlatList(items: SitePage[]) {
+  function renderFlatList(items: (SitePage | CommandAction)[]) {
     if (!resultsEl) return;
     resultsEl.classList.add("is-flat");
     resultsEl.innerHTML = "";
@@ -177,13 +231,13 @@ const pages = getSitePages();
 
     if (!trimmed) {
       if (emptyEl) emptyEl.hidden = true;
-      renderList(pages);
+      renderList(paletteEntries);
     } else {
       // Fuzzy-ranked: title matches always outrank keyword matches,
       // which outrank description matches, which outrank category
       // matches (see rankPages). The palette reads top-to-bottom with
       // the input at the top, so the best match renders first.
-      const ranked = rankPages(pages, trimmed);
+      const ranked = rankPages(paletteEntries, trimmed);
       if (emptyEl) emptyEl.hidden = ranked.length > 0;
       renderFlatList(ranked);
     }
@@ -455,6 +509,25 @@ const pages = getSitePages();
     padding: 0.5rem 0.6rem;
     border-radius: 10px;
     transition: var(--transition);
+  }
+
+  :global(.cmdk-result-link--action) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+  }
+
+  :global(.cmdk-action-icon) {
+    flex: 0 0 18px;
+    color: var(--text-light);
+  }
+
+  :global(.cmdk-action-copy) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
   }
 
   :global(.cmdk-result-link.is-active) {
