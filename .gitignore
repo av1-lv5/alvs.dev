@@ -4,3 +4,4 @@ notes.md
 .env
 .env.*
 .cache
+/walkthroughs/
