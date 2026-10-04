@@ -116,6 +116,7 @@ export const radar: string[] = [
   "T3 Code",
   "lazygit",
   "herdr",
+  "GPUI",
 ];
 
 /**

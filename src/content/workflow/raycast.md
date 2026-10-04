@@ -1,7 +1,6 @@
 ---
 title: "Raycast as my command layer"
-tags: ["Raycast", "Productivity", "Workflow"]
-description: "The small Raycast habits that remove repeated typing, context switching, and busywork from my day."
+tags: ["Raycast"]
 draft: false
 publishedAt: "2026-09-23"
 ---

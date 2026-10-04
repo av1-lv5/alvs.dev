@@ -1,7 +1,7 @@
-/* ---- Shiki dual-theme (lab code blocks) ---- */
+/* ---- Shiki dual-theme (all syntax-highlighted code blocks) ---- */
 /* Light colors come from Shiki inline styles by default */
-[data-theme="dark"] .code-wrapper .astro-code,
-[data-theme="dark"] .code-wrapper .astro-code span {
+[data-theme="dark"] .astro-code,
+[data-theme="dark"] .astro-code span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
   font-style: var(--shiki-dark-font-style) !important;
@@ -9,8 +9,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .code-wrapper .astro-code,
-  :root:not([data-theme="light"]) .code-wrapper .astro-code span {
+  :root:not([data-theme="light"]) .astro-code,
+  :root:not([data-theme="light"]) .astro-code span {
     color: var(--shiki-dark) !important;
     background-color: var(--shiki-dark-bg) !important;
     font-style: var(--shiki-dark-font-style) !important;

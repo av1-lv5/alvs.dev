@@ -1,0 +1,62 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import BackInHistory from "@components/BackInHistory.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection(
+    "workflow",
+    ({ data }) => !data.draft || import.meta.env.DEV,
+  );
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+type Props = {
+  entry: CollectionEntry<"workflow">;
+};
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Layout
+  categoryTabTitle="Workflow"
+  pageTabTitle={entry.data.title}
+  showNav={true}
+  description={entry.data.description}
+>
+  <div class="sub-navigation">
+    <BackInHistory />
+    <div class="links-container">
+      <a href="/" class="nav-like">Home</a>
+      <a href="/workflow" class="nav-like">Workflow</a>
+    </div>
+  </div>
+  <h1>{entry.data.title}</h1>
+  <div class="note-content">
+    <Content />
+  </div>
+</Layout>
+
+<style>
+  .sub-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem 0;
+  }
+
+  .links-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  a.nav-like {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>

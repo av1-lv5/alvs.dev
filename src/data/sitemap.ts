@@ -132,6 +132,12 @@ export const sitemapSections: SitemapSection[] = [
         keywords: ["gear", "setup", "tools", "equipment", "daily software"],
       },
       {
+        href: "/workflow/",
+        label: "Workflow journal",
+        description: "Dated notes on the tools and setups I have tried.",
+        keywords: ["workflow", "journal", "log", "tool history", "experiments"],
+      },
+      {
         href: "/radar/",
         label: "Radar",
         description: "Every technology I know, want to learn, or am watching.",

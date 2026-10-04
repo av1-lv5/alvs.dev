@@ -1,10 +1,11 @@
 ---
 title: "Why I Keep Product Decisions in Markdown"
+tags: []
 publishedAt: "2026-08-03"
 draft: false
 ---
 
-_A small folder of notes next to the code, mostly because I got tired of forgetting why I had made decisions._
+_A small folder of markdown files next to the code, mostly because I got tired of forgetting why I had made decisions._
 
 Next to the code for Orbit, my budgeting app, there is a folder of Markdown files. It contains decisions, feature proposals, a competitor teardown, an audit tracker, and a few documents that are mostly me arguing with myself. It is not a framework or a particularly original process. It is just where I write things down before I build them.
 

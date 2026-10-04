@@ -18,6 +18,11 @@ const notesCollection = defineCollection({
   schema: z.object(noteSchema),
 });
 
+const workflowCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/workflow" }),
+  schema: z.object(noteSchema),
+});
+
 const booksCollection = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/books" }),
   schema: z.object(bookSchema),
@@ -31,6 +36,7 @@ const labCollection = defineCollection({
 export const collections = {
   projects: projectsCollection,
   notes: notesCollection,
+  workflow: workflowCollection,
   books: booksCollection,
   lab: labCollection,
 };

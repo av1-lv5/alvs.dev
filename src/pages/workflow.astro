@@ -1,0 +1,28 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "@layouts/PageLayout.astro";
+import EntryList from "@components/EntryList.astro";
+
+const entries = (
+  await getCollection("workflow", ({ data }) => {
+    return !data.draft || import.meta.env.DEV;
+  })
+).sort((a, b) =>
+  (b.data.publishedAt ?? "").localeCompare(a.data.publishedAt ?? ""),
+);
+---
+
+<PageLayout
+  tabTitle="Workflow journal"
+  description="Notes on the tools, setups, and habits that shape how I work."
+>
+  <section class="hero">
+    <h1>Workflow journal</h1>
+    <p class="hero-text">
+      Notes on the tools, setups, and habits that shape how I work. This is a
+      record of things I have tried, changed, and kept.
+    </p>
+
+    <EntryList entries={entries} collection="workflow" />
+  </section>
+</PageLayout>
