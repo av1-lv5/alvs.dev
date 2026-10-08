@@ -4,6 +4,7 @@ import AvRunner from "@components/AvRunner.astro";
 ---
 
 <footer aria-label="footer">
+  <p class="footer-greeting">Hope you're having a lovely day.</p>
   <div class="footer-container">
     <div class="footer-left">
       <p>
@@ -28,7 +29,55 @@ import AvRunner from "@components/AvRunner.astro";
   <AvRunner />
 </footer>
 
+<script>
+  const greetingEl = document.querySelector(".footer-greeting");
+
+  function updateGreeting() {
+    if (!greetingEl) return;
+
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = String(now.getMinutes()).padStart(2, "0");
+    const time = `${hour % 12 || 12}:${minute}${hour < 12 ? "am" : "pm"}`;
+    const minutesSinceMidnight = hour * 60 + now.getMinutes();
+    let greeting: string;
+
+    if (minutesSinceMidnight < 4 * 60 || minutesSinceMidnight >= 22 * 60) {
+      greeting = "Hope you're having a peaceful night.";
+    } else if (minutesSinceMidnight < 10 * 60 + 30) {
+      greeting = "Good morning.";
+    } else if (minutesSinceMidnight < 12 * 60) {
+      greeting = "Have a nice day.";
+    } else if (minutesSinceMidnight < 14 * 60 + 30) {
+      greeting = "Good afternoon.";
+    } else if (minutesSinceMidnight < 16 * 60) {
+      greeting = "Hope you're having a nice day.";
+    } else if (minutesSinceMidnight < 18 * 60) {
+      greeting = "Good evening.";
+    } else {
+      greeting = "Hope you're having a lovely evening.";
+    }
+
+    greetingEl.textContent = `It's ${time}. ${greeting}`;
+  }
+
+  updateGreeting();
+  window.setInterval(updateGreeting, 60_000);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) updateGreeting();
+  });
+</script>
+
 <style>
+  .footer-greeting {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.875rem;
+    font-style: italic;
+    text-align: left;
+    font-variant-numeric: tabular-nums;
+  }
+
   .footer-container {
     display: flex;
     align-items: center;
@@ -68,6 +117,10 @@ import AvRunner from "@components/AvRunner.astro";
   }
 
   @media (max-width: 768px) {
+    .footer-greeting {
+      text-align: center;
+    }
+
     .footer-left,
     .footer-right {
       display: flex;
