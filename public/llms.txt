@@ -34,7 +34,7 @@ The site is a hand-built Astro project with a classless-stylesheet foundation an
 * [Colophon](https://alvs.dev/colophon): How the site is built: stack, tooling, and open-source repo ([github.com/Av1-Lv5/alvs.dev](https://github.com/Av1-Lv5/alvs.dev)).
 * [Radar](https://alvs.dev/radar): A running list of technologies he uses or is tracking, with no status or expertise claims.
 * [Books](https://alvs.dev/books): What he has read.
-* [Music](https://alvs.dev/music), [Movies](https://alvs.dev/movies), [Podcasts](https://alvs.dev/podcasts): What he is listening to and watching.
+* [Movies](https://alvs.dev/movies), [Podcasts](https://alvs.dev/podcasts): What he is listening to and watching.
 * [Echoes](https://alvs.dev/echoes): Collected quotes and lines.
 * [Feeds](https://alvs.dev/feeds): RSS feeds he follows and ways to follow his activity.
 * [Guestbook](https://alvs.dev/guestbook): Visitors can leave a public message.

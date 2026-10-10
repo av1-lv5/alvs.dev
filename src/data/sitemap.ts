@@ -96,12 +96,13 @@ export const sitemapSections: SitemapSection[] = [
   {
     title: "Interests",
     items: [
-      {
-        href: "/music/",
-        label: "Music",
-        description: "What I've been listening to.",
-        keywords: ["songs", "listening", "playlists", "albums"],
-      },
+      // Keep Music as a ghost page until Spotify is available again.
+      // {
+      //   href: "/music/",
+      //   label: "Music",
+      //   description: "What I've been listening to.",
+      //   keywords: ["songs", "listening", "playlists", "albums"],
+      // },
       {
         href: "/movies/",
         label: "Movies",
