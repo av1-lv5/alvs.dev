@@ -8,6 +8,7 @@ export interface RecommendationItem {
 
 // TMDB IDs at https://www.themoviedb.org/
 export const recommendations: RecommendationItem[] = [
+  { tmdbId: 313101, type: "tv" }, // Musafir Cafe
   { tmdbId: 1443961, type: "movie" }, // Rao Bahadur
   { tmdbId: 61889, type: "tv" }, // Daredevil
   { tmdbId: 1007757, type: "movie" }, // Swapped

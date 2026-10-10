@@ -1,0 +1,152 @@
+---
+import { getCollection } from "astro:content";
+import PageLayout from "@layouts/PageLayout.astro";
+import TrackCard from "@components/TrackCard.astro";
+import MovieCard from "@components/MovieCard.astro";
+import PodcastCard from "@components/PodcastCard.astro";
+import BookCard from "@components/BookCard.astro";
+import { recommendations } from "@data/movies";
+import { podcasts } from "@data/podcasts";
+import { getTopTracks } from "@utils/spotify";
+import { getPodcastByItunesId } from "@utils/itunes";
+import {
+  getMovieById,
+  getShowById,
+  flushCache,
+  type TMDBMedia,
+} from "@utils/tmdb";
+
+const spotifyConfigured = Boolean(
+  import.meta.env.SPOTIFY_CLIENT_ID &&
+  import.meta.env.SPOTIFY_CLIENT_SECRET &&
+  import.meta.env.SPOTIFY_REFRESH_TOKEN,
+);
+
+const [books, tracks, mediaResults, podcastResults] = await Promise.all([
+  getCollection("books"),
+  spotifyConfigured ? getTopTracks(10).catch(() => []) : Promise.resolve([]),
+  Promise.all(
+    recommendations.map((item) =>
+      item.type === "movie"
+        ? getMovieById(item.tmdbId)
+        : getShowById(item.tmdbId),
+    ),
+  ),
+  Promise.all(
+    podcasts.map((podcast) => getPodcastByItunesId(podcast.itunesId)),
+  ),
+]);
+
+flushCache();
+
+const releaseKey = (media: TMDBMedia) =>
+  media.releaseDate || (media.year ? `${media.year}-00-00` : "");
+
+const movieItems = mediaResults
+  .filter((media): media is TMDBMedia => media !== null)
+  .sort((a, b) => releaseKey(b).localeCompare(releaseKey(a)));
+
+const podcastItems = podcasts
+  .map((podcast, i) => {
+    const itunes = podcastResults[i];
+    if (!itunes) return null;
+
+    return {
+      ...itunes,
+      description: podcast.description,
+      website: podcast.website,
+      youtube: podcast.youtube,
+      spotifyUrl: podcast.spotify,
+    };
+  })
+  .filter((item): item is NonNullable<typeof item> => item !== null);
+---
+
+<PageLayout
+  tabTitle="Taste"
+  description="A little of what I listen to, watch, and read."
+>
+  <section>
+    <h1>Taste</h1>
+    <p class="hero-text">A little of what I listen to, watch, and read.</p>
+  </section>
+
+  {
+    tracks.length > 0 && (
+      <section>
+        <h2>Music</h2>
+        <p>What's currently on repeat, straight from my Spotify.</p>
+        <div class="tracks-list">
+          {tracks.map((track, i) => (
+            <TrackCard track={track} rank={i + 1} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <section>
+    <h2>Movies</h2>
+    <p>Films and shows I've watched and think are worth your time.</p>
+    {
+      movieItems.length > 0 ? (
+        <div class="covers-grid">
+          {movieItems.map((media) => (
+            <MovieCard media={media} />
+          ))}
+        </div>
+      ) : (
+        <p>Movie details are unavailable right now.</p>
+      )
+    }
+  </section>
+
+  <section>
+    <h2>Podcasts</h2>
+    <p>Shows I actually listen to, not just subscribe to and forget.</p>
+    {
+      podcastItems.length > 0 ? (
+        <div class="podcast-list">
+          {podcastItems.map((item) => (
+            <PodcastCard {...item} />
+          ))}
+        </div>
+      ) : (
+        <p>Podcast details are unavailable right now.</p>
+      )
+    }
+  </section>
+
+  <section>
+    <h2>Books</h2>
+    <p>Books I've read. If something overlaps with your shelf, let's talk.</p>
+    <div class="covers-grid">
+      {books.map((book) => <BookCard book={book} />)}
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .covers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .tracks-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .podcast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 640px) {
+    .covers-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
