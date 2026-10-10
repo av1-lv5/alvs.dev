@@ -45,10 +45,16 @@ const hasMore = count ? allExperiences.length > count : false;
                 </div>
               </summary>
               <div class="points-body">
+                {exp.summary && <p class="summary">{exp.summary}</p>}
                 <div class="points-list">
                   {exp.points.map((point) => (
                     <div class="point-item">
-                      <span class="label">{point.label}</span>
+                      <div class="point-heading">
+                        <span class="label">{point.label}</span>
+                        {point.context && (
+                          <span class="point-context">{point.context}</span>
+                        )}
+                      </div>
                       <p class="description">{point.text}</p>
                       {point.href && (
                         <a href={point.href} class="point-link no-select">
@@ -78,10 +84,16 @@ const hasMore = count ? allExperiences.length > count : false;
                 </div>
                 <div class="period-pill">{exp.period}</div>
               </div>
+              {exp.summary && <p class="summary">{exp.summary}</p>}
               <div class="points-list">
                 {exp.points.map((point) => (
                   <div class="point-item">
-                    <span class="label">{point.label}</span>
+                    <div class="point-heading">
+                      <span class="label">{point.label}</span>
+                      {point.context && (
+                        <span class="point-context">{point.context}</span>
+                      )}
+                    </div>
                     <p class="description">{point.text}</p>
                   </div>
                 ))}
@@ -296,6 +308,14 @@ const hasMore = count ? allExperiences.length > count : false;
     margin-top: 1.25rem;
   }
 
+  .summary {
+    margin: 0 0 1.25rem;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    max-width: 80ch;
+  }
+
   .point-item {
     display: flex;
     flex-direction: column;
@@ -305,10 +325,21 @@ const hasMore = count ? allExperiences.length > count : false;
   .label {
     font-size: 0.8rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
     color: var(--text-light);
-    opacity: 0.8;
+  }
+
+  .point-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .point-context {
+    color: var(--text-light);
+    font-size: 0.68rem;
+    font-weight: 500;
+    opacity: 0.65;
   }
 
   .description {

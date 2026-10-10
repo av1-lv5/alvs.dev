@@ -1,18 +1,30 @@
 export const experiences = [
   {
-    company: "Independent",
-    role: "Frontend Engineer",
-    period: "Sep 2025 - Present",
-    location: "Bangalore",
+    company: "Independent · Product Development",
+    role: "Frontend Engineer · Building & Learning",
+    period: "Sep 2025 – Present",
+    summary:
+      "After 1acre, I stepped away from full-time employment to explore what it takes to build and ship complete products, beyond implementing interfaces. I'm using this time to deepen my engineering fundamentals, develop product judgment, and build things that real people use.",
     points: [
       {
         label: "Orbit",
-        text: "Building orbitbudget.com - no categories, no charts, just one number: your safe-to-spend today. Live with 100+ users, built solo end-to-end.",
+        context: "Own product",
+        text: "Building orbitbudget.com end-to-end, exploring PWAs, payments, analytics, performance, and distribution. Over 100 users so far.",
         href: "/projects/orbit",
       },
       {
-        label: "Modlix contract",
+        label: "Modlix",
+        context: "Contract",
         text: "3-month contract with Modlix (sitezump.ai), a Framer/Webflow-style site marketplace. Led 8 interns to ship 200+ site templates.",
+      },
+      {
+        label: "Custom ERP",
+        context: "Client project",
+        text: "Currently developing custom ERP software for a friend in the granite industry, working through real business requirements and workflows.",
+      },
+      {
+        label: "Engineering & AI workflows",
+        text: "Experimenting with agentic development workflows while strengthening the fundamentals needed to understand, validate, and maintain AI-generated code.",
       },
     ],
   },
