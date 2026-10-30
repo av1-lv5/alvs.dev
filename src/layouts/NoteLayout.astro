@@ -24,10 +24,9 @@ const ogImage = getGeneratedOgImage("notes", note.id);
   image={ogImage}
 >
   <div class="sub-navigation">
-    <BackInHistory />
+    <BackInHistory href="/notes" label="Notes" />
     <div class="links-container">
       <a href="/" class="nav-like">Home</a>
-      <a href="/notes" class="nav-like">Notes</a>
     </div>
   </div>
   <h1>{note.data.title}</h1>
@@ -219,7 +218,8 @@ const ogImage = getGeneratedOgImage("notes", note.id);
     list-style: none;
   }
 
-  .note-content :global(details.note-disclosure > summary::-webkit-details-marker) {
+  .note-content
+    :global(details.note-disclosure > summary::-webkit-details-marker) {
     display: none;
   }
 
@@ -243,20 +243,21 @@ const ogImage = getGeneratedOgImage("notes", note.id);
     margin-inline: 1rem;
   }
 
-  .note-content :global(
+  .note-content
+    :global(
       details.note-disclosure[open] > .disclosure-content > h4:first-of-type
     ) {
     margin-top: 1.25rem;
   }
 
-  .note-content :global(details.note-disclosure[open] > .disclosure-content > h4) {
+  .note-content
+    :global(details.note-disclosure[open] > .disclosure-content > h4) {
     font-size: 1rem;
     margin-bottom: 0.75rem;
   }
 
-  .note-content :global(
-      details.note-disclosure[open] > .disclosure-content > :last-child
-    ) {
+  .note-content
+    :global(details.note-disclosure[open] > .disclosure-content > :last-child) {
     margin-bottom: 1rem;
   }
 

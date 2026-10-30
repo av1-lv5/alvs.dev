@@ -45,14 +45,7 @@ const pages = getSitePages();
 <div class="dock-scrim" id="dock-scrim"></div>
 
 <div class="dock" id="dock" data-expanded="false">
-  <div
-    class="dock-panel"
-    id="dock-panel"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Search pages"
-    inert
-  >
+  <div class="dock-panel" id="dock-panel" inert>
     <div class="dock-panel-scroll" id="dock-panel-scroll">
       <div class="dock-results" id="dock-results"></div>
       <p class="dock-empty" id="dock-empty" hidden>No pages match that.</p>
@@ -253,6 +246,9 @@ const pages = getSitePages();
 
   function expand() {
     dock?.setAttribute("data-expanded", "true");
+    dock?.setAttribute("role", "dialog");
+    dock?.setAttribute("aria-modal", "true");
+    dock?.setAttribute("aria-label", "Search pages");
     scrim?.setAttribute("data-visible", "true");
     searchBtn?.setAttribute("aria-expanded", "true");
     panel?.removeAttribute("inert");
@@ -267,6 +263,9 @@ const pages = getSitePages();
 
   function collapse() {
     dock?.setAttribute("data-expanded", "false");
+    dock?.removeAttribute("role");
+    dock?.removeAttribute("aria-modal");
+    dock?.removeAttribute("aria-label");
     scrim?.setAttribute("data-visible", "false");
     searchBtn?.setAttribute("aria-expanded", "false");
     panel?.setAttribute("inert", "");

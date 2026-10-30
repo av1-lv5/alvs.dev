@@ -1,16 +1,20 @@
 ---
 import { Icon } from "astro-icon/components";
+interface Props {
+  href: string;
+  label: string;
+}
+const { href, label } = Astro.props;
 ---
 
-<a id="back-in-history" class="nav-like">
+<a
+  id="back-in-history"
+  class="nav-like"
+  href={href}
+  aria-label={`Back to ${label}`}
+>
   <Icon name={"lucide:arrow-left"} size={16} />
 </a>
-
-<script is:inline>
-  document
-    .getElementById("back-in-history")
-    .addEventListener("click", () => history.back());
-</script>
 
 <style>
   #back-in-history {

@@ -21,11 +21,11 @@ const ogImage = getGeneratedOgImage("pages", "home");
     <p>If you're exploring:</p>
 
     <ul>
-      <li>What I'm up to right now - <a href="/now">/now</a></li>
-      <li>A bit about who I am - <a href="/about">/about</a></li>
+      <li><a href="/projects">See what I've built</a></li>
+      <li><a href="/now">What I'm up to right now</a></li>
+      <li><a href="/about">A bit about who I am</a></li>
       <li>
-        Currently available for freelance or full-time -{" "}
-        <a href="/hire-me">/hire-me</a>
+        <a href="/hire-me">Work with me</a> — available for freelance or full-time
       </li>
     </ul>
 
@@ -43,14 +43,28 @@ const ogImage = getGeneratedOgImage("pages", "home");
       it provides a clear daily allowance that automatically adjusts to your
       goals and spendings.
     </p>
-    <a href="https://www.orbitbudget.com" target="_blank" class="orbit-link">
-      Visit orbitbudget.com
-      <Icon name="lucide:arrow-up-right" size={16} class="ext-arrow" />
-    </a>
+    <div class="orbit-actions">
+      <a href="/projects/orbit">Read the case study</a>
+      <a
+        href="https://www.orbitbudget.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="orbit-link"
+      >
+        Visit orbitbudget.com
+        <Icon name="lucide:arrow-up-right" size={16} class="ext-arrow" />
+      </a>
+    </div>
   </section>
 </PageLayout>
 
 <style>
+  .orbit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+  }
+
   .orbit-link {
     display: inline-flex;
     align-items: center;
