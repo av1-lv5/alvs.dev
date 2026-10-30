@@ -2,13 +2,37 @@
 import { Icon } from "astro-icon/components";
 ---
 
-<div class="av-runner" id="av-runner">
-  <canvas id="av-runner-canvas"></canvas>
-  <div class="av-runner-hud">
-    <span class="av-runner-hint" id="av-runner-hint">press space to play</span>
-    <span class="av-runner-score" id="av-runner-score"></span>
+<div class="av-runner" id="av-runner" role="region" aria-label="AV Runner game">
+  <canvas id="av-runner-canvas" aria-hidden="true"></canvas>
+  <button
+    class="av-runner-play"
+    id="av-runner-play"
+    aria-label="Play AV Runner"
+    aria-describedby="av-runner-instructions"></button>
+  <div class="av-runner-top" aria-hidden="true">
+    <span id="av-runner-result"></span>
+    <span id="av-runner-score"></span>
   </div>
-  <button class="av-runner-mute" id="av-runner-mute" aria-label="Toggle sound">
+  <div class="av-runner-hud">
+    <span class="av-runner-hint" id="av-runner-hint"
+      >Click or press Space to play</span
+    >
+  </div>
+  <span class="av-runner-sr" id="av-runner-instructions"
+    >Jump over obstacles. Press Space or Enter, or tap to jump. Press again
+    quickly to double jump.</span
+  >
+  <span
+    class="av-runner-sr"
+    id="av-runner-status"
+    role="status"
+    aria-live="polite"></span>
+  <button
+    class="av-runner-mute"
+    id="av-runner-mute"
+    aria-label="Mute sound"
+    aria-pressed="false"
+  >
     <Icon name="lucide:volume-2" class="icon-sound" size={13} />
     <Icon name="lucide:volume-x" class="icon-muted" size={13} />
   </button>
@@ -20,6 +44,7 @@ import { Icon } from "astro-icon/components";
     synthDoubleJump,
     synthDeath,
     synthUnmute,
+    synthBest,
     isMuted,
     setMuted,
   } from "@utils/sound/synth-engine.ts";
@@ -33,6 +58,29 @@ import { Icon } from "astro-icon/components";
 
   const hintEl = document.getElementById("av-runner-hint")!;
   const scoreEl = document.getElementById("av-runner-score")!;
+  const resultEl = document.getElementById("av-runner-result")!;
+  const statusEl = document.getElementById("av-runner-status")!;
+  const playBtn = document.getElementById(
+    "av-runner-play",
+  ) as HTMLButtonElement;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const touchHint = window.matchMedia("(pointer: coarse)");
+  const storage = {
+    get(key: string) {
+      try {
+        return localStorage.getItem(key);
+      } catch {
+        return null;
+      }
+    },
+    set(key: string, value: string) {
+      try {
+        localStorage.setItem(key, value);
+      } catch {
+        /* Storage is optional. */
+      }
+    },
+  };
 
   // Constants
   const CANVAS_H = 150;
@@ -83,11 +131,14 @@ import { Icon } from "astro-icon/components";
   type GameState = "idle" | "running" | "gameover";
   let state: GameState = "idle";
   let score = 0;
-  let bestScore = parseInt(localStorage.getItem("av-runner-best") || "0", 10);
+  let bestScore = Math.max(
+    0,
+    parseInt(storage.get("av-runner-best") || "0", 10) || 0,
+  );
   let speed = BASE_SPEED;
+  let distance = 0;
   let frameCount = 0;
   let lastTime = 0;
-  let focused = false;
 
   // Player
   let playerY = GROUND_Y;
@@ -97,6 +148,7 @@ import { Icon } from "astro-icon/components";
   let squashFrames = 0;
   let spinAngle = 0;
   let lastJumpTime = 0;
+  let bufferedJumpUntil = 0;
   let bobOffset = 0;
 
   // Obstacles
@@ -174,8 +226,9 @@ import { Icon } from "astro-icon/components";
 
     // Update hint for mobile
     if (state === "idle") {
-      hintEl.textContent =
-        window.innerWidth < 768 ? "tap to play" : "press space to play";
+      hintEl.textContent = touchHint.matches
+        ? "Tap to play"
+        : "Click to play · Tab + Space";
     }
   }
 
@@ -507,6 +560,7 @@ import { Icon } from "astro-icon/components";
 
   function reset() {
     score = 0;
+    distance = 0;
     speed = BASE_SPEED;
     playerY = GROUND_Y;
     playerVY = 0;
@@ -520,6 +574,9 @@ import { Icon } from "astro-icon/components";
     nextObstacleDistance =
       OBSTACLE_MIN_GAP + Math.random() * (OBSTACLE_MAX_GAP - OBSTACLE_MIN_GAP);
     frameCount = 0;
+    bufferedJumpUntil = 0;
+    resultEl.textContent = "";
+    scoreEl.textContent = "0m";
   }
 
   function jump() {
@@ -536,6 +593,8 @@ import { Icon } from "astro-icon/components";
       canDoubleJump = false;
       spawnJumpParticles();
       synthDoubleJump();
+    } else if (playerVY > 0) {
+      bufferedJumpUntil = now + 120;
     }
   }
 
@@ -543,13 +602,21 @@ import { Icon } from "astro-icon/components";
     if (state === "idle") {
       state = "running";
       reset();
-      hintEl.textContent = "";
+      hintEl.textContent = touchHint.matches
+        ? "Tap to jump · tap twice to double jump"
+        : "Space to jump · press twice to double jump";
+      playBtn.setAttribute("aria-label", "Jump");
+      statusEl.textContent = "Game started. Jump over the obstacles.";
       return;
     }
     if (state === "gameover") {
       state = "running";
       reset();
-      hintEl.textContent = "";
+      hintEl.textContent = touchHint.matches
+        ? "Tap to jump · tap twice to double jump"
+        : "Space to jump · press twice to double jump";
+      playBtn.setAttribute("aria-label", "Jump");
+      statusEl.textContent = "New game started.";
       return;
     }
     if (state === "running") {
@@ -567,7 +634,13 @@ import { Icon } from "astro-icon/components";
       BASE_SPEED +
         Math.floor(frameCount / SPEED_RAMP_INTERVAL) * SPEED_INCREMENT,
     );
-    score = Math.floor(frameCount * speed * 0.05);
+    distance += speed * dt * 0.05;
+    const nextScore = Math.floor(distance);
+    if (nextScore !== score) {
+      score = nextScore;
+      scoreEl.textContent = `${score}m`;
+    }
+    if (frameCount > 240) hintEl.textContent = "";
 
     // Player physics
     if (!onGround) {
@@ -582,6 +655,10 @@ import { Icon } from "astro-icon/components";
         canDoubleJump = true;
         squashFrames = 4;
         spinAngle = 0;
+        if (performance.now() <= bufferedJumpUntil) {
+          bufferedJumpUntil = 0;
+          jump();
+        }
       }
     } else {
       if (squashFrames > 0) squashFrames -= dt;
@@ -611,7 +688,7 @@ import { Icon } from "astro-icon/components";
         });
       }
       nextObstacleDistance =
-        OBSTACLE_MIN_GAP +
+        Math.max(OBSTACLE_MIN_GAP, speed * 48) +
         Math.random() * (OBSTACLE_MAX_GAP - OBSTACLE_MIN_GAP);
     }
 
@@ -654,15 +731,20 @@ import { Icon } from "astro-icon/components";
         // Game over
         state = "gameover";
         spawnDeathParticles();
-        synthDeath();
-        if (score > bestScore) {
+        const newBest = score > bestScore;
+        if (newBest) synthBest();
+        else synthDeath();
+        if (newBest) {
           bestScore = score;
-          localStorage.setItem("av-runner-best", String(bestScore));
+          storage.set("av-runner-best", String(bestScore));
         }
-        const isMobile = window.innerWidth < 768;
-        hintEl.textContent = isMobile
-          ? "tap to restart"
-          : "press space to restart";
+        resultEl.textContent = newBest ? "New best!" : "Nice run";
+        scoreEl.textContent = `${score}m · best ${bestScore}m`;
+        hintEl.textContent = touchHint.matches
+          ? "Tap to play again"
+          : "Click or press Space to play again";
+        playBtn.setAttribute("aria-label", "Play AV Runner again");
+        statusEl.textContent = `${newBest ? "New best! " : "Nice run. "}${score} meters. Best: ${bestScore} meters. Play again?`;
         break;
       }
     }
@@ -796,118 +878,87 @@ import { Icon } from "astro-icon/components";
         PLAYER_X,
         py - CUBE_SIZE * 0.5,
         CUBE_SIZE,
-        onGround ? 0 : spinAngle,
+        onGround || reducedMotion.matches ? 0 : spinAngle,
         squash,
       );
     }
 
     // Particles
     renderParticles();
-
-    // Score HUD
-    if (state === "running" || state === "gameover") {
-      ctx.fillStyle = colors.text;
-      ctx.font = `12px "Geist Mono Variable", monospace`;
-      ctx.textAlign = "right";
-      const scoreStr = String(score).padStart(4, "0") + "m";
-      ctx.fillText(scoreStr, w - 16, 24);
-
-      if (bestScore > 0) {
-        ctx.fillStyle = colors.textLight;
-        ctx.font = `10px "Geist Mono Variable", monospace`;
-        ctx.fillText(
-          `best: ${String(bestScore).padStart(4, "0")}m`,
-          w - 16,
-          38,
-        );
-      }
-
-      // Debug: speed display
-      ctx.fillStyle = colors.textLight;
-      ctx.font = `10px "Geist Mono Variable", monospace`;
-      ctx.textAlign = "left";
-      ctx.fillText(`spd: ${speed.toFixed(1)}`, 16, 24);
-    }
   }
 
   // Game Loop
-  let paused = false;
   let animId = 0;
+  let visible = false;
+  let accumulator = 0;
 
   function loop(time: number) {
-    if (paused) return;
-    // Compute dt normalized to 60fps (dt=1.0 at 60Hz, dt=2.0 at 120Hz, etc.)
-    // lastTime=0 is the sentinel for "first frame" — use dt=1 to avoid a spike
-    let dt = 1;
-    if (lastTime > 0) {
-      dt = Math.min((time - lastTime) / 16.667, 3);
-    }
+    animId = 0;
+    if (!visible || document.hidden) return;
+    const elapsed = lastTime ? Math.min(time - lastTime, 50) : 16.667;
     lastTime = time;
-
-    update(dt);
-    updateDotScroll(dt);
-    updateBgShapes(dt);
-    updateAmbientMotes(dt);
-    updateSpeedLines(dt);
+    accumulator += elapsed;
+    while (accumulator >= 16.667) {
+      update(1);
+      if (state === "gameover") updateParticles(1);
+      if (!reducedMotion.matches) {
+        updateDotScroll(1);
+        updateBgShapes(1);
+        updateAmbientMotes(1);
+        updateSpeedLines(1);
+      }
+      accumulator -= 16.667;
+    }
     render();
-    animId = requestAnimationFrame(loop);
-  }
-
-  animId = requestAnimationFrame(loop);
-
-  // Pause when tab hidden
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      paused = true;
-      cancelAnimationFrame(animId);
-    } else {
-      paused = false;
-      // Reset lastTime so the first frame after resume gets dt=1 instead of a
-      // huge spike from the time the tab was hidden
-      lastTime = 0;
+    if (!(
+      reducedMotion.matches &&
+      state !== "running" &&
+      particles.length === 0
+    )) {
       animId = requestAnimationFrame(loop);
     }
+  }
+
+  function syncAnimation() {
+    if (!visible || document.hidden) {
+      cancelAnimationFrame(animId);
+      animId = 0;
+      lastTime = 0;
+      accumulator = 0;
+    } else if (!animId) {
+      animId = requestAnimationFrame(loop);
+    }
+  }
+  const visibilityObserver = new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    syncAnimation();
   });
+  visibilityObserver.observe(container);
+  document.addEventListener("visibilitychange", syncAnimation);
+  reducedMotion.addEventListener("change", syncAnimation);
 
   // Input
 
-  // Space key — only when game area is focused/clicked
-  canvas.addEventListener("click", () => {
-    focused = true;
+  playBtn.addEventListener("click", () => {
+    handleInput();
+    syncAnimation();
   });
-  container.addEventListener("click", () => {
-    focused = true;
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!container.contains(e.target as Node)) {
-      focused = false;
+  playBtn.addEventListener("keydown", (e) => {
+    if (e.code === "Space" || e.code === "Enter") {
+      e.preventDefault();
+      if (e.repeat) return;
+      handleInput();
+      syncAnimation();
     }
   });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" && focused) {
-      e.preventDefault();
-      handleInput();
-    }
-  });
-
-  // Touch — listen on the full container so tapping the HUD text also works
-  container.addEventListener(
-    "touchstart",
-    (e) => {
-      e.preventDefault();
-      focused = true;
-      handleInput();
-    },
-    { passive: false },
-  );
 
   // Mute toggle
   const muteBtn = document.getElementById("av-runner-mute")!;
-  const savedMute = localStorage.getItem("av-runner-muted") === "1";
+  const savedMute = storage.get("av-runner-muted") === "1";
   setMuted(savedMute);
   muteBtn.dataset.muted = String(savedMute);
+  muteBtn.setAttribute("aria-label", savedMute ? "Unmute sound" : "Mute sound");
+  muteBtn.setAttribute("aria-pressed", String(savedMute));
 
   muteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -915,12 +966,14 @@ import { Icon } from "astro-icon/components";
     setMuted(next);
     if (!next) synthUnmute();
     muteBtn.dataset.muted = String(next);
-    localStorage.setItem("av-runner-muted", next ? "1" : "0");
+    muteBtn.setAttribute("aria-label", next ? "Unmute sound" : "Mute sound");
+    muteBtn.setAttribute("aria-pressed", String(next));
+    storage.set("av-runner-muted", next ? "1" : "0");
   });
 
   // Initial score display
   if (bestScore > 0) {
-    scoreEl.textContent = `best: ${String(bestScore).padStart(4, "0")}m`;
+    scoreEl.textContent = `best ${bestScore}m`;
   }
 </script>
 
@@ -931,9 +984,51 @@ import { Icon } from "astro-icon/components";
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
-    cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
+  }
+
+  .av-runner-play {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .av-runner-play:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: -3px;
+  }
+
+  .av-runner-top {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    right: 52px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--text);
+    font: 0.7rem var(--mono);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+  }
+
+  .av-runner-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   #av-runner-canvas {
@@ -947,36 +1042,33 @@ import { Icon } from "astro-icon/components";
 
   .av-runner-hud {
     position: absolute;
-    bottom: 0px;
-    left: 0;
+    bottom: 2px;
     right: 0;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     padding: 0 16px;
     pointer-events: none;
+    text-align: right;
   }
 
   .av-runner-hint {
     font-family: var(--mono);
-    font-size: 0.8rem;
-    color: var(--text-light);
-  }
-
-  .av-runner-score {
-    font-family: var(--mono);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
+    line-height: 16px;
     color: var(--text-light);
   }
 
   .av-runner-mute {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 0;
+    right: 0;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 4px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
     color: var(--text-light);
     opacity: 1;
     transition: opacity 0.15s;
@@ -984,6 +1076,12 @@ import { Icon } from "astro-icon/components";
     align-items: center;
     justify-content: center;
     line-height: 0;
+  }
+
+  .av-runner-mute:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: -4px;
+    border-radius: 8px;
   }
 
   @media (hover: hover) and (pointer: fine) {

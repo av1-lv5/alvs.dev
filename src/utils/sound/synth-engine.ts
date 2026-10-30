@@ -34,7 +34,8 @@ function tone(
   osc.frequency.setValueAtTime(freqStart, startTime);
   osc.frequency.linearRampToValueAtTime(freqEnd, startTime + duration);
 
-  gain.gain.setValueAtTime(gainPeak, startTime);
+  gain.gain.setValueAtTime(0.001, startTime);
+  gain.gain.exponentialRampToValueAtTime(gainPeak, startTime + 0.008);
   gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
 
   osc.start(startTime);
@@ -44,13 +45,13 @@ function tone(
 export async function synthJump() {
   if (muted) return;
   const ctx = await getCtx();
-  tone(ctx, "square", 180, 340, 0.12, 0.06);
+  tone(ctx, "triangle", 180, 340, 0.12, 0.045);
 }
 
 export async function synthDoubleJump() {
   if (muted) return;
   const ctx = await getCtx();
-  tone(ctx, "square", 300, 540, 0.1, 0.05);
+  tone(ctx, "triangle", 300, 540, 0.1, 0.04);
 }
 
 export async function synthUnmute() {
@@ -64,6 +65,14 @@ export async function synthDeath() {
   if (muted) return;
   const ctx = await getCtx();
   const t = ctx.currentTime;
-  tone(ctx, "sawtooth", 320, 55, 0.45, 0.08, t);
-  tone(ctx, "square", 160, 35, 0.3, 0.04, t + 0.05);
+  tone(ctx, "triangle", 240, 90, 0.22, 0.045, t);
+  tone(ctx, "sine", 140, 65, 0.18, 0.025, t + 0.03);
+}
+
+export async function synthBest() {
+  if (muted) return;
+  const ctx = await getCtx();
+  const t = ctx.currentTime;
+  tone(ctx, "sine", 440, 520, 0.12, 0.035, t);
+  tone(ctx, "sine", 660, 780, 0.18, 0.03, t + 0.11);
 }
