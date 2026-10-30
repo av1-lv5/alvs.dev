@@ -41,7 +41,7 @@ export function setupCopyButton(button: HTMLButtonElement): void {
     wrapper.classList.add("show-tooltip", "tooltip-success");
     tooltip.textContent = ok
       ? successMsg
-      : "Couldn't copy — please copy manually";
+      : "Couldn't copy. Please copy manually.";
 
     timeout = setTimeout(() => {
       button.classList.remove("copied");
