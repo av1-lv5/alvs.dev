@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly SPOTIFY_CLIENT_SECRET: string;
   readonly SPOTIFY_REFRESH_TOKEN: string;
   readonly TMDB_API_KEY: string;
+  readonly NEON_DATABASE_URL: string;
 }
 
 interface ImportMeta {

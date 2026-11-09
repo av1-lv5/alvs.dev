@@ -12,14 +12,17 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "db:check": "node --env-file-if-exists=.env.local scripts/check-database.mjs",
     "format": "prettier . --write",
     "og:generate": "node --experimental-strip-types --env-file-if-exists=.env.local scripts/generate-og.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.0.0",
     "@astrojs/mdx": "^7.0.3",
+    "@astrojs/netlify": "^8.2.12",
     "@fontsource-variable/geist": "^5.2.8",
     "@fontsource-variable/geist-mono": "^5.2.7",
+    "@neondatabase/serverless": "^1.2.0",
     "astro": "^7.0.8",
     "astro-icon": "^1.1.5",
     "sharp": "^0.33.3"

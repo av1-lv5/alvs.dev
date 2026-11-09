@@ -8,11 +8,14 @@ import icon from "astro-icon";
 import mdx from "@astrojs/mdx";
 import react from "@astrojs/react";
 
+import netlify from "@astrojs/netlify";
+
 // https://astro.build/config
 export default defineConfig({
   prefetch: {
     defaultStrategy: "hover",
   },
+
   markdown: {
     processor: unified({
       rehypePlugins: [
@@ -34,8 +37,10 @@ export default defineConfig({
       },
     },
   },
+
   integrations: [icon(), mdx(), react()],
   site: "https://alvs.dev",
+
   vite: {
     build: {
       // lightningcss (Vite 8's default CSS minifier) drops the unprefixed
@@ -44,4 +49,6 @@ export default defineConfig({
       cssMinify: "esbuild",
     },
   },
+
+  adapter: netlify(),
 });

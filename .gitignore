@@ -1,6 +1,8 @@
 notes.md
+/task.md
 /dist
 .astro
+/.netlify/
 .env
 .env.*
 .cache
