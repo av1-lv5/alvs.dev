@@ -12,7 +12,6 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "db:check": "node --env-file-if-exists=.env.local scripts/check-database.mjs",
     "format": "prettier . --write",
     "og:generate": "node --experimental-strip-types --env-file-if-exists=.env.local scripts/generate-og.mjs"
   },

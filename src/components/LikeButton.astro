@@ -1,0 +1,305 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  type: "notes" | "projects" | "labs";
+  id: string;
+}
+const { type, id } = Astro.props;
+const drifts = [-26, -12, 4, 19, 30];
+---
+
+<div
+  class="like"
+  data-type={type}
+  data-id={id}
+  data-count="0"
+  data-animate="false"
+>
+  <button
+    class="like-trigger"
+    type="button"
+    aria-label="Leave a little love"
+    title="Leave a little love"
+    disabled
+  >
+    <span class="like-icon" aria-hidden="true">
+      <span class="like-ripple"></span>
+      <span class="like-ripple"></span>
+      <span class="like-heart-wrap">
+        <Icon name="lucide:heart" is:inline size={22} class="like-heart" />
+      </span>
+      <span class="like-particles">
+        {
+          drifts.map((drift, index) => (
+            <span
+              class="like-particle"
+              data-drift={drift}
+              data-rise={-42 - (index % 3) * 12}
+              data-tilt={drift}
+              data-delay={index * 35}
+            >
+              <Icon
+                name="lucide:heart"
+                is:inline
+                size={index % 2 === 0 ? 10 : 13}
+              />
+            </span>
+          ))
+        }
+      </span>
+    </span>
+    <span class="like-feedback" aria-hidden="true">
+      <span class="like-label is-current" data-label="idle"
+        >Leave a little love</span
+      >
+      <span class="like-label" data-label="liked"
+        >Liked <span class="like-hint">· Tap for more</span></span
+      >
+      <span class="like-label" data-label="loved"
+        >Loved it <span class="like-hint">· Tap to remove</span></span
+      >
+      <span class="like-label" data-label="error"></span>
+    </span>
+  </button>
+  <span
+    class="like-announcement"
+    role="status"
+    aria-live="polite"
+    aria-atomic="true"></span>
+</div>
+
+<script>
+  import { initLikes } from "@/scripts/likes";
+  document.querySelectorAll<HTMLElement>(".like").forEach(initLikes);
+</script>
+
+<style>
+  .like {
+    --tone: var(--text-light);
+    --fill: 0%;
+    --heart-opacity: 0.8;
+    --label-tone: var(--text-muted);
+    display: flex;
+    align-items: center;
+    /* Half the difference between the 44px hit area and 22px heart. */
+    margin-inline-start: -11px;
+    min-height: 44px;
+    color: var(--tone);
+  }
+
+  .like[data-count="1"] {
+    --tone: color-mix(in srgb, var(--accent) 60%, var(--text-light));
+    --fill: 20%;
+    --heart-opacity: 0.82;
+    --label-tone: color-mix(in srgb, var(--accent) 45%, var(--text-muted));
+  }
+
+  .like[data-count="2"] {
+    --tone: color-mix(in srgb, var(--accent) 85%, var(--text-light));
+    --fill: 54%;
+    --heart-opacity: 0.94;
+    --label-tone: color-mix(in srgb, var(--accent) 75%, var(--text-muted));
+  }
+
+  .like[data-count="3"] {
+    --tone: var(--accent);
+    --fill: 100%;
+    --heart-opacity: 1;
+    --label-tone: var(--accent);
+  }
+
+  .like-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    max-width: 100%;
+    min-height: 44px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    box-shadow: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .like-trigger:active:not(:disabled) .like-icon {
+    transform: scale(0.94);
+  }
+
+  .like-trigger:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .like-trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .like-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    transition: transform 120ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .like-heart-wrap {
+    display: block;
+    width: 22px;
+    height: 22px;
+    opacity: var(--heart-opacity);
+    transition: opacity 200ms ease;
+  }
+
+  .like :global(.like-heart) {
+    display: block;
+    color: var(--tone);
+    fill: color-mix(in srgb, var(--tone) var(--fill), transparent);
+    stroke-width: 2;
+    transition:
+      color 200ms ease,
+      fill 200ms ease;
+  }
+
+  .like :global([data-icon="lucide:heart"] path) {
+    fill: inherit;
+    stroke-width: inherit;
+  }
+
+  .like-ripple {
+    position: absolute;
+    inset: 3px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .like-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    color: var(--accent);
+  }
+
+  .like-particle {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    opacity: 0;
+  }
+
+  .like-particle :global(svg) {
+    fill: currentColor;
+    stroke-width: 1.5;
+  }
+
+  .like-feedback {
+    display: grid;
+    min-width: 0;
+    color: var(--label-tone);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: -0.01em;
+    transition: color 200ms ease;
+  }
+
+  .like-label {
+    grid-area: 1 / 1;
+    min-width: 0;
+    opacity: 0;
+    transform: translateY(3px);
+    transition:
+      opacity 180ms ease,
+      transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .like-label.is-current {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .like-label[data-label="loved"] {
+    font-weight: 550;
+  }
+
+  .like-hint {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .like-label[data-label="error"] {
+    color: var(--text-muted);
+  }
+
+  .like-announcement {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .like-trigger:not(:disabled):hover .like-heart-wrap {
+      opacity: 1;
+    }
+    .like-trigger:not(:disabled):hover :global(.like-heart),
+    .like-trigger:not(:disabled):hover .like-feedback {
+      color: var(--accent);
+    }
+  }
+
+  .like[data-animate="false"] .like-icon,
+  .like[data-animate="false"] .like-heart-wrap,
+  .like[data-animate="false"] :global(.like-heart),
+  .like[data-animate="false"] .like-label,
+  .like[data-animate="false"] .like-feedback {
+    transition: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .like[data-animate="false"]
+      .like-trigger:not(:disabled):hover
+      .like-heart-wrap {
+      transition: opacity 200ms ease;
+    }
+    .like[data-animate="false"]
+      .like-trigger:not(:disabled):hover
+      :global(.like-heart),
+    .like[data-animate="false"]
+      .like-trigger:not(:disabled):hover
+      .like-feedback {
+      transition: color 200ms ease;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .like-icon,
+    .like-heart-wrap,
+    .like :global(.like-heart),
+    .like-label,
+    .like-feedback {
+      transition: none;
+    }
+    .like-trigger:active:not(:disabled) .like-icon {
+      transform: none;
+    }
+  }
+</style>

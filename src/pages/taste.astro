@@ -1,5 +1,10 @@
 ---
 import { getCollection } from "astro:content";
+import {
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_CLIENT_SECRET,
+  SPOTIFY_REFRESH_TOKEN,
+} from "astro:env/server";
 import PageLayout from "@layouts/PageLayout.astro";
 import TrackCard from "@components/TrackCard.astro";
 import MovieCard from "@components/MovieCard.astro";
@@ -17,9 +22,7 @@ import {
 } from "@utils/tmdb";
 
 const spotifyConfigured = Boolean(
-  import.meta.env.SPOTIFY_CLIENT_ID &&
-  import.meta.env.SPOTIFY_CLIENT_SECRET &&
-  import.meta.env.SPOTIFY_REFRESH_TOKEN,
+  SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET && SPOTIFY_REFRESH_TOKEN,
 );
 
 const [books, tracks, mediaResults, podcastResults] = await Promise.all([

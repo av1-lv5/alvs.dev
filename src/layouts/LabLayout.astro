@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import BackInHistory from "@components/BackInHistory.astro";
+import LikeButton from "@components/LikeButton.astro";
 import { Icon } from "astro-icon/components";
 import { Code } from "astro/components";
 
@@ -83,6 +84,8 @@ const lang = "astro";
     </div>
     <button class="expand-btn" id="expand-btn">View more</button>
   </div>
+
+  <LikeButton type="labs" id={entry.id} />
 
   <nav class="entry-nav">
     {
@@ -261,6 +264,9 @@ const lang = "astro";
     justify-content: space-between;
     margin-top: 3rem;
     padding-top: 1.5rem;
+  }
+  .source-section + :global(.like) {
+    margin-top: 1.75rem;
   }
   .nav-entry {
     display: flex;

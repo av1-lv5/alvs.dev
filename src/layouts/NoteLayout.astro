@@ -5,6 +5,7 @@ import { getGeneratedOgImage } from "@utils/og-image";
 
 // Components
 import BackInHistory from "@components/BackInHistory.astro";
+import LikeButton from "@components/LikeButton.astro";
 
 type Props = {
   note: CollectionEntry<"notes">;
@@ -33,6 +34,7 @@ const ogImage = getGeneratedOgImage("notes", note.id);
   <div class="note-content">
     <slot />
   </div>
+  <LikeButton type="notes" id={note.id} />
 </Layout>
 
 <script>
@@ -149,6 +151,13 @@ const ogImage = getGeneratedOgImage("notes", note.id);
   a.nav-like {
     border-color: var(--accent);
     color: var(--accent);
+  }
+
+  .note-content > :global(:last-child) {
+    margin-bottom: 0;
+  }
+  .note-content + :global(.like) {
+    margin-top: 1.75rem;
   }
 
   .note-content :global(.code-wrapper) {

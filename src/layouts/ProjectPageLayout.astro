@@ -5,6 +5,7 @@ import Layout from "@layouts/Layout.astro";
 // Components
 import BackInHistory from "@components/BackInHistory.astro";
 import ProjectLinks from "@components/ProjectLinks.astro";
+import LikeButton from "@components/LikeButton.astro";
 
 type Props = {
   project: CollectionEntry<"projects">;
@@ -46,6 +47,7 @@ const relatedNotes = relatedSlugs
   <div id="project-content">
     <slot />
   </div>
+  <LikeButton type="projects" id={project.id} />
   {
     relatedNotes.length > 0 && (
       <aside class="related-notes">
@@ -79,13 +81,19 @@ const relatedNotes = relatedSlugs
     object-fit: cover;
     object-position: center;
   }
+  #project-content > :global(:last-child) {
+    margin-bottom: 0;
+  }
+  #project-content + :global(.like) {
+    margin-top: 1.75rem;
+  }
   @media (max-width: 768px) {
     #project-content :global(img) {
       height: 150px;
     }
   }
   .related-notes {
-    margin-top: 4rem;
+    margin-top: 2.5rem;
     padding-top: 1.75rem;
     border-top: 1px solid var(--border-muted);
   }

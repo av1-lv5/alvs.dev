@@ -1,4 +1,4 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import { unified } from "@astrojs/markdown-remark";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeExternalArrow from "./src/utils/rehype-external-arrow.mjs";
@@ -12,6 +12,37 @@ import netlify from "@astrojs/netlify";
 
 // https://astro.build/config
 export default defineConfig({
+  // https://docs.astro.build/en/reference/configuration-reference/#env
+  // https://docs.astro.build/en/guides/environment-variables/#limitations
+  env: {
+    schema: {
+      NEON_DATABASE_URL: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      SPOTIFY_CLIENT_ID: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+      SPOTIFY_CLIENT_SECRET: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+      SPOTIFY_REFRESH_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+      TMDB_API_KEY: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+    },
+  },
+
   prefetch: {
     defaultStrategy: "hover",
   },

@@ -1,3 +1,9 @@
+import {
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_CLIENT_SECRET,
+  SPOTIFY_REFRESH_TOKEN,
+} from "astro:env/server";
+
 const TOKEN_ENDPOINT = "https://accounts.spotify.com/api/token";
 const TOP_ARTISTS_ENDPOINT = "https://api.spotify.com/v1/me/top/artists";
 const TOP_TRACKS_ENDPOINT = "https://api.spotify.com/v1/me/top/tracks";
@@ -20,8 +26,9 @@ export interface SpotifyTrack {
 }
 
 async function getAccessToken(): Promise<string> {
-  const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } =
-    import.meta.env;
+  if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET || !SPOTIFY_REFRESH_TOKEN) {
+    throw new Error("SPOTIFY_UNAVAILABLE");
+  }
 
   const basic = btoa(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`);
 

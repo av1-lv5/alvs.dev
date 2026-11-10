@@ -1,5 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { TMDB_API_KEY } from "astro:env/server";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMG_BASE = "https://image.tmdb.org/t/p/w500";
@@ -89,7 +90,7 @@ export function flushCache(): void {
 }
 
 function authHeader() {
-  const key = import.meta.env.TMDB_API_KEY;
+  const key = TMDB_API_KEY;
   if (!key) throw new Error("TMDB_API_KEY is not set in your .env file.");
   return { Authorization: `Bearer ${key}` };
 }
