@@ -115,14 +115,25 @@ export function initLikes(container: HTMLElement) {
   try {
     const previous = readLikeState(localStorage.getItem(key));
     const pending = localStorage.getItem(`${key}:pending`);
-    state = previous ?? {
-      visitorId: isVisitorId(pending) ? pending! : crypto.randomUUID(),
-      count: isVisitorId(pending) ? 1 : 0,
-      confirmed: 0,
-      revision: isVisitorId(pending) ? 1 : 0,
-      confirmedRevision: 0,
-      requestPending: isVisitorId(pending),
-    };
+    const hasLegacyState =
+      previous && (previous.revision > 0 || previous.requestPending);
+    let visitorId = localStorage.getItem("portfolio-visitor-id");
+    if (!isVisitorId(visitorId)) {
+      visitorId = crypto.randomUUID();
+      localStorage.setItem("portfolio-visitor-id", visitorId);
+    }
+    // Keep IDs for existing likes and uncertain writes so their database rows
+    // and revisions remain addressable; untouched items use the shared ID.
+    state = hasLegacyState
+      ? previous
+      : {
+          visitorId: isVisitorId(pending) ? pending : visitorId,
+          count: isVisitorId(pending) ? 1 : 0,
+          confirmed: 0,
+          revision: isVisitorId(pending) ? 1 : 0,
+          confirmedRevision: 0,
+          requestPending: isVisitorId(pending),
+        };
     confirmUnchanged();
     // Check writability before allowing feedback to be sent.
     persist();
