@@ -81,5 +81,6 @@ export default defineConfig({
     },
   },
 
-  adapter: netlify(),
+  // Astro serves API routes in dev; the adapter is needed for Netlify builds.
+  adapter: process.env.ASTRO_LOCAL_DEV === "1" ? undefined : netlify(),
 });
