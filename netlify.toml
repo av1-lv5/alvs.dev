@@ -2,14 +2,6 @@
   command = "pnpm run build"
   publish = "dist"
 
-[[redirects]]
-  from = "/api/likes"
-  to = "/api/likes"
-  [redirects.rate_limit]
-    window_limit = 20
-    window_size = 60
-    aggregate_by = ["ip", "domain"]
-
 [[headers]]
   for = "/_astro/*"
   [headers.values]
