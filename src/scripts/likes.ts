@@ -1,17 +1,8 @@
-import { isVisitorId, readLikeState } from "@/lib/likes";
+import { initializeLikeStorage, persistLikeState } from "@/lib/like-storage";
+import type { LikeState } from "@/lib/likes";
 import { LIKE_SAVE_DELAY_MS, MAX_LIKES } from "@/constants/likes";
 
-interface LikeState {
-  visitorId: string;
-  count: number;
-  confirmed: number;
-  revision: number;
-  confirmedRevision: number;
-  // An unacknowledged request may already have changed the server's count.
-  requestPending: boolean;
-}
-
-export function initLikes(container: HTMLElement) {
+export async function initLikes(container: HTMLElement) {
   if (container.dataset.initialized) return;
   container.dataset.initialized = "true";
   container.dataset.animate = "false";
@@ -28,7 +19,7 @@ export function initLikes(container: HTMLElement) {
     container.querySelector<HTMLElement>(".like-announcement")!;
   const { type, id } = container.dataset;
   const item = type === "notes" ? "note" : type === "labs" ? "lab" : "project";
-  const key = `portfolio-like:${type}:${id}`;
+  const key = `${type}:${id}`;
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let state: LikeState;
   let saving = false;
@@ -99,7 +90,7 @@ export function initLikes(container: HTMLElement) {
     if (!failed) setFeedback(labelForCount(count));
   };
 
-  const persist = () => localStorage.setItem(key, JSON.stringify(state));
+  const persist = () => persistLikeState(key, state);
 
   const confirmUnchanged = () => {
     if (!state.requestPending && state.count === state.confirmed) {
@@ -113,31 +104,8 @@ export function initLikes(container: HTMLElement) {
   };
 
   try {
-    const previous = readLikeState(localStorage.getItem(key));
-    const pending = localStorage.getItem(`${key}:pending`);
-    const hasLegacyState =
-      previous && (previous.revision > 0 || previous.requestPending);
-    let visitorId = localStorage.getItem("portfolio-visitor-id");
-    if (!isVisitorId(visitorId)) {
-      visitorId = crypto.randomUUID();
-      localStorage.setItem("portfolio-visitor-id", visitorId);
-    }
-    // Keep IDs for existing likes and uncertain writes so their database rows
-    // and revisions remain addressable; untouched items use the shared ID.
-    state = hasLegacyState
-      ? previous
-      : {
-          visitorId: isVisitorId(pending) ? pending : visitorId,
-          count: isVisitorId(pending) ? 1 : 0,
-          confirmed: 0,
-          revision: isVisitorId(pending) ? 1 : 0,
-          confirmedRevision: 0,
-          requestPending: isVisitorId(pending),
-        };
+    state = await initializeLikeStorage(key);
     confirmUnchanged();
-    // Check writability before allowing feedback to be sent.
-    persist();
-    localStorage.removeItem(`${key}:pending`);
     render();
     button.disabled = false;
   } catch {
@@ -238,7 +206,7 @@ export function initLikes(container: HTMLElement) {
       // Persist before sending so a reload or lost response cannot make an
       // uncertain write look like a safe, unsent no-op.
       state.requestPending = true;
-      persist();
+      await persist();
       const response = await fetch("/api/likes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -280,7 +248,7 @@ export function initLikes(container: HTMLElement) {
         state.revision = result.revision;
       }
       confirmUnchanged();
-      persist();
+      await persist();
       render();
       if (state.confirmedRevision === state.revision) {
         clearSaveTimer();
@@ -320,7 +288,7 @@ export function initLikes(container: HTMLElement) {
     }, LIKE_SAVE_DELAY_MS);
   };
 
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     container.dataset.animate = String(!reducedMotion.matches);
     const previousCount = state.count;
     const previousRevision = state.revision;
@@ -331,7 +299,7 @@ export function initLikes(container: HTMLElement) {
     }
     confirmUnchanged();
     try {
-      persist();
+      await persist();
     } catch {
       state.count = previousCount;
       state.revision = previousRevision;

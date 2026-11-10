@@ -1,6 +1,6 @@
 import { MAX_LIKES } from "@/constants/likes";
 
-interface LikeState {
+export interface LikeState {
   visitorId: string;
   count: number;
   confirmed: number;
