@@ -51,10 +51,16 @@ const ogImage = getGeneratedOgImage("pages", "uses");
                   rel="noopener noreferrer"
                 >
                   <strong>{item.name}</strong> {item.description}
+                  {item.history && (
+                    <span class="use-history">{item.history}</span>
+                  )}
                 </a>
               ) : (
                 <div class="card-content card">
                   <strong>{item.name}</strong> {item.description}
+                  {item.history && (
+                    <span class="use-history">{item.history}</span>
+                  )}
                 </div>
               )}
             </li>
@@ -102,6 +108,13 @@ const ogImage = getGeneratedOgImage("pages", "uses");
     display: block;
     margin-bottom: 0.25rem;
     font-size: 1.1rem;
+  }
+
+  .use-history {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
 
   @media (min-width: 640px) {

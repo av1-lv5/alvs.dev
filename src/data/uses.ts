@@ -2,6 +2,7 @@ export interface UseItem {
   name: string;
   description: string;
   link?: string;
+  history?: string;
 }
 
 export interface UseCategory {
@@ -31,14 +32,14 @@ export const uses: UseCategory[] = [
       },
       {
         name: "OpenCode",
-        description:
-          "My coding agent of choice. I use TUI and OpenChamber for GUI.",
+        description: "My coding agent of choice, including in the TUI.",
         link: "https://opencode.ai/",
       },
       {
-        name: "OpenChamber",
-        description:
-          "My main workspace, with an integrated browser and a complete loop for reviewing files, code, and commits.",
+        name: "T3 Code",
+        description: "My AI coding workspace. The fourth in four months.",
+        link: "https://t3.codes/",
+        history: "Herdr → Codex Desktop → OpenChamber → T3 Code",
       },
       {
         name: "Ghostty",
