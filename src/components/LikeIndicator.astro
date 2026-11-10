@@ -1,0 +1,106 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  type: "notes" | "projects" | "labs";
+  id: string;
+}
+
+const { type, id } = Astro.props;
+---
+
+<span class="like-indicator" data-type={type} data-id={id} hidden>
+  <Icon name="lucide:heart" size={15} is:inline aria-hidden="true" />
+  <span class="like-indicator-label"></span>
+</span>
+
+<script>
+  import {
+    LIKE_STORAGE_KEY,
+    LIKES_UPDATED_EVENT,
+    readConfirmedLikes,
+  } from "@/lib/like-storage";
+
+  function updateIndicators() {
+    try {
+      const counts = readConfirmedLikes();
+      document
+        .querySelectorAll<HTMLElement>(".like-indicator")
+        .forEach((indicator) => {
+          const { type, id } = indicator.dataset;
+          const count = counts[`${type}:${id}`] ?? 0;
+          indicator.hidden = count === 0;
+          if (count === 0) return;
+          indicator.dataset.count = String(count);
+          const item =
+            type === "notes" ? "note" : type === "labs" ? "lab" : "project";
+          indicator.querySelector(".like-indicator-label")!.textContent =
+            `You gave this ${item} ${count} ${count === 1 ? "like" : "likes"}.`;
+        });
+    } catch {
+      // If storage is unavailable, leave the indicators hidden.
+    }
+  }
+
+  updateIndicators();
+  window.addEventListener("pageshow", updateIndicators);
+  window.addEventListener(LIKES_UPDATED_EVENT, updateIndicators);
+  window.addEventListener("storage", (event) => {
+    if (
+      event.key === LIKE_STORAGE_KEY ||
+      event.key === null ||
+      event.key?.startsWith("portfolio-like:")
+    )
+      updateIndicators();
+  });
+</script>
+
+<style>
+  .like-indicator:not([hidden]) {
+    display: inline-flex;
+    vertical-align: -0.1em;
+    margin-inline-start: 0.35rem;
+    line-height: 1;
+    opacity: var(--heart-opacity);
+    color: var(--tone);
+  }
+
+  .like-indicator[data-count="1"] {
+    --tone: color-mix(in srgb, var(--accent) 60%, var(--text-light));
+    --fill: 20%;
+    --heart-opacity: 0.82;
+  }
+
+  .like-indicator[data-count="2"] {
+    --tone: color-mix(in srgb, var(--accent) 85%, var(--text-light));
+    --fill: 54%;
+    --heart-opacity: 0.94;
+  }
+
+  .like-indicator[data-count="3"] {
+    --tone: var(--accent);
+    --fill: 100%;
+    --heart-opacity: 1;
+  }
+
+  .like-indicator :global(svg) {
+    display: block;
+    fill: color-mix(in srgb, var(--tone) var(--fill), transparent);
+    stroke-width: 2;
+  }
+
+  .like-indicator :global(svg path) {
+    fill: inherit;
+  }
+
+  .like-indicator-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

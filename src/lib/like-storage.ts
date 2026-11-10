@@ -3,10 +3,35 @@ import { isVisitorId, readLikeState, type LikeState } from "@/lib/likes";
 const STORAGE_KEY = "portfolio-likes";
 const LEGACY_PREFIX = "portfolio-like:";
 const VISITOR_KEY = "portfolio-visitor-id";
+export const LIKE_STORAGE_KEY = STORAGE_KEY;
+export const LIKES_UPDATED_EVENT = "portfolio:likes-updated";
 
 interface LikeStorage {
   visitorId: string;
   items: Record<string, LikeState>;
+}
+
+// Read only: list pages should not create a visitor ID or migrate storage.
+export function readConfirmedLikes(): Record<string, number> {
+  const counts: Record<string, number> = Object.create(null);
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw !== null) {
+    const data = JSON.parse(raw) as LikeStorage;
+    if (!data || typeof data.items !== "object" || !data.items) return counts;
+    for (const [key, value] of Object.entries(data.items)) {
+      const state = readLikeState(JSON.stringify(value));
+      if (state) counts[key] = state.confirmed;
+    }
+  }
+  for (let index = 0; index < localStorage.length; index++) {
+    const key = localStorage.key(index);
+    if (!key?.startsWith(LEGACY_PREFIX) || key.endsWith(":pending")) continue;
+    const item = key.slice(LEGACY_PREFIX.length);
+    if (Object.hasOwn(counts, item)) continue;
+    const state = readLikeState(localStorage.getItem(key));
+    if (state) counts[item] = state.confirmed;
+  }
+  return counts;
 }
 
 // Web Locks serialize read-modify-write operations across tabs. Older browsers
@@ -124,5 +149,6 @@ export function persistLikeState(
     const data = readStorage();
     data.items[itemKey] = snapshot;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    window.dispatchEvent(new Event(LIKES_UPDATED_EVENT));
   });
 }

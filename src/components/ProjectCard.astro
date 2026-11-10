@@ -1,6 +1,7 @@
 ---
 // types
 import type { CollectionEntry } from "astro:content";
+import LikeIndicator from "@components/LikeIndicator.astro";
 export interface Props {
   project: CollectionEntry<"projects">;
 }
@@ -13,6 +14,7 @@ const { project } = Astro.props as Props;
   <div class="project-header">
     <h3 class="title">
       <a href={`/projects/${project.id}`}>{project.data.title}</a>
+      <LikeIndicator type="projects" id={project.id} />
       <span class="title-year">{project.data.year}</span>
     </h3>
     <div class="project-meta">

@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import LikeIndicator from "@components/LikeIndicator.astro";
 
 type Props = {
   entries: Array<CollectionEntry<"notes"> | CollectionEntry<"workflow">>;
@@ -27,9 +28,14 @@ function entryDate(
 
         return (
           <li class="entry-item">
-            <a class="entry-link" href={`/${collection}/${entry.id}`}>
-              {entry.data.title}
-            </a>
+            <span class="entry-title">
+              <a class="entry-link" href={`/${collection}/${entry.id}`}>
+                {entry.data.title}
+              </a>
+              {collection === "notes" && (
+                <LikeIndicator type="notes" id={entry.id} />
+              )}
+            </span>
             <div class:list={["entry-meta", `${collection}-meta`]}>
               {entry.data.draft && <span class="draft-tag">Draft</span>}
               {date && <time datetime={entry.data.publishedAt}>{date}</time>}
@@ -59,7 +65,7 @@ function entryDate(
     border-top: 1px solid var(--divider-neutral);
   }
 
-  .entry-link {
+  .entry-title {
     min-width: 0;
   }
 

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import PageLayout from "@layouts/PageLayout.astro";
+import LikeIndicator from "@components/LikeIndicator.astro";
 import { getGeneratedOgImage } from "@utils/og-image";
 
 const ogImage = getGeneratedOgImage("pages", "lab");
@@ -36,7 +37,12 @@ const sourceLabels = {
       {
         sorted.map((entry) => (
           <li>
-            <a href={`/lab/${entry.id}`}>{entry.data.title}</a>
+            <span>
+              <>
+                <a href={`/lab/${entry.id}`}>{entry.data.title}</a>
+                <LikeIndicator type="labs" id={entry.id} />
+              </>
+            </span>
             {entry.data.sourceType && (
               <span class="source-type">
                 {sourceLabels[entry.data.sourceType]}
