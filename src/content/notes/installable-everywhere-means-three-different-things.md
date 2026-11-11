@@ -1,6 +1,7 @@
 ---
 title: '"Installable Everywhere" Means Three Different Things'
 tags: ["pwa", "ios", "android", "orbit"]
+description: "What building an install button for Orbit taught me about PWAs on Android, iOS, and other browsers."
 publishedAt: "2026-08-07"
 draft: false
 ---
@@ -58,7 +59,7 @@ const IOS_STEPS = [
 ];
 ```
 
-That's the whole "API": telling the user where to tap. And a detail that surprised me, on iOS the browser they picked doesn't matter. Chrome, Edge, Firefox, Brave all use WebKit under the hood (Apple's rule 2.5.6, in force since 2008). They're not literally Safari, but the engine is, so each is a different toolbar over the same renderer. The EU's DMA technically opened this in 2024 and no one has shipped another engine since; Japan ordered it dropped by end of 2025; everywhere else it's still WebKit or nothing. So my iOS instructions say "Safari" and mean all of them.
+That's the whole "API": telling the user where to tap. And on iOS the browser they picked doesn't matter. Chrome, Edge, Firefox, Brave all use WebKit under the hood (Apple's rule 2.5.6, in force since 2008). They're not literally Safari, but the engine is, so each is a different toolbar over the same renderer. The EU's DMA technically opened this in 2024 and no one has shipped another engine since; Japan ordered it dropped by end of 2025; everywhere else it's still WebKit or nothing. So my iOS instructions say "Safari" and mean all of them.
 
 What that flow produces isn't the Android app either. It's a Web Clip: backed by Safari rather than a packaged application. Since iOS 16.4 these got a lot more capable (web push, badging, standalone display), so "old bookmark" undersells them, but the distinction that matters holds: there's no packaged app underneath, just a plist pointing at a URL that Safari renders. Consequences I hit:
 

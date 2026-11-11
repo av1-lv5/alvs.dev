@@ -1,6 +1,7 @@
 ---
 title: "How I fell into web development"
 tags: [""]
+description: "A journey from tinkering with Android and discovering open source to building for the web."
 publishedAt: "2026-07-13"
 draft: false
 ---
@@ -9,7 +10,7 @@ _Not a bootcamp story, not a "always loved building things since I was 5" story 
 
 I didn't get into web development for the love of interfaces, honestly. It started with my love for tinkering with my Android phone and finding F-Droid. Learning what F-Droid was opened me up to the concept of open source. One thing about open source communities is they will not let you leave with just an app, you leave with opinions.
 
-My opinions were mostly about privacy: decentralization, why your ISP can see everything, why a proxy exists. I fell into a world of people building alt frontends for Reddit, running Nitter proxies, self-hosting their own RSS and Nextcloud. Then came a whole new concept: federation, the ActivityPub protocol, Mastodon. Along the way I kept finding people who cared about accessibility, who were passionate about the open web, who cared about privacy and security. That crowd is why I still believe if I'd just taken a frontend course, I wouldn't know that protocols like Gemini exist, with their own clients and their own search engines, or that HTTP is just a protocol and a web browser is just a client, or that there can be an entirely different version of what the web could mean. I also went pretty deep on P2P and torrents, for reasons unrelated to piracy, I swear.
+My opinions were mostly about privacy: decentralization, and learnings like why your ISP can see everything, why a proxy exists. I fell into a world of people building alt frontends for Reddit, running Nitter proxies, self-hosting their own RSS and Nextcloud. Then came a whole new concept: federation, the ActivityPub protocol, Mastodon. Along the way I kept finding people who cared about accessibility, who were passionate about the open web, who cared about privacy and security. That crowd is why I still believe if I'd just taken a frontend course, I wouldn't know that protocols like [Gemini](https://geminiprotocol.net/) exist, with their own clients and their own search engines, or that HTTP is just a protocol and a web browser is just a client, or that there can be an entirely different version of what the web could mean. I also went pretty deep on P2P and torrents, for reasons unrelated to piracy, I swear.
 
 Eventually I wanted to build my own thing instead of just admiring everyone else's. So I picked up the languages. Frontend stuck, and somehow that accidental education became a career.
 

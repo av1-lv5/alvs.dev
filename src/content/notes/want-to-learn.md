@@ -1,6 +1,7 @@
 ---
 title: "Things I want to learn"
 tags: ["learning", "goals", "engineering"]
+description: "A running list of things I'm curious about, from full-stack development to desktop, mobile, and terminal apps."
 publishedAt: "2023-10-07"
 updatedAt: "May 2026"
 draft: false

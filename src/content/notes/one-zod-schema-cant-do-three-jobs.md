@@ -1,6 +1,7 @@
 ---
 title: "One Zod Schema Can't Do Three Jobs"
 tags: ["zod", "typescript", "forms"]
+description: "Why I separate what a form sends, what the application needs, and what the database stores."
 publishedAt: "2026-07-12"
 draft: false
 ---

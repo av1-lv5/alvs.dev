@@ -1,6 +1,7 @@
 ---
 title: "We didn't need a better branching strategy"
 tags: ["git"]
+description: "How our Git workflow changed as the team grew, and why we borrowed pieces from established strategies instead of adopting one."
 publishedAt: "2026-03-09"
 draft: false
 ---

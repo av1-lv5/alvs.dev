@@ -1,6 +1,7 @@
 ---
 title: "An astro cms that doesn't exist yet"
 tags: [""]
+description: "I wanted to update a few lines on my site without opening an editor, writing a commit, and pushing a deploy."
 publishedAt: "2026-03-09"
 draft: false
 ---

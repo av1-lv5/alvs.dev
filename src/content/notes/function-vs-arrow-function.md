@@ -1,6 +1,7 @@
 ---
 title: "I still write 'function'"
 tags: ["javascript", "opinion"]
+description: "Why I still reach for function declarations in JavaScript, even when arrow functions are everywhere."
 publishedAt: "2026-06-03"
 draft: false
 ---

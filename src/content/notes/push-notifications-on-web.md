@@ -1,6 +1,7 @@
 ---
 title: "Nothing About Web Push Fails Loudly"
 tags: ["pwa", "web-push", "orbit"]
+description: "The silent failures I ran into while adding push notifications to Orbit, from subscriptions that hang to notifications that never arrive."
 publishedAt: "2026-05-12"
 draft: false
 ---

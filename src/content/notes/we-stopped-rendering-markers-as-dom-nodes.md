@@ -1,6 +1,7 @@
 ---
 title: "We stopped rendering markers as DOM nodes"
 tags: ["mapbox", "performance"]
+description: "How we made a map with thousands of listings usable on mobile by moving away from individual DOM markers."
 publishedAt: "2026-07-12"
 draft: false
 ---
