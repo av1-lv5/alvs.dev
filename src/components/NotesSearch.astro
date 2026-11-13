@@ -1,0 +1,236 @@
+---
+// Client-only fuzzy filter for the /notes index. The notes list stays a
+// plain server-rendered <EntryList> (passed in as a slot); this component
+// only adds the input above it, a JSON data island the client script
+// ranks against, and the empty-state line below it. Same data-island
+// pattern as MobileDock and CommandPalette, and the same ranker.
+
+import type { CollectionEntry } from "astro:content";
+import { Icon } from "astro-icon/components";
+
+import { serializePageData, type SitePage } from "@utils/pageSearch";
+
+type Props = {
+  entries: Array<CollectionEntry<"notes">>;
+};
+
+const { entries } = Astro.props;
+
+// Tags are search-only metadata. They travel in the JSON island below and
+// are never rendered; the search input has no path to them.
+const pages: SitePage[] = entries.map((entry) => ({
+  title: entry.data.title,
+  path: `/notes/${entry.id}`,
+  description: entry.data.description ?? "",
+  category: "",
+  keywords: entry.data.tags.filter((tag) => tag.length > 0),
+}));
+---
+
+<div class="notes-search" id="notes-search" hidden>
+  <label class="notes-search-label" for="notes-search-input">
+    Search notes
+  </label>
+  <Icon name="lucide:search" size={18} class="notes-search-icon" />
+  <input
+    type="search"
+    id="notes-search-input"
+    class="notes-search-input"
+    placeholder="Search notes"
+    autocomplete="off"
+    enterkeyhint="search"
+    inputmode="search"
+  />
+</div>
+
+<slot />
+
+<p class="notes-search-empty" id="notes-search-empty" role="status" hidden>
+  No notes match that.
+</p>
+
+<script
+  id="notes-search-data"
+  type="application/json"
+  set:html={serializePageData(pages)}
+/>
+
+<script>
+  import { debounce, rankPages, type SitePage } from "@utils/pageSearch";
+
+  const notes: SitePage[] = JSON.parse(
+    document.getElementById("notes-search-data")?.textContent || "[]",
+  );
+
+  const searchEl = document.getElementById("notes-search");
+  const input = document.getElementById(
+    "notes-search-input",
+  ) as HTMLInputElement | null;
+  const emptyEl = document.getElementById("notes-search-empty");
+  const list = document.querySelector<HTMLUListElement>(".entry-list");
+
+  // EntryList is rendered by the server and shared with /workflow, so the
+  // script only hides and reorders what is already on the page. Items are
+  // matched by the link href, which is the same path the data island uses.
+  const items = list
+    ? Array.from(list.querySelectorAll<HTMLLIElement>(".entry-item"))
+    : [];
+  const itemsByPath = new Map<string, HTMLLIElement>();
+
+  for (const item of items) {
+    const href = item.querySelector("a.entry-link")?.getAttribute("href");
+    if (href) itemsByPath.set(href, item);
+  }
+
+  function setEmpty(text: string | null) {
+    if (!emptyEl) return;
+    if (text === null) {
+      emptyEl.hidden = true;
+    } else {
+      emptyEl.textContent = text;
+      emptyEl.hidden = false;
+    }
+  }
+
+  /** Reveals every item and puts the list back in the server's date order. */
+  function restoreList() {
+    for (const item of items) {
+      item.hidden = false;
+      list?.append(item);
+    }
+  }
+
+  function showRanked(ranked: SitePage[]) {
+    const matched = new Set<HTMLLIElement>();
+    for (const page of ranked) {
+      const item = itemsByPath.get(page.path);
+      if (item) matched.add(item);
+    }
+
+    for (const item of items) item.hidden = !matched.has(item);
+
+    // Prepend best-first rather than leaving matches where they were:
+    // hidden items keep their DOM slot, so a visible row following one
+    // would still pick up `.entry-item + .entry-item`'s top border and
+    // the first result shouldn't have a divider above it.
+    for (let i = ranked.length - 1; i >= 0; i--) {
+      const item = itemsByPath.get(ranked[i].path);
+      if (item) list?.prepend(item);
+    }
+  }
+
+  // `?q=` keeps a filtered view linkable and survives a reload.
+  function syncUrl(trimmed: string) {
+    const url = new URL(window.location.href);
+    if (trimmed) {
+      url.searchParams.set("q", trimmed);
+    } else {
+      url.searchParams.delete("q");
+    }
+    window.history.replaceState(null, "", url);
+  }
+
+  function update() {
+    const trimmed = (input?.value ?? "").trim();
+
+    if (trimmed) {
+      const ranked = rankPages(notes, trimmed);
+      showRanked(ranked);
+      setEmpty(ranked.length ? null : "No notes match that.");
+    } else {
+      restoreList();
+      setEmpty(null);
+    }
+
+    syncUrl(trimmed);
+  }
+
+  const debouncedUpdate = debounce(update, 200);
+
+  // The input ships hidden so a JS-less visit gets the full list without
+  // a control that does nothing.
+  searchEl?.removeAttribute("hidden");
+
+  input?.addEventListener("input", () => debouncedUpdate());
+  // WebKit's clear button on type="search" fires `search`, not always `input`.
+  input?.addEventListener("search", () => debouncedUpdate());
+
+  const initialQuery = new URLSearchParams(window.location.search).get("q");
+  if (initialQuery && input) {
+    input.value = initialQuery;
+    update();
+  }
+</script>
+
+<style>
+  .notes-search {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    padding: 0.25rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+    transition: var(--transition);
+  }
+
+  /* Visual match for the palette/dock input chrome. `:focus-within` keeps
+     the border on the field instead of the borderless input. */
+  .notes-search:focus-within {
+    border-color: var(--accent);
+    background: var(--bg);
+  }
+
+  /* The markup ships with `hidden`, and `display: flex` above would
+     otherwise win over the UA's `[hidden]` rule. */
+  .notes-search[hidden] {
+    display: none;
+  }
+
+  .notes-search-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .notes-search-icon {
+    color: var(--text-light);
+    flex-shrink: 0;
+  }
+
+  .notes-search-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.5rem 0;
+    border: none;
+    background: none;
+    outline: none;
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .notes-search-input::placeholder {
+    color: var(--text-light);
+  }
+
+  /* EntryList's `.entry-item { display: flex }` outranks the UA `[hidden]`
+     rule, so the attribute alone would leave filtered rows visible. */
+  :global(.entry-item[hidden]) {
+    display: none;
+  }
+
+  .notes-search-empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.875rem;
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
 title: "Skills I've picked in my journey as Developer"
-tags: [""]
+tags: ["skills", "tools", "learning"]
 description: "The languages, tools, and habits I've picked up since I started learning web development in 2021."
 publishedAt: "2023-10-07"
 draft: false

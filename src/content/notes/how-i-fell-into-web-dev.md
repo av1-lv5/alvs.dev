@@ -1,6 +1,6 @@
 ---
 title: "How I fell into web development"
-tags: [""]
+tags: ["open-source", "privacy", "web", "career"]
 description: "A journey from tinkering with Android and discovering open source to building for the web."
 publishedAt: "2026-07-13"
 draft: false

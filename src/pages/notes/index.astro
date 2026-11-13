@@ -4,6 +4,7 @@ import { getCollection } from "astro:content";
 // layout
 import PageLayout from "@layouts/PageLayout.astro";
 import EntryList from "@components/EntryList.astro";
+import NotesSearch from "@components/NotesSearch.astro";
 
 // fetching notes to display; drafts are shown in dev only
 const allNotes = (
@@ -28,6 +29,8 @@ const allNotes = (
       may be unfinished, unpolished. I write to record my thoughts, ideas and
       opinions.
     </p>
-    <EntryList entries={allNotes} collection="notes" />
+    <NotesSearch entries={allNotes}>
+      <EntryList entries={allNotes} collection="notes" />
+    </NotesSearch>
   </section>
 </PageLayout>

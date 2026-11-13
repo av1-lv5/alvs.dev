@@ -1,6 +1,6 @@
 ---
 title: "I wanted to have a guestbook for this website"
-tags: [""]
+tags: ["guestbook", "auth", "spam"]
 description: "Planning a guestbook for a site with almost no visitors, starting with how to let people sign it without an account."
 draft: false
 publishedAt: "2026-02-23"
