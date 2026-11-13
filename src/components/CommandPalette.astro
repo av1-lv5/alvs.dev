@@ -81,6 +81,7 @@ const pages = getSitePages();
     commandActions,
     type CommandAction as CommandActionData,
   } from "@data/commandActions";
+  import { readRecentPages, trackCurrentPage } from "@/lib/recent-pages";
 
   const cmdk = document.getElementById("cmdk");
   const panel = cmdk?.querySelector(".cmdk-panel");
@@ -95,6 +96,11 @@ const pages = getSitePages();
   const pages: SitePage[] = JSON.parse(
     document.getElementById("cmdk-data")?.textContent || "[]",
   );
+
+  // Recents resolve against the searchable pages only, so every entry
+  // has a title and a path the search itself knows about.
+  trackCurrentPage(pages);
+  const recentPages = readRecentPages(pages, window.location.pathname);
 
   type CommandAction = SitePage & {
     command: CommandActionData["id"];
@@ -112,15 +118,27 @@ const pages = getSitePages();
   const paletteEntries: (SitePage | CommandAction)[] = [...pages, ...actions];
 
   let activeIndex = -1;
+  let optionIndex = 0;
   let lastFocused: HTMLElement | null = null;
 
-  // Wrap the shared link builder with the ARIA option semantics the
-  // combobox/listbox pattern needs (id, role, selection, hover sync).
-  function makeResultLink(entry: SitePage | CommandAction, index: number) {
-    const link = createResultLink(entry, "cmdk");
-    link.id = `cmdk-option-${index}`;
+  // Adds the ARIA option semantics the combobox/listbox pattern needs
+  // (id, role, selection, hover sync) to a result row.
+  function makeOption(link: HTMLAnchorElement) {
+    link.id = `cmdk-option-${optionIndex++}`;
     link.setAttribute("role", "option");
     link.setAttribute("aria-selected", "false");
+    const activate = () => {
+      setActive(getResultLinks().indexOf(link));
+    };
+    link.addEventListener("mouseenter", activate);
+    // The focus trap can Tab onto links directly; keep the selection in
+    // sync so Enter (which targets the selection) matches what's focused.
+    link.addEventListener("focus", activate);
+    return link;
+  }
+
+  function makeResultLink(entry: SitePage | CommandAction) {
+    const link = createResultLink(entry, "cmdk");
     if ("command" in entry) {
       link.dataset.command = entry.command;
       link.classList.add("cmdk-result-link--action");
@@ -156,14 +174,8 @@ const pages = getSitePages();
         }
       });
     }
-    const activate = () => {
-      setActive(getResultLinks().indexOf(link));
-    };
-    link.addEventListener("mouseenter", activate);
-    // The focus trap can Tab onto links directly; keep the selection in
-    // sync so Enter (which targets the selection) matches what's focused.
-    link.addEventListener("focus", activate);
-    return link;
+
+    return makeOption(link);
   }
 
   function getResultLinks(): HTMLAnchorElement[] {
@@ -192,54 +204,86 @@ const pages = getSitePages();
     if (input) input.setAttribute("aria-activedescendant", active?.id ?? "");
   }
 
-  function renderList(items: (SitePage | CommandAction)[]) {
+  function appendGroup(title: string, nodes: Node[]) {
     if (!resultsEl) return;
-    resultsEl.classList.remove("is-flat");
+    const section = document.createElement("div");
+    section.className = "cmdk-group";
+    // Transparent to AT so the listbox → option relationship isn't
+    // broken by this grouping wrapper.
+    section.setAttribute("role", "presentation");
+
+    const heading = document.createElement("h3");
+    heading.className = "cmdk-group-title";
+    heading.textContent = title;
+    section.append(heading, ...nodes);
+
+    resultsEl.appendChild(section);
+  }
+
+  function resetResults(flat: boolean) {
+    if (!resultsEl) return;
+    resultsEl.classList.toggle("is-flat", flat);
     resultsEl.innerHTML = "";
-    const groups = groupByCategory(items);
-    let index = 0;
-    for (const [category, entries] of groups) {
-      const section = document.createElement("div");
-      section.className = "cmdk-group";
-      // Transparent to AT so the listbox → option relationship isn't
-      // broken by this grouping wrapper.
-      section.setAttribute("role", "presentation");
-
-      const heading = document.createElement("h3");
-      heading.className = "cmdk-group-title";
-      heading.textContent = category;
-      section.appendChild(heading);
-
-      for (const entry of entries) {
-        section.appendChild(makeResultLink(entry, index++));
-      }
-      resultsEl.appendChild(section);
-    }
+    optionIndex = 0;
   }
 
   function renderFlatList(items: (SitePage | CommandAction)[]) {
-    if (!resultsEl) return;
-    resultsEl.classList.add("is-flat");
-    resultsEl.innerHTML = "";
-    items.forEach((entry, i) =>
-      resultsEl.appendChild(makeResultLink(entry, i)),
+    resetResults(true);
+    for (const entry of items) {
+      resultsEl?.appendChild(makeResultLink(entry));
+    }
+  }
+
+  function setEmpty(text: string | null) {
+    if (!emptyEl) return;
+    if (text === null) {
+      emptyEl.hidden = true;
+    } else {
+      emptyEl.textContent = text;
+      emptyEl.hidden = false;
+    }
+  }
+
+  /** The empty-query view: recents, page groups, then actions. */
+  function renderDefault() {
+    resetResults(false);
+
+    if (recentPages.length) {
+      appendGroup(
+        "Recent",
+        recentPages.map((entry) => makeResultLink(entry)),
+      );
+    }
+    for (const [category, entries] of groupByCategory(pages)) {
+      appendGroup(
+        category,
+        entries.map((entry) => makeResultLink(entry)),
+      );
+    }
+    appendGroup(
+      "Actions",
+      actions.map((entry) => makeResultLink(entry)),
     );
   }
 
-  function update(query: string) {
-    const trimmed = query.trim();
+  function renderRanked(trimmed: string) {
+    // Fuzzy-ranked: title matches always outrank keyword matches, which
+    // outrank description matches, which outrank category matches (see
+    // rankPages). The palette reads top-to-bottom with the input at the
+    // top, so the best match renders first.
+    const ranked = rankPages(paletteEntries, trimmed);
+    setEmpty(ranked.length ? null : "No pages match that.");
+    renderFlatList(ranked);
+  }
 
-    if (!trimmed) {
-      if (emptyEl) emptyEl.hidden = true;
-      renderList(paletteEntries);
+  function update() {
+    const trimmed = (input?.value ?? "").trim();
+
+    if (trimmed) {
+      renderRanked(trimmed);
     } else {
-      // Fuzzy-ranked: title matches always outrank keyword matches,
-      // which outrank description matches, which outrank category
-      // matches (see rankPages). The palette reads top-to-bottom with
-      // the input at the top, so the best match renders first.
-      const ranked = rankPages(paletteEntries, trimmed);
-      if (emptyEl) emptyEl.hidden = ranked.length > 0;
-      renderFlatList(ranked);
+      setEmpty(null);
+      renderDefault();
     }
 
     if (resultsScroll) resultsScroll.scrollTop = 0;
@@ -255,7 +299,7 @@ const pages = getSitePages();
     input?.setAttribute("aria-expanded", "true");
     panel?.removeAttribute("inert");
     document.body.style.overflow = "hidden";
-    update("");
+    update();
     requestAnimationFrame(() => input?.focus());
   }
 
@@ -331,9 +375,7 @@ const pages = getSitePages();
   });
 
   scrim?.addEventListener("click", close);
-  input?.addEventListener("input", (e) =>
-    debouncedUpdate((e.target as HTMLInputElement).value),
-  );
+  input?.addEventListener("input", () => debouncedUpdate());
   document
     .getElementById("cmdk-trigger")
     ?.addEventListener("click", () => (isOpen() ? close() : open()));

@@ -121,6 +121,7 @@ const pages = getSitePages();
     createResultLink,
     type SitePage,
   } from "@utils/pageSearch";
+  import { readRecentPages, trackCurrentPage } from "@/lib/recent-pages";
 
   const dock = document.getElementById("dock");
   const panel = document.getElementById("dock-panel");
@@ -136,31 +137,28 @@ const pages = getSitePages();
     "dock-search-input",
   ) as HTMLInputElement | null;
 
-  const makeResultLink = (entry: SitePage) => createResultLink(entry, "dock");
-
   const pages: SitePage[] = JSON.parse(
     document.getElementById("dock-data")?.textContent || "[]",
   );
 
-  function renderList(items: SitePage[]) {
+  // Recents resolve against the searchable pages only, so every entry
+  // has a title and a path the search itself knows about.
+  trackCurrentPage(pages);
+  const recentPages = readRecentPages(pages, window.location.pathname);
+
+  const makeResultLink = (entry: SitePage) => createResultLink(entry, "dock");
+
+  function appendGroup(title: string, nodes: Node[]) {
     if (!resultsEl) return;
-    resultsEl.classList.remove("is-flat");
-    resultsEl.innerHTML = "";
-    const groups = groupByCategory(items);
-    for (const [category, entries] of groups) {
-      const section = document.createElement("div");
-      section.className = "dock-group";
+    const section = document.createElement("div");
+    section.className = "dock-group";
 
-      const heading = document.createElement("h3");
-      heading.className = "dock-group-title";
-      heading.textContent = category;
-      section.appendChild(heading);
+    const heading = document.createElement("h3");
+    heading.className = "dock-group-title";
+    heading.textContent = title;
+    section.append(heading, ...nodes);
 
-      for (const entry of entries) {
-        section.appendChild(makeResultLink(entry));
-      }
-      resultsEl.appendChild(section);
-    }
+    resultsEl.appendChild(section);
   }
 
   function renderFlatList(items: SitePage[]) {
@@ -169,6 +167,20 @@ const pages = getSitePages();
     resultsEl.innerHTML = "";
     for (const entry of items) {
       resultsEl.appendChild(makeResultLink(entry));
+    }
+  }
+
+  /** The empty-query view: recents first, then every page group. */
+  function renderDefault() {
+    if (!resultsEl) return;
+    resultsEl.classList.remove("is-flat");
+    resultsEl.innerHTML = "";
+
+    if (recentPages.length) {
+      appendGroup("Recent", recentPages.map(makeResultLink));
+    }
+    for (const [category, entries] of groupByCategory(pages)) {
+      appendGroup(category, entries.map(makeResultLink));
     }
   }
 
@@ -186,6 +198,16 @@ const pages = getSitePages();
     links[links.length - 1]?.classList.add("is-best");
   }
 
+  function setEmpty(text: string | null) {
+    if (!emptyEl) return;
+    if (text === null) {
+      emptyEl.hidden = true;
+    } else {
+      emptyEl.textContent = text;
+      emptyEl.hidden = false;
+    }
+  }
+
   function updateFadeVisibility() {
     if (!panelScroll || !panelFade) return;
     const atBottom =
@@ -196,12 +218,12 @@ const pages = getSitePages();
     panelFade.style.opacity = atBottom ? "0" : "1";
   }
 
-  function update(query: string) {
-    const trimmed = query.trim();
+  function update() {
+    const trimmed = (input?.value ?? "").trim();
 
     if (!trimmed) {
-      if (emptyEl) emptyEl.hidden = true;
-      renderList(pages);
+      setEmpty(null);
+      renderDefault();
       if (panelScroll) panelScroll.scrollTop = 0;
       if (statusEl) statusEl.textContent = `${pages.length} pages`;
     } else {
@@ -209,7 +231,7 @@ const pages = getSitePages();
       // which outrank description matches, which outrank category
       // matches (see rankPages).
       const ranked = rankPages(pages, trimmed);
-      if (emptyEl) emptyEl.hidden = ranked.length > 0;
+      setEmpty(ranked.length ? null : "No pages match that.");
       // The search input sits at the bottom of the screen, so the best
       // match should land closest to it — render weakest-first so the
       // top match ends up last (nearest the input), and default-scroll
@@ -252,7 +274,7 @@ const pages = getSitePages();
     scrim?.setAttribute("data-visible", "true");
     searchBtn?.setAttribute("aria-expanded", "true");
     panel?.removeAttribute("inert");
-    update("");
+    update();
     document.body.style.overflow = "hidden";
     updateViewportOffset();
     // Keep the panel open without focusing the input. On mobile, focusing a
@@ -305,9 +327,8 @@ const pages = getSitePages();
   searchBtn?.addEventListener("click", expand);
   backBtn?.addEventListener("click", collapse);
   scrim?.addEventListener("click", collapse);
-  input?.addEventListener("input", (e) =>
-    debouncedUpdate((e.target as HTMLInputElement).value),
-  );
+
+  input?.addEventListener("input", () => debouncedUpdate());
   // Enter on the touch keyboard (Gboard etc.) activates the best-ranked
   // result directly — ranked synchronously here rather than reading the
   // rendered list, so it's correct even when the user hits Enter before
