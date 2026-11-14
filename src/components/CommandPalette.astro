@@ -612,6 +612,14 @@ const pages = getSitePages();
     font-size: 0.8rem;
   }
 
+  /* Matched characters in a title; accent-tinted rather than the
+     browser's default yellow mark. */
+  :global(.cmdk-result-match) {
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: 2px;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     :global(.cmdk-result-link:hover .cmdk-result-desc) {
       color: var(--text-light);
