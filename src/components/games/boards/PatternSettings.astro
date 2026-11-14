@@ -1,0 +1,44 @@
+<label class="playback-setting">
+  <input
+    type="checkbox"
+    data-paced
+    data-game-setting
+    aria-describedby="paced-help"
+    disabled
+  />
+  Watch at my pace
+</label>
+<span class="visually-hidden" id="paced-help">
+  Use the button below the grid to advance each tile, then start your turn. You
+  can also use Enter or Space.
+</span>
+
+<style>
+  .playback-setting {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    min-height: 44px;
+    margin-top: 0.25rem;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+  @media (max-width: 768px) {
+    .playback-setting {
+      margin-top: 0;
+    }
+  }
+  .playback-setting:has(input:disabled) {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .playback-setting input {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 0;
+    accent-color: var(--accent);
+  }
+</style>

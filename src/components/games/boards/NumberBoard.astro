@@ -1,0 +1,137 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div class="number-board">
+  <div class="number-preview" data-number-preview aria-hidden="true">
+    5<span>8</span>3
+  </div>
+  <div class="number-watch" data-number-watch hidden>
+    <span class="remember-label" data-number-label>Remember this</span>
+    <strong class="number-value" data-number></strong>
+    <div class="memory-timer" aria-hidden="true">
+      <span data-timer></span>
+    </div>
+  </div>
+  <form data-number-form hidden novalidate>
+    <label for="number-answer">What was the number?</label>
+    <input
+      id="number-answer"
+      data-answer
+      type="text"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      enterkeyhint="done"
+      aria-describedby="number-error"
+      disabled
+    />
+    <p id="number-error" data-input-error class="input-error" role="alert"></p>
+    <button class="game-button" type="submit">
+      Check number <Icon name="lucide:arrow-right" size={16} />
+    </button>
+  </form>
+</div>
+
+<style>
+  .number-board {
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .number-preview {
+    font: 500 4.5rem var(--mono);
+    letter-spacing: -0.04em;
+    color: var(--text-light);
+    transform: rotate(-5deg);
+  }
+  .number-preview span {
+    display: inline-block;
+    color: var(--accent);
+    transform: translateY(-8px) rotate(8deg);
+  }
+  .number-watch {
+    width: 100%;
+    text-align: center;
+  }
+  .remember-label,
+  form label {
+    display: block;
+    font-size: 0.8125rem;
+    margin-bottom: 1.25rem;
+    color: var(--text-muted);
+  }
+  .number-value {
+    display: block;
+    font: 500 3rem var(--mono);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+    line-height: 1.4;
+    color: var(--text);
+  }
+  .memory-timer {
+    height: 3px;
+    background: var(--border);
+    max-width: 170px;
+    margin: 1.75rem auto 0;
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .memory-timer span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--accent);
+    transform-origin: left;
+  }
+  form {
+    width: 100%;
+    text-align: center;
+  }
+  form label {
+    margin-bottom: 0.75rem;
+  }
+  input {
+    width: 100%;
+    border: 1px solid var(--game-control-border);
+    border-radius: var(--radius);
+    background: var(--game-control-bg);
+    padding: 0.7rem 0.6rem;
+    font: 500 1.75rem var(--mono);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--text);
+    caret-color: var(--accent);
+  }
+  input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    background: var(--game-control-bg);
+    border-color: var(--accent);
+  }
+  .input-error {
+    min-height: 1.4em;
+    font-size: 0.75rem;
+    margin: 0.5rem 0;
+    color: var(--text);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    input:hover {
+      background: color-mix(in srgb, var(--game-control-bg) 96%, var(--text));
+      border-color: color-mix(
+        in srgb,
+        var(--game-control-border) 60%,
+        var(--accent)
+      );
+    }
+  }
+  @media (max-width: 480px) {
+    .number-board {
+      min-height: 230px;
+    }
+  }
+</style>

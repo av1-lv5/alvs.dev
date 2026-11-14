@@ -1,0 +1,42 @@
+<div class="mini-number">
+  <span>5</span>
+  <span>8</span>
+  <span>3</span>
+  <span class="number-ghost">?</span>
+</div>
+
+<style>
+  .mini-number {
+    display: flex;
+    align-items: center;
+    font: 500 2rem var(--mono);
+    letter-spacing: -0.04em;
+    color: var(--accent);
+    transform: rotate(5deg);
+    transition: transform 220ms ease-out;
+  }
+  .mini-number span {
+    display: block;
+  }
+  .mini-number .number-ghost {
+    color: var(--text-light);
+    font-size: 1.25rem;
+    margin-left: 0.25rem;
+    transform: translateY(-8px) rotate(12deg);
+  }
+  @media (hover: hover) {
+    :global(.game-entry:hover) .mini-number {
+      transform: rotate(-3deg);
+    }
+  }
+  @media (max-width: 480px) {
+    .mini-number {
+      font-size: 1.5rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mini-number {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,15 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import GamePlayer from "@components/games/GamePlayer.astro";
+import { GAMES } from "../../lib/games/registry";
+
+export function getStaticPaths() {
+  return GAMES.map((game) => ({ params: { game: game.id }, props: { game } }));
+}
+
+const { game } = Astro.props;
+---
+
+<PageLayout tabTitle={game.title} description={game.instruction}>
+  <GamePlayer game={game} />
+</PageLayout>

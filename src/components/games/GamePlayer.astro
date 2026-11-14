@@ -1,0 +1,410 @@
+---
+import { Icon } from "astro-icon/components";
+import { GAMES } from "../../lib/games/registry";
+import { GAME_PARTS } from "./game-parts";
+import "../../styles/games.css";
+
+interface Props {
+  game: (typeof GAMES)[number];
+}
+const { game } = Astro.props;
+const { Board, Settings } = GAME_PARTS[game.id];
+const notes: readonly string[] = game.notes;
+---
+
+<div class="game-page">
+  <a href="/games/" class="back-link"
+    ><Icon name="lucide:arrow-left" size={15} /> All games</a
+  >
+  <h1>{game.title}</h1>
+
+  <memory-game data-game={game.id} data-phase="ready">
+    <div class="game-arena">
+      <div class="game-toolbar">
+        <dl class="game-stats">
+          <div><dt>Level</dt><dd data-level>1</dd></div>
+          <div><dt>Best</dt><dd data-best>—</dd></div>
+        </dl>
+        <div class="toolbar-actions">
+          <button
+            type="button"
+            class="toolbar-button"
+            data-restart
+            aria-label="Start over from level 1"
+            hidden
+          >
+            <Icon name="lucide:rotate-ccw" size={16} />
+            <span>Start over</span>
+          </button>
+          <button
+            type="button"
+            class="toolbar-button"
+            data-pause-button
+            aria-label="Pause"
+            hidden
+          >
+            <Icon name="lucide:pause" size={16} />
+            <span class="toolbar-label">Pause</span>
+          </button>
+          <button
+            type="button"
+            class="toolbar-button"
+            data-sound
+            aria-pressed="false"
+            aria-label="Sound effects"
+            disabled
+          >
+            <span data-sound-off><Icon name="lucide:volume-x" size={17} /></span
+            >
+            <span data-sound-on hidden
+              ><Icon name="lucide:volume-2" size={17} /></span
+            >
+            <span class="toolbar-label" data-sound-label>Sound off</span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="round-heading"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <p class="round-title" data-title>Ready when you are.</p>
+        <p class="round-detail" id="game-detail" data-detail>
+          {game.instruction}
+        </p>
+      </div>
+
+      <div class="game-board" data-board>
+        <Board />
+        <div class="pause-cover" data-pause hidden>
+          <Icon name="lucide:pause" size={32} /><span
+            >No rush. We're still here.</span
+          >
+        </div>
+      </div>
+
+      <div class="game-actions">
+        <button
+          type="button"
+          class="game-button"
+          data-action
+          aria-describedby="game-detail"
+          disabled>Start game <Icon name="lucide:play" size={15} /></button
+        >
+      </div>
+
+      <div class="game-settings">
+        {Settings && <Settings />}
+      </div>
+    </div>
+    <p
+      class="visually-hidden"
+      data-announcer
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+    </p>
+    <noscript
+      ><p>
+        These games need JavaScript to play. Please enable it, then reload this
+        page.
+      </p></noscript
+    >
+  </memory-game>
+
+  <details class="game-rules">
+    <summary>How to play</summary>
+    <p>{game.rule}</p>
+    <p>
+      Watch first, then answer. Take the next level when you're ready. Switching
+      tabs pauses the round; return to replay it without losing your run. Use
+      Pause to step away. Your run is saved on this device, so you can come back
+      later and continue from the same level.
+    </p>
+    {notes.map((note) => <p>{note}</p>)}
+    <p>
+      Best is the highest level you've completed. Sound starts off and is never
+      needed to play.
+    </p>
+  </details>
+</div>
+
+<script>
+  import "../../scripts/games/memory-game";
+</script>
+
+<style>
+  .game-page {
+    padding-top: 1.25rem;
+  }
+  .back-link {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    min-height: 32px;
+    font-size: 0.8125rem;
+    color: var(--text-light);
+  }
+  h1 {
+    font-size: clamp(1.6rem, 5vw, 2.25rem);
+    margin: 1.25rem 0 1rem;
+  }
+  memory-game {
+    --board-size: 300px;
+    display: block;
+  }
+  .game-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .game-stats {
+    display: flex;
+    gap: 2rem;
+    margin: 0;
+  }
+  .game-stats div {
+    display: flex;
+    gap: 0.65rem;
+    align-items: baseline;
+  }
+  .game-stats dt {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    margin: 0;
+    color: var(--text-light);
+  }
+  .game-stats dd {
+    font: 500 1rem var(--mono);
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+    color: var(--text);
+  }
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .toolbar-button {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    font: inherit;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .toolbar-button span {
+    display: inline-flex;
+  }
+  .game-arena {
+    padding: 1.5rem 1.5rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
+  }
+  .game-settings {
+    display: flex;
+    justify-content: center;
+  }
+  .round-heading {
+    text-align: center;
+    min-height: 80px;
+    margin-bottom: 0.75rem;
+  }
+  .round-title {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin: 0 0 0.35rem;
+  }
+  .round-detail {
+    font-size: 0.8125rem;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .game-board {
+    position: relative;
+    width: min(100%, var(--board-size));
+    margin: 0 auto;
+  }
+  .game-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 48px;
+    width: min(100%, var(--board-size));
+    margin: 1.25rem auto 0;
+  }
+  .game-actions .game-button {
+    width: 100%;
+    min-height: 48px;
+    transition: background-color 120ms ease-out;
+  }
+  .game-actions .game-button:active {
+    transform: none;
+    background: var(--accent-hover);
+  }
+  .pause-cover {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: var(--bg-soft);
+    font-size: 0.8125rem;
+    color: var(--text-light);
+  }
+  .game-rules {
+    border-bottom: 1px solid var(--border);
+    padding: 1.1rem 0;
+    margin-top: 1rem;
+  }
+  summary {
+    cursor: pointer;
+    min-height: 30px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  .game-rules p {
+    font-size: 0.875rem;
+    margin: 0.75rem 0;
+    max-width: 65ch;
+  }
+  [data-phase="success"] .round-title {
+    color: var(--accent);
+  }
+  /* Wide screens: the board gets its own column and the round sits beside it,
+     instead of a small board in a wide empty card. */
+  @media (min-width: 769px) {
+    .game-arena {
+      display: grid;
+      grid-template-columns: var(--board-size) minmax(0, 1fr);
+      grid-template-rows: auto 1fr auto auto;
+      grid-template-areas:
+        "board bar"
+        "board status"
+        "board actions"
+        "board pace";
+      column-gap: 2.5rem;
+      padding: 1.75rem;
+    }
+    .game-board {
+      grid-area: board;
+      align-self: start;
+      width: 100%;
+      margin: 0;
+    }
+    .game-toolbar {
+      grid-area: bar;
+      align-items: flex-start;
+    }
+    .round-heading {
+      grid-area: status;
+      text-align: left;
+      margin-bottom: 0;
+    }
+    .game-actions {
+      grid-area: actions;
+      align-items: stretch;
+      margin: 0.75rem 0 0;
+    }
+    .game-settings {
+      grid-area: pace;
+      justify-content: flex-start;
+    }
+    .game-stats {
+      gap: 2.25rem;
+    }
+    .game-stats div {
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+    .game-stats dd {
+      font-size: 1.5rem;
+      line-height: 1.2;
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .toolbar-button:hover {
+      color: var(--text);
+      border-color: var(--text-light);
+    }
+  }
+  /* Same breakpoint as the mobile dock: below it the header is gone and the
+     dock covers the bottom, so the page fits the visible height instead of
+     scrolling. */
+  @media (max-width: 768px) {
+    .game-page {
+      padding-top: 0.5rem;
+    }
+    h1 {
+      margin: 1rem 0 0.75rem;
+    }
+    .game-arena {
+      padding: 1rem 1rem 0.75rem;
+    }
+    .game-toolbar {
+      margin-bottom: 0.5rem;
+    }
+    .game-stats {
+      gap: 1.1rem;
+    }
+    .game-stats div {
+      gap: 0.4rem;
+    }
+    .toolbar-button {
+      min-width: 44px;
+    }
+    /* Pause and Sound shrink to icons; Start over keeps its words. */
+    .toolbar-button .toolbar-label {
+      display: none;
+    }
+    .game-actions {
+      margin-top: 1rem;
+    }
+    /* The arena sits above the dock, so the fade meant for content scrolling
+       under the dock would only blur the button and checkbox. */
+    :global(.dock-fade) {
+      display: none !important;
+    }
+    /* The pattern board fills the height left above the dock instead of
+       stepping down through fixed sizes. --game-chrome is everything else
+       on screen: back link, title, arena header and status, button,
+       checkbox, dock and a gap above it. */
+    memory-game[data-game="pattern"] {
+      --game-chrome: calc(31rem + env(safe-area-inset-bottom));
+      --board-size: clamp(180px, calc(100vh - var(--game-chrome)), 320px);
+    }
+    @supports (height: 100dvh) {
+      memory-game[data-game="pattern"] {
+        --board-size: clamp(180px, calc(100dvh - var(--game-chrome)), 320px);
+      }
+    }
+  }
+  @media (max-width: 480px) {
+    memory-game[data-game="number"] {
+      --board-size: 264px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .game-actions .game-button {
+      transition: none;
+    }
+  }
+</style>

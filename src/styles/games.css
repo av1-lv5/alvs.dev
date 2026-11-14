@@ -1,0 +1,70 @@
+/* Shared by every game board. Anything specific to one game lives in that
+   game's own board component. */
+
+:root {
+  --game-control-bg: color-mix(
+    in srgb,
+    light-dark(#f8f9fb, #1c1f24) 80%,
+    var(--bg-soft)
+  );
+  --game-control-border: light-dark(#7e8896, #68717d);
+}
+
+memory-game [hidden] {
+  display: none !important;
+}
+
+memory-game .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+memory-game .game-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--bg);
+  font: 500 0.875rem var(--sans);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    transform 120ms ease-out,
+    background-color 120ms ease-out;
+}
+
+memory-game .game-button:active {
+  transform: scale(0.97);
+}
+
+memory-game .game-button:focus-visible:active {
+  transform: none;
+}
+
+memory-game .game-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  memory-game .game-button:hover {
+    background: var(--accent-hover);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  memory-game .game-button {
+    transition: none;
+  }
+}

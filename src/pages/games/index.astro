@@ -1,0 +1,180 @@
+---
+import PageLayout from "@layouts/PageLayout.astro";
+import { Icon } from "astro-icon/components";
+import { GAME_PARTS } from "../../components/games/game-parts";
+import { GAMES } from "../../lib/games/registry";
+---
+
+<PageLayout
+  tabTitle="Games"
+  description="Small, playful memory games. Remember a pattern, remember a number, and beat your own best."
+>
+  <section class="games-intro">
+    <h1>/games<span class="heading-dot" aria-hidden="true"></span></h1>
+    <p class="hero-text">A small detour for your brain.</p>
+    <p>Pick a game. Find your rhythm. Surprise yourself.</p>
+  </section>
+
+  <div class="game-shelf">
+    {
+      GAMES.map((game) => {
+        const { Preview } = GAME_PARTS[game.id];
+        return (
+          <a href={`/games/${game.id}/`} class="game-entry">
+            <div
+              class:list={["game-preview", `preview-${game.id}`]}
+              aria-hidden="true"
+            >
+              <Preview />
+            </div>
+            <div class="entry-copy">
+              <h2>{game.title}</h2>
+              <p>{game.description}</p>
+              <div class="entry-meta">
+                <span class="play-link">
+                  Let's play <Icon name="lucide:arrow-right" size={16} />
+                </span>
+                <span class="best" data-best-for={game.id} hidden>
+                  Best level <span class="best-value" data-best-value />
+                </span>
+              </div>
+            </div>
+          </a>
+        );
+      })
+    }
+  </div>
+</PageLayout>
+
+<script>
+  import { bestStorageKey, readBest } from "../../lib/games/session";
+
+  // Personal bests live on this device, so they're filled in after load.
+  function showBests() {
+    try {
+      for (const entry of document.querySelectorAll<HTMLElement>(
+        "[data-best-for]",
+      )) {
+        const best = readBest(
+          localStorage,
+          bestStorageKey(entry.dataset.bestFor ?? ""),
+        );
+        const value = entry.querySelector("[data-best-value]");
+        if (best && value) {
+          value.textContent = String(best);
+          entry.hidden = false;
+        }
+      }
+    } catch {
+      /* Storage is unavailable; the hub works without bests. */
+    }
+  }
+
+  showBests();
+  // Coming back from a game can restore this page from bfcache, so refresh.
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) showBests();
+  });
+</script>
+
+<style>
+  .games-intro {
+    margin-bottom: 2.5rem;
+  }
+  h1 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+  }
+  .heading-dot {
+    width: 9px;
+    height: 9px;
+    background: var(--accent);
+    border-radius: 2px;
+    transform: rotate(-12deg);
+  }
+  .games-intro .hero-text {
+    margin-bottom: 0.5rem;
+  }
+  .game-shelf {
+    border-top: 1px solid var(--border);
+  }
+  .game-entry {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .game-entry:hover {
+    text-decoration: none;
+  }
+  .game-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 148px;
+    background: var(--bg-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .entry-copy h2 {
+    border: 0;
+    padding: 0;
+    font-size: 1.25rem;
+    margin: 0 0 0.65rem;
+    letter-spacing: -0.025em;
+  }
+  .entry-copy p {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    max-width: 35ch;
+  }
+  .entry-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1.25rem;
+  }
+  .play-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--accent);
+  }
+  .best {
+    font-size: 0.8125rem;
+    color: var(--text-light);
+  }
+  .best-value {
+    font: 500 0.8125rem var(--mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  @media (hover: hover) {
+    .game-entry:hover .play-link {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+  @media (max-width: 480px) {
+    .game-entry {
+      grid-template-columns: 100px 1fr;
+      gap: 1.1rem;
+      padding: 1.5rem 0;
+    }
+    .game-preview {
+      height: 120px;
+    }
+    .entry-copy h2 {
+      font-size: 1.0625rem;
+    }
+    .entry-copy p {
+      font-size: 0.8125rem;
+    }
+  }
+</style>

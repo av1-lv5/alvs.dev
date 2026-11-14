@@ -1,0 +1,97 @@
+---
+import { Icon } from "astro-icon/components";
+import { tileName } from "../../../lib/games/navigation";
+---
+
+<div
+  class="pattern-grid"
+  role="group"
+  aria-label="Pattern tiles. Use the arrow keys to move, then Enter or Space to choose."
+>
+  {
+    Array.from({ length: 9 }, (_, index) => (
+      <button
+        type="button"
+        class="pattern-tile"
+        data-tile={index}
+        aria-label={tileName(index)}
+        tabindex="-1"
+        disabled
+      >
+        <Icon name="lucide:sparkle" size={22} class="tile-spark" />
+      </button>
+    ))
+  }
+</div>
+
+<style>
+  .pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .pattern-tile {
+    position: relative;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--game-control-border);
+    border-radius: var(--radius);
+    background: var(--game-control-bg);
+    color: var(--text-light);
+    cursor: pointer;
+    touch-action: manipulation;
+    transition:
+      transform 120ms ease-out,
+      background-color 100ms ease-out;
+  }
+  .pattern-tile:disabled {
+    opacity: 1;
+    cursor: default;
+  }
+  .tile-spark {
+    position: absolute;
+    display: none;
+  }
+  .pattern-tile.is-lit {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+  .pattern-tile.is-lit .tile-spark {
+    display: block;
+  }
+  .pattern-tile.is-wrong {
+    border-style: dashed;
+    border-color: var(--text);
+    background: color-mix(in srgb, var(--text) 15%, var(--bg));
+  }
+  .pattern-tile.is-expected {
+    outline: 2px solid var(--accent);
+    outline-offset: -5px;
+  }
+  .pattern-tile:not(:disabled):not(.is-lit):focus-visible {
+    background: var(--game-control-bg);
+    border-color: var(--accent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pattern-tile:not(:disabled):not(.is-lit):hover {
+      background: color-mix(in srgb, var(--game-control-bg) 96%, var(--text));
+      border-color: color-mix(
+        in srgb,
+        var(--game-control-border) 60%,
+        var(--accent)
+      );
+    }
+  }
+  @media (max-width: 768px) {
+    .pattern-grid {
+      gap: 8px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pattern-tile {
+      transition: none;
+    }
+  }
+</style>

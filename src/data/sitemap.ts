@@ -96,6 +96,12 @@ export const sitemapSections: SitemapSection[] = [
   {
     title: "Interests",
     items: [
+      {
+        href: "/games/",
+        label: "Games",
+        description: "Small memory games. A quick detour for your brain.",
+        keywords: ["play", "pattern", "number", "memory", "brain games"],
+      },
       // Keep Music as a ghost page until Spotify is available again.
       // {
       //   href: "/music/",

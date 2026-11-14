@@ -1,0 +1,42 @@
+<div class="mini-grid">
+  {
+    Array.from({ length: 9 }, (_, i) => (
+      <span class:list={[{ lit: [0, 4, 7].includes(i) }]} />
+    ))
+  }
+</div>
+
+<style>
+  .mini-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 26px);
+    gap: 6px;
+    transform: rotate(-7deg);
+    transition: transform 220ms ease-out;
+  }
+  .mini-grid span {
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--text) 22%, var(--bg));
+    border-radius: 4px;
+  }
+  .mini-grid .lit {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  @media (hover: hover) {
+    :global(.game-entry:hover) .mini-grid {
+      transform: rotate(0);
+    }
+  }
+  @media (max-width: 480px) {
+    .mini-grid {
+      grid-template-columns: repeat(3, 21px);
+      gap: 5px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mini-grid {
+      transition: none;
+    }
+  }
+</style>
