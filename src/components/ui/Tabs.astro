@@ -77,7 +77,7 @@ const tabItems = await Promise.all(
           // Update panels in this container
           panels.forEach((panel) => {
             const isMatch = panel.id === `panel-${tabId}`;
-            panel.hidden = !isMatch;
+            (panel as HTMLElement).hidden = !isMatch;
           });
         });
       });

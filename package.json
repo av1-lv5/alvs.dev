@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "ASTRO_LOCAL_DEV=1 astro dev --host",
     "start": "ASTRO_LOCAL_DEV=1 astro dev --host",
-    "build": "astro build",
+    "check": "astro check",
+    "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier . --write",
@@ -27,9 +28,11 @@
     "sharp": "^0.33.3"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.12",
     "@astrojs/react": "^6.0.6",
     "@iconify-json/lucide": "^1.2.87",
     "@iconify-json/simple-icons": "^1.2.65",
+    "@types/node": "^26.6.6",
     "agentation": "^3.1.1",
     "gray-matter": "^4.0.3",
     "prettier": "^3.8.1",

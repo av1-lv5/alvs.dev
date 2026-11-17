@@ -1,4 +1,20 @@
-export const experiences = [
+type ExperiencePoint = {
+  label: string;
+  context?: string;
+  text: string;
+  href?: string;
+};
+
+type Experience = {
+  company: string;
+  role: string;
+  period: string;
+  location?: string;
+  summary?: string;
+  points: ExperiencePoint[];
+};
+
+export const experiences: Experience[] = [
   {
     company: "Independent · Product Development",
     role: "Frontend Engineer · Building & Learning",

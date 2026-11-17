@@ -1,5 +1,5 @@
 ---
-import { getEntry } from "astro:content";
+import { getEntry, type CollectionEntry } from "astro:content";
 
 // Components
 import ProductCard from "@components/ProductCard.astro";
@@ -10,8 +10,8 @@ interface Props {
 
 const { count } = Astro.props;
 
-const fetchedProducts = [];
-fetchedProducts.push(await getEntry("projects", "orbit"));
+const orbit = await getEntry("projects", "orbit");
+const fetchedProducts: CollectionEntry<"projects">[] = orbit ? [orbit] : [];
 
 const displayedProducts = count
   ? fetchedProducts.slice(0, count)
