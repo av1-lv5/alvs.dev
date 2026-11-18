@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import BackInHistory from "@components/BackInHistory.astro";
 import { GAMES } from "../../lib/games/registry";
 import { GAME_PARTS } from "./game-parts";
 import "../../styles/games.css";
@@ -10,12 +11,19 @@ interface Props {
 const { game } = Astro.props;
 const { Board, Settings } = GAME_PARTS[game.id];
 const notes: readonly string[] = game.notes;
+
+// Backticked runs become <kbd> chips, e.g. "then press `Enter` to check".
+const noteParts = (note: string) =>
+  note.split("`").map((text, index) => ({ text, isKey: index % 2 === 1 }));
 ---
 
 <div class="game-page">
-  <a href="/games/" class="back-link"
-    ><Icon name="lucide:arrow-left" size={15} /> All games</a
-  >
+  <div class="sub-navigation">
+    <BackInHistory href="/games" label="Games" />
+    <div class="links-container">
+      <a href="/" class="nav-like">Home</a>
+    </div>
+  </div>
   <h1>{game.title}</h1>
 
   <memory-game data-game={game.id} data-phase="ready">
@@ -116,19 +124,43 @@ const notes: readonly string[] = game.notes;
   </memory-game>
 
   <details class="game-rules">
-    <summary>How to play</summary>
-    <p>{game.rule}</p>
-    <p>
-      Watch first, then answer. Take the next level when you're ready. Switching
-      tabs pauses the round; return to replay it without losing your run. Use
-      Pause to step away. Your run is saved on this device, so you can come back
-      later and continue from the same level.
-    </p>
-    {notes.map((note) => <p>{note}</p>)}
-    <p>
-      Best is the highest level you've completed. Sound starts off and is never
-      needed to play.
-    </p>
+    <summary>
+      <Icon name="lucide:chevron-right" size={15} class="rules-chevron" />
+      <span>How to play</span>
+    </summary>
+    <dl class="rules-list">
+      <div>
+        <dt>Goal</dt>
+        <dd>{game.rule}</dd>
+      </div>
+      {
+        notes.length > 0 && (
+          <div>
+            <dt>Controls</dt>
+            <dd>
+              {notes.map((note) => (
+                <p>
+                  {noteParts(note).map(({ text, isKey }) =>
+                    isKey ? <kbd>{text}</kbd> : text,
+                  )}
+                </p>
+              ))}
+            </dd>
+          </div>
+        )
+      }
+      <div>
+        <dt>Pausing</dt>
+        <dd>
+          Leaving the tab or pressing Pause pauses the round; your run is saved,
+          so replay it with no penalty.
+        </dd>
+      </div>
+      <div>
+        <dt>Best</dt>
+        <dd>The highest level you've completed.</dd>
+      </div>
+    </dl>
   </details>
 </div>
 
@@ -138,19 +170,26 @@ const notes: readonly string[] = game.notes;
 
 <style>
   .game-page {
-    padding-top: 1.25rem;
+    padding-top: 0;
   }
-  .back-link {
-    display: inline-flex;
-    gap: 0.5rem;
+  /* Same sub-navigation as the note and project pages. */
+  .sub-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin: 2.5rem 0 0;
+  }
+  .links-container {
+    display: flex;
     align-items: center;
-    min-height: 32px;
-    font-size: 0.8125rem;
-    color: var(--text-light);
+    gap: 0.5rem;
+  }
+  a.nav-like {
+    border-color: var(--accent);
+    color: var(--accent);
   }
   h1 {
+    /* Size only: the top/bottom rhythm comes from the global heading rule. */
     font-size: clamp(1.6rem, 5vw, 2.25rem);
-    margin: 1.25rem 0 1rem;
   }
   memory-game {
     --board-size: 300px;
@@ -271,20 +310,98 @@ const notes: readonly string[] = game.notes;
     color: var(--text-light);
   }
   .game-rules {
-    border-bottom: 1px solid var(--border);
-    padding: 1.1rem 0;
-    margin-top: 1rem;
+    padding: 1.1rem 0 0;
+    margin-top: 1.5rem;
   }
   summary {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    list-style: none;
     cursor: pointer;
     min-height: 30px;
     font-size: 0.875rem;
-    color: var(--text-muted);
+    font-weight: 500;
+    color: var(--text);
+    transition: color 120ms ease-out;
   }
-  .game-rules p {
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .rules-chevron {
+    flex: none;
+    transition: transform 160ms ease-out;
+  }
+  details[open] .rules-chevron {
+    transform: rotate(90deg);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    summary:hover {
+      color: var(--accent);
+    }
+  }
+  summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  /* A label column turns the help text into four short, scannable answers
+     instead of four equal paragraphs. */
+  .rules-list {
+    display: grid;
+    gap: 0.7rem;
+    margin: 1rem 0 0;
+  }
+  .rules-list > div {
+    display: grid;
+    /* Wide enough for "CONTROLS"; any wider and the label drifts away from
+       the sentence it belongs to. */
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 0.25rem 1.25rem;
+  }
+  .rules-list dt {
+    margin: 0;
+    padding-top: 0.2rem;
+    font: 500 0.6875rem var(--mono);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+  .rules-list dd {
+    margin: 0;
     font-size: 0.875rem;
-    margin: 0.75rem 0;
-    max-width: 65ch;
+    line-height: 1.55;
+    max-width: 56ch;
+  }
+  .rules-list dd p {
+    margin: 0 0 0.45rem;
+  }
+  .rules-list dd p:last-child {
+    margin-bottom: 0;
+  }
+  /* Same chip language as the ⌘K hints in the command palette. */
+  .rules-list kbd {
+    display: inline-block;
+    min-width: 1.3em;
+    padding: 0.05rem 0.35rem;
+    margin: 0 0.05em;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg-soft);
+    color: var(--text-muted);
+    font: 400 0.72rem var(--mono);
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+  }
+  @media (max-width: 560px) {
+    .rules-list > div {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+    .rules-list dt {
+      padding-top: 0;
+    }
   }
   [data-phase="success"] .round-title {
     color: var(--accent);
@@ -351,10 +468,7 @@ const notes: readonly string[] = game.notes;
      scrolling. */
   @media (max-width: 768px) {
     .game-page {
-      padding-top: 0.5rem;
-    }
-    h1 {
-      margin: 1rem 0 0.75rem;
+      padding-top: 0;
     }
     .game-arena {
       padding: 1rem 1rem 0.75rem;
@@ -385,10 +499,10 @@ const notes: readonly string[] = game.notes;
     }
     /* The pattern board fills the height left above the dock instead of
        stepping down through fixed sizes. --game-chrome is everything else
-       on screen: back link, title, arena header and status, button,
+       on screen: sub-navigation, title, arena header and status, button,
        checkbox, dock and a gap above it. */
     memory-game[data-game="pattern"] {
-      --game-chrome: calc(31rem + env(safe-area-inset-bottom));
+      --game-chrome: calc(33.75rem + env(safe-area-inset-bottom));
       --board-size: clamp(180px, calc(100vh - var(--game-chrome)), 320px);
     }
     @supports (height: 100dvh) {
@@ -403,7 +517,8 @@ const notes: readonly string[] = game.notes;
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .game-actions .game-button {
+    .game-actions .game-button,
+    summary {
       transition: none;
     }
   }
