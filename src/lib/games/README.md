@@ -14,7 +14,7 @@
 - `src/scripts/games/memory-game.ts`: session lifecycle, levels, records, sound preference, and visibility handling.
 - `src/scripts/games/types.ts`: board adapter contract and callbacks.
 - `src/scripts/games/adapters.ts`: maps game IDs to board adapters.
-- `src/scripts/games/{pattern,number}-game.ts`: game-specific presentation and input.
+- `src/scripts/games/{pattern,number,pairs}-game.ts`: game-specific presentation and input.
 
 The index lives at `/games/` and shows each game's personal best (read from device storage after load, hidden when none). The static `[game].astro` route derives individual game pages from the registry.
 
@@ -32,10 +32,12 @@ Leaving the tab during watch/recall transitions to `paused`. Pending clock promi
 
 Adapters prepare a challenge only once per new level; `watch()` may repeat after a pause. They accept input only during recall and call `resolve()` once. `resolve()` transitions the shared session synchronously to guard against double submissions. Settings marked `data-game-setting` are locked during watch and recall. Pattern defaults to automatic playback. “Watch at my pace” keeps its cue in the existing status area and reuses the same primary button below the grid: “Next tile,” then “Start my turn.” Focus stays on that button throughout playback, so Enter/Space and repeated taps need no travel. The cue persists until explicit advancement. Adapters control playback actions through `context.playbackAction()` and optional `advance()`; automatic playback hides that action. Cancellation settles a pending advancement promise. Held Enter/Space does not skip steps or rounds.
 
+Pairs keeps the same lifecycle but reframes it: `watch()` is a single timed look at the whole board on a new level, shrinking each level until it disappears, and it never repeats for a replayed or resumed board, so leaving and coming back gains nothing. Pausing clears any face-up card, which keeps Pause from becoming a free look. A try is one attempt (two flipped cards), and running out ends the run. `snapshot()`/`restore()` carry the board, the pairs already found, and tries left.
+
 ## Adding a game
 
 1. Add metadata to `GAMES` and pure rules where appropriate.
-2. Add a board component (and a `Settings` control if the game has one) under `components/games/boards/`, a hub preview under `previews/`, and register them in `game-parts.ts`. Put anything shared with other boards in `styles/games.css`. Extra help text goes in the registry's `notes`.
+2. Add a board component (and a `Settings` control if the game has one) under `components/games/boards/`, a hub preview under `previews/`, and register them in `game-parts.ts`. Put anything shared with other boards in `styles/games.css`. Extra help text goes in the registry's `notes`, which renders under the help panel's Controls row; wrap key names in backticks to render them as chips, and keep each note to a sentence or two, because the panel answers four labelled questions (Goal, Controls, Pausing, Best) rather than printing a block of prose.
 3. Implement `GameAdapter`: reset, prepare, snapshot, restore, watch, recall, disable, dispose. Use the supplied clock and abort signal rather than untracked timers/listeners.
 4. Register the adapter in `GAME_ADAPTERS`; its exhaustive type requires an implementation for every game ID.
 5. No route or sitemap entry is needed: the static `[game].astro` route and the hub both derive the page from `GAMES`, and only `/games/` is listed in `src/data/sitemap.ts`.
@@ -50,4 +52,4 @@ Use the existing `PageLayout`, Geist/Geist Mono, theme tokens, blue accent, and 
 
 ## Checks
 
-Run `pnpm build` and targeted TypeScript checking. Browser checks should include both themes, 320/390px mobile and desktop, correct and incorrect answers, multi-level progression, rapid/repeated input, empty/non-digit answers, sound persistence, best persistence, tab-switch replay, unavailable storage, and resuming: pause mid-round and reload, clear a level and reload, fail a round and reload (no resume offered), Start over, and a corrupted `avi:games:v1:run:<id>` value (ignored). Check both automatic and self-paced playback: measure board/action coordinates across phases, verify focus remains on the primary button between steps, exercise Tab/arrows/Enter/Space (and confirm the 1–9 keys do nothing), and pause/replay while waiting for advancement. Physical-device input and actual VoiceOver/NVDA speech timing still need manual testing.
+Run `pnpm build` and targeted TypeScript checking. Browser checks should include both themes, 320/390px mobile and desktop, correct and incorrect answers, multi-level progression, rapid/repeated input, empty/non-digit answers, sound persistence, best persistence, tab-switch replay, unavailable storage, and resuming: pause mid-round and reload, clear a level and reload, fail a round and reload (no resume offered), Start over, and a corrupted `avi:games:v1:run:<id>` value (ignored). For pairs, also check that a mismatch stays readable, that the peek never repeats for a replayed board, and that running out of tries mid-reveal lands on the run-over screen. Check both automatic and self-paced playback: measure board/action coordinates across phases, verify focus remains on the primary button between steps, exercise Tab/arrows/Enter/Space (and confirm the 1–9 keys do nothing), and pause/replay while waiting for advancement. Physical-device input and actual VoiceOver/NVDA speech timing still need manual testing.

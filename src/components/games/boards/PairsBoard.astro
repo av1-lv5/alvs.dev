@@ -1,0 +1,154 @@
+---
+import { cardName } from "../../../lib/games/navigation";
+import { PAIR_COUNT } from "../../../lib/games/rules";
+
+// One cell per card; the columns only decide the shape of the grid.
+const cells = PAIR_COUNT * 2;
+---
+
+<div class="pairs-board">
+  <p class="pairs-status">
+    <span><b data-pair-found>0</b> of {PAIR_COUNT} pairs</span>
+    <span><b data-pair-tries>—</b> tries left</span>
+  </p>
+  <div
+    class="pairs-grid"
+    role="group"
+    aria-label="Pairs cards. Use the arrow keys to move, then Enter or Space to flip."
+  >
+    {
+      Array.from({ length: cells }, (_, cell) => (
+        <button
+          type="button"
+          class="pairs-card"
+          data-pair-card={cell}
+          aria-label={`${cardName(cell)}, face down`}
+          aria-pressed="false"
+          tabindex="-1"
+          disabled
+        >
+          <span class="pairs-face pairs-back" aria-hidden="true" />
+          <span
+            class="pairs-face pairs-front"
+            data-pair-front
+            aria-hidden="true"
+          />
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .pairs-board {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .pairs-status {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+  .pairs-status b {
+    font: 500 0.8125rem var(--mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .pairs-grid {
+    display: grid;
+    /* Matches PAIR_COLUMNS. */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .pairs-card {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid var(--game-control-border);
+    border-radius: var(--radius);
+    background: var(--game-control-bg);
+    cursor: pointer;
+    touch-action: manipulation;
+    transition:
+      border-color 120ms ease-out,
+      background-color 120ms ease-out;
+  }
+  .pairs-card:disabled {
+    opacity: 1;
+    cursor: default;
+  }
+  .pairs-face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition:
+      opacity 130ms ease-out,
+      transform 130ms ease-out;
+  }
+  .pairs-back::after {
+    content: "";
+    width: 24%;
+    aspect-ratio: 1;
+    border-radius: 1.5px;
+    background: color-mix(in srgb, var(--text-light) 42%, transparent);
+    transform: rotate(15deg);
+  }
+  .pairs-front {
+    font-size: 1.9rem;
+    line-height: 1;
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  .pairs-card.is-face-up .pairs-back {
+    opacity: 0;
+    transform: scale(0.75);
+  }
+  .pairs-card.is-face-up .pairs-front {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .pairs-card.is-matched {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    background: color-mix(in srgb, var(--accent) 7%, var(--game-control-bg));
+    cursor: default;
+  }
+  .pairs-card.is-wrong {
+    border-style: dashed;
+    border-color: var(--text);
+    background: color-mix(in srgb, var(--text) 12%, var(--bg));
+  }
+  .pairs-card:not(:disabled):focus-visible {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pairs-card:not(:disabled):not(.is-face-up):hover {
+      border-color: color-mix(
+        in srgb,
+        var(--game-control-border) 55%,
+        var(--accent)
+      );
+    }
+  }
+  @media (max-width: 768px) {
+    .pairs-grid {
+      gap: 6px;
+    }
+    .pairs-front {
+      font-size: 1.6rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pairs-card,
+    .pairs-face {
+      transition: none;
+    }
+  }
+</style>

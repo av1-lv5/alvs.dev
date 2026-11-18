@@ -7,7 +7,7 @@ import { GAMES } from "../../lib/games/registry";
 
 <PageLayout
   tabTitle="Games"
-  description="Small, playful memory games. Remember a pattern, remember a number, and beat your own best."
+  description="Small, playful memory games. Remember a pattern, remember a number, match the pairs, and beat your own best."
 >
   <section class="games-intro">
     <h1>/games<span class="heading-dot" aria-hidden="true"></span></h1>
@@ -96,9 +96,6 @@ import { GAMES } from "../../lib/games/registry";
   .games-intro .hero-text {
     margin-bottom: 0.5rem;
   }
-  .game-shelf {
-    border-top: 1px solid var(--border);
-  }
   .game-entry {
     display: grid;
     grid-template-columns: 160px 1fr;
@@ -107,6 +104,10 @@ import { GAMES } from "../../lib/games/registry";
     padding: 2rem 0;
     border-bottom: 1px solid var(--border);
     color: var(--text);
+  }
+  /* Only the gaps between rows need a rule, not the outer edges. */
+  .game-entry:last-child {
+    border-bottom: 0;
   }
   .game-entry:hover {
     text-decoration: none;

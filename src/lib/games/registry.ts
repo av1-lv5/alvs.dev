@@ -19,6 +19,18 @@ export const GAMES = [
     rule: "Start with one digit. Each correct answer adds another, with a little more time to look. One wrong answer ends the run.",
     notes: [],
   },
+  {
+    id: "pairs",
+    title: "Match the pairs",
+    shortTitle: "Pairs",
+    description:
+      "Sixteen cards, eight pairs, and one memory doing all the work.",
+    instruction: "Flip two cards at a time. Find every matching pair.",
+    rule: "Each level is a fresh 4×4 board of 8 pairs. Every two cards you flip is one try, match or miss. Clear the board before the tries run out.",
+    notes: [
+      "Low levels show the whole board for a moment before it turns face down; that head start shrinks as you go, then stops. Tap or click a card to flip it. With a keyboard, move between cards with the arrow keys, then press Enter or Space.",
+    ],
+  },
 ] as const;
 
 export type GameId = (typeof GAMES)[number]["id"];
