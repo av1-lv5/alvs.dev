@@ -2,6 +2,9 @@
 // layout
 import PageLayout from "@layouts/PageLayout.astro";
 import MacAppRow from "@components/MacAppRow.astro";
+import Tooltip from "@components/Tooltip.astro";
+import { Icon } from "astro-icon/components";
+import { socials } from "@constants/index";
 
 // data
 import { macList, type MacEntry, type MacSet } from "@data/macApps";
@@ -13,15 +16,15 @@ const isSet = (entry: MacEntry): entry is MacSet => "apps" in entry;
 ---
 
 <PageLayout
-  tabTitle="Mac apps"
-  description="Mac apps I've tried and liked enough to recommend, not a record of my own setup."
+  tabTitle="Mac setup"
+  description="Things to install on a Mac, tried and liked enough to recommend."
   image={ogImage}
 >
   <section class="hero">
-    <h1>Mac apps worth trying</h1>
+    <h1>Things to install on your Mac</h1>
     <p class="hero-text">
-      Apps I've tried and liked enough to tell a friend about. Not what's on my
-      Mac; that's <a href="/uses/">/uses</a>.
+      Software I've tried and liked enough to tell a friend about. Not what's on
+      my Mac; that's <a href="/uses/">/uses</a>.
     </p>
   </section>
 
@@ -43,10 +46,52 @@ const isSet = (entry: MacEntry): entry is MacSet => "apps" in entry;
     }
   </ul>
 
-  <p class="outro">
-    Last updated November 2026. <a href="/connect/">Tell me</a> if something is stale.
-  </p>
+  <div class="outro">
+    <p>
+      Have a recommendation of your own? Feel free to{" "}
+      <Tooltip text="Click to copy">
+        <button
+          type="button"
+          class="copy-email-inline"
+          data-email={socials.email}
+          data-success="Now send me yours."
+        >
+          email me
+          <Icon name="lucide:copy" size={12} class="icon-copy" />
+          <Icon name="lucide:check" size={12} class="icon-check" />
+        </button>
+      </Tooltip>
+    </p>
+    <p class="outro-date">Last updated: November 2026</p>
+  </div>
 </PageLayout>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>(".copy-email-inline")!;
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  btn.addEventListener("click", async () => {
+    const email = btn.dataset.email!;
+    const successMsg = btn.dataset.success!;
+    const wrapper = btn.closest<HTMLElement>(".tooltip-wrapper")!;
+    const tooltip = wrapper.querySelector<HTMLElement>(".tooltip-text")!;
+
+    await navigator.clipboard.writeText(email);
+
+    if (timeout) clearTimeout(timeout);
+
+    btn.classList.add("copied");
+    wrapper.classList.add("show-tooltip", "tooltip-success");
+    tooltip.textContent = successMsg;
+
+    timeout = setTimeout(() => {
+      btn.classList.remove("copied");
+      wrapper.classList.remove("show-tooltip", "tooltip-success");
+      tooltip.textContent = "Click to copy";
+      timeout = null;
+    }, 2000);
+  });
+</script>
 
 <style>
   .hero {
@@ -110,8 +155,47 @@ const isSet = (entry: MacEntry): entry is MacSet => "apps" in entry;
   }
 
   .outro {
-    margin: 1.5rem 0 0;
+    margin-top: 2.5rem;
     color: var(--text-light);
-    font-size: 0.8rem;
+    font-size: 0.875rem;
+  }
+
+  .outro p {
+    margin: 0;
+  }
+
+  .outro .outro-date {
+    margin-top: 0.4rem;
+  }
+
+  .copy-email-inline {
+    all: unset;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .icon-copy {
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .icon-check {
+    display: none;
+    color: #10b981;
+    flex-shrink: 0;
+  }
+
+  .copy-email-inline.copied .icon-copy {
+    display: none;
+  }
+
+  .copy-email-inline.copied .icon-check {
+    display: block;
   }
 </style>

@@ -148,10 +148,11 @@ export const sitemapSections: SitemapSection[] = [
       },
       {
         href: "/mac/",
-        label: "Mac apps",
-        description: "Mac apps I've tried and liked enough to recommend.",
+        label: "Mac setup",
+        description: "Things to install on a Mac.",
         keywords: [
           "mac apps",
+          "mac software",
           "new macbook",
           "mac setup",
           "recommendations",

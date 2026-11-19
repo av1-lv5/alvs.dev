@@ -81,7 +81,7 @@ const SLASH_MARK_PAGES = [
   {
     slug: "mac",
     route: "/mac",
-    tagline: "Mac apps I've tried and liked enough to recommend.",
+    tagline: "Things to install on a Mac.",
   },
   {
     slug: "feeds",

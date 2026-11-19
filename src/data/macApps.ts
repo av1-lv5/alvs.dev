@@ -36,6 +36,12 @@ export const macList: MacEntry[] = [
         why: "Chromium minus the noise, with Chromium's appetite for RAM.",
       },
       {
+        name: "Ardia",
+        url: "https://ardia.dev/",
+        price: "open-source",
+        why: "Arc's sidebar and Dia's polish, on real Chromium.",
+      },
+      {
         name: "Search",
         url: "https://searchbrowser.app/",
         price: "open-source",
@@ -52,12 +58,6 @@ export const macList: MacEntry[] = [
         url: "https://www.firefox.com/",
         price: "open-source",
         why: "The safe Gecko default. Nothing to learn.",
-      },
-      {
-        name: "Safari",
-        url: "https://www.apple.com/safari/",
-        price: "free",
-        why: "Already there. Keep it even if you never open it.",
       },
       {
         name: "Tor Browser",
@@ -159,7 +159,7 @@ export const macList: MacEntry[] = [
     why: "A control room for watching and reviewing several agents.",
   },
   {
-    name: "Herdr",
+    name: "Herdr App",
     url: "https://herdr.dev/",
     price: "free",
     why: "Agent windows you shape by asking. Opinionated workflow.",
@@ -225,6 +225,12 @@ export const macList: MacEntry[] = [
     why: "Small, quiet, and it has never asked me to install anything else.",
   },
   {
+    name: "Torrential",
+    url: "https://github.com/nexxeln/torrential",
+    price: "open-source",
+    why: "Find and download torrents without leaving the terminal.",
+  },
+  {
     label: "Dictation",
     apps: [
       {
@@ -237,11 +243,18 @@ export const macList: MacEntry[] = [
       },
       {
         name: "Hex",
-        url: "https://github.com/anomalyco/hex",
+        url: "https://anoma.ly/hex/",
+        icon: "/assets/img/apps/hex.png",
         price: "open-source",
         why: "Local dictation with custom vocabulary and voice commands.",
       },
     ],
+  },
+  {
+    name: "Mole",
+    url: "https://github.com/tw93/Mole",
+    price: "open-source",
+    why: "Clean caches, uninstall leftovers, and see what is eating your disk.",
   },
   {
     name: "Amphetamine",
