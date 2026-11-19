@@ -14,7 +14,7 @@
 - `src/scripts/games/memory-game.ts`: session lifecycle, levels, records, sound preference, and visibility handling.
 - `src/scripts/games/types.ts`: board adapter contract and callbacks.
 - `src/scripts/games/adapters.ts`: maps game IDs to board adapters.
-- `src/scripts/games/{pattern,number,pairs}-game.ts`: game-specific presentation and input.
+- `src/scripts/games/{pattern,number,pairs,odd,chimp}-game.ts`: game-specific presentation and input.
 
 The index lives at `/games/` and shows each game's personal best (read from device storage after load, hidden when none). The static `[game].astro` route derives individual game pages from the registry.
 
@@ -33,6 +33,10 @@ Leaving the tab during watch/recall transitions to `paused`. Pending clock promi
 Adapters prepare a challenge only once per new level; `watch()` may repeat after a pause. They accept input only during recall and call `resolve()` once. `resolve()` transitions the shared session synchronously to guard against double submissions. Settings marked `data-game-setting` are locked during watch and recall. Pattern defaults to automatic playback. “Watch at my pace” keeps its cue in the existing status area and reuses the same primary button below the grid: “Next tile,” then “Start my turn.” Focus stays on that button throughout playback, so Enter/Space and repeated taps need no travel. The cue persists until explicit advancement. Adapters control playback actions through `context.playbackAction()` and optional `advance()`; automatic playback hides that action. Cancellation settles a pending advancement promise. Held Enter/Space does not skip steps or rounds.
 
 Pairs keeps the same lifecycle but reframes it: `watch()` is a single timed look at the whole board on a new level, shrinking each level until it disappears, and it never repeats for a replayed or resumed board, so leaving and coming back gains nothing. Pausing clears any face-up card, which keeps Pause from becoming a free look. A try is one attempt (two flipped cards), and running out ends the run. `snapshot()`/`restore()` carry the board, the pairs already found, and tries left.
+
+Odd one out shows a full grid of identical marks during `watch()`, with one mark turned, then clears the whole grid for recall. Clearing rather than straightening the mark matters: an animated return to upright would point at the answer. The visitor taps the cell that held the turned mark, and the answer state shows the grid again with that mark turned. `snapshot()`/`restore()` carry the grid size, the cell, and the angle.
+
+Chimp keeps its numbers visible for a self-paced study phase inside `recall()`: the first correct tap hides them, and the rest of the round is blind. `watch()` only resets the round and hides the board. A wrong tap costs one of three run-level strikes and briefly reveals the layout for a re-read; the third strike resolves the round. `snapshot()`/`restore()` carry the layout and the strikes at the start of the round.
 
 ## Adding a game
 

@@ -1,0 +1,64 @@
+---
+const cells = 9;
+const MARK_PATH = "M7 4.5v15h10";
+---
+
+<div class="mini-odd">
+  {
+    Array.from({ length: cells }, (_, cell) => (
+      <span class:list={["mini-odd-cell", { turned: cell === 4 }]}>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d={MARK_PATH}
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+    ))
+  }
+</div>
+
+<style>
+  .mini-odd {
+    display: grid;
+    grid-template-columns: repeat(3, 26px);
+    gap: 6px;
+    color: color-mix(in srgb, var(--text) 62%, var(--bg));
+    transform: rotate(-7deg);
+    transition: transform 220ms ease-out;
+  }
+  .mini-odd-cell {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--text) 22%, var(--bg));
+    border-radius: 4px;
+  }
+  .mini-odd-cell svg {
+    width: 62%;
+    aspect-ratio: 1;
+  }
+  .mini-odd-cell.turned svg {
+    transform: rotate(42deg);
+  }
+  @media (hover: hover) {
+    :global(.game-entry:hover) .mini-odd {
+      transform: rotate(0);
+    }
+  }
+  @media (max-width: 480px) {
+    .mini-odd {
+      grid-template-columns: repeat(3, 21px);
+      gap: 5px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mini-odd {
+      transition: none;
+    }
+  }
+</style>

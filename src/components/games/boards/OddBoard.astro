@@ -1,0 +1,144 @@
+---
+import { gridCellName } from "../../../lib/games/navigation";
+
+const MAX_COLUMNS = 5;
+const IDLE_COLUMNS = 3;
+const IDLE_CELLS = IDLE_COLUMNS * IDLE_COLUMNS;
+const MAX_CELLS = MAX_COLUMNS * MAX_COLUMNS;
+// An asymmetric glyph, so any rotation reads as turned. A symmetric mark
+// would sometimes look upright at 180 degrees.
+const MARK_PATH = "M7 4.5v15h10";
+---
+
+<div
+  class="odd-grid"
+  data-odd-grid
+  role="group"
+  aria-label="Odd one out grid. Use the arrow keys to move, then Enter or Space to choose."
+  aria-hidden="true"
+>
+  {
+    Array.from({ length: MAX_CELLS }, (_, cell) => (
+      <button
+        type="button"
+        class:list={[
+          "odd-cell",
+          { "is-shown": cell < IDLE_CELLS, "is-turned": cell === 4 },
+        ]}
+        data-odd-cell={cell}
+        aria-label={gridCellName(cell, IDLE_COLUMNS)}
+        tabindex="-1"
+        hidden={cell >= IDLE_CELLS}
+        disabled
+      >
+        <svg class="odd-mark" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d={MARK_PATH}
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="odd-dot" aria-hidden="true" />
+      </button>
+    ))
+  }
+</div>
+
+<style>
+  .odd-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--odd-columns, 3), 1fr);
+    gap: 8px;
+  }
+  .odd-cell {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid var(--game-control-border);
+    border-radius: var(--radius);
+    background: var(--game-control-bg);
+    color: var(--text-light);
+    cursor: pointer;
+    touch-action: manipulation;
+    transition:
+      border-color 120ms ease-out,
+      background-color 100ms ease-out;
+  }
+  .odd-cell:disabled {
+    opacity: 1;
+    cursor: default;
+  }
+  .odd-mark {
+    grid-area: 1 / 1;
+    width: 58%;
+    aspect-ratio: 1;
+    opacity: 0;
+    transform: rotate(0deg);
+    transition:
+      transform 170ms ease-out,
+      opacity 90ms ease-out;
+  }
+  .odd-dot {
+    grid-area: 1 / 1;
+    width: 5px;
+    height: 5px;
+    border-radius: 1.5px;
+    background: color-mix(in srgb, var(--text-light) 42%, transparent);
+    transform: rotate(15deg);
+    opacity: 1;
+    transition: opacity 90ms ease-out;
+  }
+  .odd-cell.is-shown .odd-mark {
+    opacity: 1;
+  }
+  .odd-cell.is-shown .odd-dot {
+    opacity: 0;
+  }
+  .odd-cell.is-turned .odd-mark {
+    transform: rotate(var(--odd-rotation, 42deg));
+  }
+  .odd-cell.is-found {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    background: color-mix(in srgb, var(--accent) 8%, var(--game-control-bg));
+  }
+  .odd-cell.is-wrong {
+    border-style: dashed;
+    border-color: var(--text);
+    background: color-mix(in srgb, var(--text) 12%, var(--bg));
+  }
+  .odd-cell.is-expected {
+    outline: 2px solid var(--accent);
+    outline-offset: -5px;
+  }
+  .odd-cell:not(:disabled):focus-visible {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .odd-cell:not(:disabled):hover {
+      background: color-mix(in srgb, var(--game-control-bg) 96%, var(--text));
+      border-color: color-mix(
+        in srgb,
+        var(--game-control-border) 60%,
+        var(--accent)
+      );
+    }
+  }
+  @media (max-width: 768px) {
+    .odd-grid {
+      gap: 6px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .odd-cell,
+    .odd-mark,
+    .odd-dot {
+      transition: none;
+    }
+  }
+</style>

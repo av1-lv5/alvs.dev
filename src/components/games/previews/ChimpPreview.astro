@@ -1,0 +1,75 @@
+---
+import { CHIMP_CELLS } from "../../../lib/games/rules";
+
+const PREVIEW = new Map<number, number>([
+  [2, 1],
+  [8, 2],
+  [16, 3],
+  [21, 4],
+]);
+---
+
+<div class="mini-chimp">
+  {
+    Array.from({ length: CHIMP_CELLS }, (_, cell) => {
+      const number = PREVIEW.get(cell);
+      return (
+        <span
+          class:list={[
+            "mini-chimp-cell",
+            { "has-number": number !== undefined },
+          ]}
+        >
+          {number ?? ""}
+        </span>
+      );
+    })
+  }
+</div>
+
+<style>
+  .mini-chimp {
+    display: grid;
+    grid-template-columns: repeat(5, 20px);
+    gap: 4px;
+    transform: rotate(-7deg);
+    transition: transform 220ms ease-out;
+  }
+  .mini-chimp-cell {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    border: 1px solid color-mix(in srgb, var(--text) 22%, var(--bg));
+    border-radius: 3px;
+    font: 500 0.6rem var(--mono);
+    line-height: 1;
+    color: color-mix(in srgb, var(--text) 72%, var(--bg));
+    transition: opacity 160ms ease-out;
+  }
+  .mini-chimp-cell:not(.has-number) {
+    opacity: 0.7;
+  }
+  @media (hover: hover) {
+    :global(.game-entry:hover) .mini-chimp {
+      transform: rotate(0);
+    }
+    :global(.game-entry:hover) .mini-chimp-cell.has-number {
+      opacity: 0.35;
+    }
+  }
+  @media (max-width: 480px) {
+    .mini-chimp {
+      grid-template-columns: repeat(5, 15px);
+      gap: 3px;
+    }
+    .mini-chimp-cell {
+      font-size: 0.5rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mini-chimp,
+    .mini-chimp-cell {
+      transition: none;
+    }
+  }
+</style>

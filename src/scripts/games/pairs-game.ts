@@ -98,6 +98,7 @@ export class PairsGame implements GameAdapter {
 
   async watch() {
     this.disable();
+    this.context.playbackAction(null);
     if (!this.peekReady) return true;
     this.peekReady = false;
     const duration = pairPeekDuration(this.level);
