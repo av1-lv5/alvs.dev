@@ -1,0 +1,117 @@
+---
+// layout
+import PageLayout from "@layouts/PageLayout.astro";
+import MacAppRow from "@components/MacAppRow.astro";
+
+// data
+import { macList, type MacEntry, type MacSet } from "@data/macApps";
+import { getGeneratedOgImage } from "@utils/og-image";
+
+const ogImage = getGeneratedOgImage("pages", "mac");
+
+const isSet = (entry: MacEntry): entry is MacSet => "apps" in entry;
+---
+
+<PageLayout
+  tabTitle="Mac apps"
+  description="Mac apps I've tried and liked enough to recommend, not a record of my own setup."
+  image={ogImage}
+>
+  <section class="hero">
+    <h1>Mac apps worth trying</h1>
+    <p class="hero-text">
+      Apps I've tried and liked enough to tell a friend about. Not what's on my
+      Mac; that's <a href="/uses/">/uses</a>.
+    </p>
+  </section>
+
+  <ul class="apps">
+    {
+      macList.map((entry) =>
+        isSet(entry) ? (
+          <li id={entry.label.toLowerCase()} class="set">
+            <ul class="set-list">
+              {entry.apps.map((app) => (
+                <MacAppRow app={app} />
+              ))}
+            </ul>
+          </li>
+        ) : (
+          <MacAppRow app={entry} />
+        ),
+      )
+    }
+  </ul>
+
+  <p class="outro">
+    Last updated November 2026. <a href="/connect/">Tell me</a> if something is stale.
+  </p>
+</PageLayout>
+
+<style>
+  .hero {
+    margin-bottom: 2rem;
+  }
+
+  .hero-text {
+    margin-bottom: 0;
+  }
+
+  .apps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .set {
+    position: relative;
+    margin: 0.25rem 0 0.9rem;
+    padding: 0;
+  }
+
+  .set-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Per row, not per set: the rail must follow the icon when a row's text wraps. */
+  .set-list > :global(li)::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0.15rem;
+    width: 1px;
+    background: var(--border);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .set-list > :global(li:first-child)::before {
+    top: 1.65rem;
+  }
+
+  .set-list > :global(li:last-child)::before {
+    bottom: auto;
+    height: 1.65rem;
+  }
+
+  .set-list > :global(li)::after {
+    content: "";
+    position: absolute;
+    top: 1.65rem;
+    left: 0.15rem;
+    width: 0.45rem;
+    height: 1px;
+    background: var(--border);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .outro {
+    margin: 1.5rem 0 0;
+    color: var(--text-light);
+    font-size: 0.8rem;
+  }
+</style>

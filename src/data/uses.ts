@@ -51,7 +51,7 @@ export const uses: UseCategory[] = [
         name: "Helium",
         description:
           "My main browser. Minimal, distraction-free, and stays out of the way.",
-        link: "https://heliumbrowser.com/",
+        link: "https://helium.computer/",
       },
     ],
   },

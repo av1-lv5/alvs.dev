@@ -79,6 +79,11 @@ const SLASH_MARK_PAGES = [
     tagline: "The tools, hardware, and software I use daily.",
   },
   {
+    slug: "mac",
+    route: "/mac",
+    tagline: "Mac apps I've tried and liked enough to recommend.",
+  },
+  {
     slug: "feeds",
     route: "/feeds",
     tagline: "Follow the pulse. Public activity feeds.",

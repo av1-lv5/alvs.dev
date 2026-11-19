@@ -147,6 +147,18 @@ export const sitemapSections: SitemapSection[] = [
         keywords: ["gear", "setup", "tools", "equipment", "daily software"],
       },
       {
+        href: "/mac/",
+        label: "Mac apps",
+        description: "Mac apps I've tried and liked enough to recommend.",
+        keywords: [
+          "mac apps",
+          "new macbook",
+          "mac setup",
+          "recommendations",
+          "starter apps",
+        ],
+      },
+      {
         href: "/workflow/",
         label: "Workflow journal",
         description: "Dated notes on the tools and setups I have tried.",
