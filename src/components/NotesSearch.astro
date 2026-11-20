@@ -41,6 +41,7 @@ const pages: SitePage[] = entries.map((entry) => ({
     enterkeyhint="search"
     inputmode="search"
   />
+  <kbd class="notes-search-kbd" aria-hidden="true">/</kbd>
 </div>
 
 <slot />
@@ -160,6 +161,30 @@ const pages: SitePage[] = entries.map((entry) => ({
     input.value = initialQuery;
     update();
   }
+
+  // "/" jumps to the search box, the same convention as GitHub's filter
+  // fields. Chords (⌘/Ctrl/Alt) stay untouched, as does typing "/" into
+  // another field. Shift is allowed so layouts that need it for "/" work.
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
+    if (event.repeat || !input) return;
+
+    const target = event.target as HTMLElement | null;
+    if (
+      target?.isContentEditable ||
+      target?.closest("input, textarea, select, [contenteditable]")
+    ) {
+      return;
+    }
+
+    // Without this, Firefox opens its own quick-find on the same key.
+    event.preventDefault();
+    input.focus();
+    const end = input.value.length;
+    input.setSelectionRange(end, end);
+  });
 </script>
 
 <style>
@@ -219,6 +244,26 @@ const pages: SitePage[] = entries.map((entry) => ({
 
   .notes-search-input::placeholder {
     color: var(--text-light);
+  }
+
+  /* Discoverability for the "/" shortcut. Hidden where there is no key to
+     press, since touch users only get the on-screen keyboard. */
+  .notes-search-kbd {
+    flex-shrink: 0;
+    padding: 0.05rem 0.3rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--bg);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    line-height: 1.4;
+    color: var(--text-light);
+  }
+
+  @media (hover: none) {
+    .notes-search-kbd {
+      display: none;
+    }
   }
 
   /* EntryList's `.entry-item { display: flex }` outranks the UA `[hidden]`
