@@ -3,6 +3,7 @@ id: project-id
 title: Project Title
 description: Brief description of the project.
 tags: ["tech", "stack"]
+stack: ["Next.js", "TypeScript"] # Pill row shown under the title on the project page
 repoId: "" # or "" if private/none
 liveAt: "" # or "" if not deployed
 year: 2026
@@ -30,13 +31,6 @@ _This is the most important section._ What technical hurdles did you overcome? W
 
 - **Insight A**: Details about a specific technical decision.
 - **Insight B**: Details about a learning or "aha" moment.
-
-### Technical Architecture
-
-- **Framework**: e.g., Next.js
-- **Language**: e.g., TypeScript
-- **State Management**: e.g., Zustand
-- **Backend/Services**: e.g., Supabase, Clerk
 
 ### Future Roadmap
 

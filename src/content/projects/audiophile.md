@@ -3,6 +3,7 @@ id: "audiophile"
 title: "Audiophile"
 description: "A Fullstack E-commerce website for audio electronic devices"
 tags: ["next", "typescript", "sanity"]
+stack: ["Next.js", "TypeScript", "Tailwind CSS", "Sanity", "Netlify"]
 repoId: "audiophile-FM"
 liveAt: "audiophile-fm-alvs.netlify.app"
 year: 2023
@@ -21,12 +22,6 @@ Audiophile is a e-commerce application built to explore sanity cms, a headless c
 - Manage products via Sanity CMS
 - Add / remove products from cart
 - Checkout flow with price breakdown
-
-### Technical Architecture
-
-- Built with Next JS, Typescript, and used Tailwind CSS for styling.
-- Content managed by Sanity CMS
-- Deployed on Netlify
 
 ### Attributions
 

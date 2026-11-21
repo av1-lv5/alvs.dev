@@ -3,6 +3,7 @@ id: "personal-site"
 title: "alvs.dev"
 description: "A minimalist digital garden and portfolio."
 tags: ["astro"]
+stack: ["Astro", "TypeScript"]
 repoId: "personal-site-archive"
 year: 2025
 isDraft: false

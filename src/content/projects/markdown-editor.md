@@ -3,6 +3,7 @@ id: "markdown-editor"
 title: "Markdown editor"
 description: "Simple markdown writing experience on the web"
 tags: ["react", "typescript"]
+stack: ["React", "TypeScript", "Vite", "markdown-it"]
 repoId: "markdown-editor-FM"
 liveAt: "mde-fm-alvs.netlify.app"
 year: 2022
@@ -19,11 +20,6 @@ featured: true
 - Notes are stored on Local storage.
 - Preview mode
 - Light and Dark mode
-
-### Technical Architecture
-
-- Build using **React**, **Typescript** and **Vite**.
-- Used [markdown-it node package &#x2197;](https://www.npmjs.com/package/markdown-it) to parse markdown syntax to HTML.
 
 ### Learnings
 

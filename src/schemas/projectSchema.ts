@@ -21,6 +21,7 @@ export default {
       ]),
     )
     .max(4),
+  stack: z.array(z.string()).optional(),
   repoId: z.string().optional(),
   liveAt: z.string().optional(),
   year: z.number(),

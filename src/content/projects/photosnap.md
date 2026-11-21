@@ -3,6 +3,7 @@ id: photosnap
 title: Photosnap
 description: A multi-page marketing site for a photosharing platform.
 tags: ["astro", "typescript"]
+stack: ["Astro", "TypeScript", "Netlify"]
 repoId: "photosnap-FM"
 liveAt: "photosnap-fm-alvs.netlify.app"
 year: 2023

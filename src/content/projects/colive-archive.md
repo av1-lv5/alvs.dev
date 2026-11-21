@@ -3,6 +3,7 @@ id: colive-archive
 title: Colive Archive
 description: A community-driven platform for transparency and accountability for co-live spaces.
 tags: ["react", "supabase"]
+stack: ["React", "Vite", "Supabase"]
 repoId: ""
 liveAt: "https://colive-archive.netlify.app"
 year: 2025
@@ -22,15 +23,7 @@ Colive Archive is a anonymous open platform designed to bridge the gap between t
 - **Rich Media Evidence**: Support for residents to upload photos and videos to substantiate claims, stored securely via Supabase Storage.
 - **Anonymous Reporting**: Protecting user identity while ensuring verified access.
 - **Pattern Recognition Dashboard**: Aggregates similar reports to visualize recurring issues across different properties.
-
-### Technical Architecture
-
-- Built with React, bootstrapped with Vite.
-- **Backend & Database**: Utilizes **Supabase** for a serverless architecture, handling:
-  - **Authentication**: Secure user management and invite validation.
-  - **Database**: PostgreSQL for structured data and complex queries.
-  - **Storage**: Scalable object storage for user-submitted media.
-- **Security**: Implements Row Level Security (RLS) policies to ensure data privacy and integrity.
+- **Row Level Security**: RLS policies keep user data private and enforce integrity at the database level.
 
 ### The Challenge & Solution
 

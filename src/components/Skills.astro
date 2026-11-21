@@ -1,25 +1,41 @@
 ---
 import { Icon } from "astro-icon/components";
 import { skills } from "@data/skills";
+import { getStackIcon } from "@data/stack";
+
+interface Props {
+  items?: string[];
+  label?: string;
+}
+
+const { items = skills, label } = Astro.props;
 ---
 
-<div id="skills">
-  {
-    skills.map((skill) => (
-      <div class="skill">
-        <Icon name={skill.icon} class="icon" />
-        <span>{skill.name}</span>
-      </div>
-    ))
-  }
-</div>
+{
+  items.length > 0 && (
+    <ul class="skills" aria-label={label}>
+      {items.map((item) => {
+        const icon = getStackIcon(item);
+        return (
+          <li class="skill">
+            {icon && <Icon name={icon} class="icon" aria-hidden="true" />}
+            <span>{item}</span>
+          </li>
+        );
+      })}
+    </ul>
+  )
+}
 
 <style>
-  #skills {
+  .skills {
     display: flex;
     justify-content: start;
     flex-wrap: wrap;
     gap: 12px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
   .skill {
@@ -27,6 +43,7 @@ import { skills } from "@data/skills";
     align-items: center;
     gap: 8px;
     user-select: none;
+    margin: 0;
     padding: 8px 16px;
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -46,5 +63,16 @@ import { skills } from "@data/skills";
     width: 18px;
     height: 18px;
     color: var(--text-color);
+  }
+
+  @media (max-width: 768px) {
+    .skills {
+      gap: 8px;
+    }
+
+    .skill {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
   }
 </style>

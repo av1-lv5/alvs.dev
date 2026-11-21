@@ -3,6 +3,17 @@ id: orbit
 title: Orbit
 description: "A daily budgeting app built around one number: how much you can safely spend today."
 tags: ["next", "typescript", "supabase"]
+stack:
+  [
+    "Next.js",
+    "TypeScript",
+    "Tailwind CSS",
+    "shadcn/ui",
+    "Motion",
+    "Clerk",
+    "Supabase",
+    "Vercel",
+  ]
 repoId: ""
 liveAt: "orbitbudget.com"
 year: 2026
@@ -52,13 +63,6 @@ Building Orbit was a deep dive into product reasoning and PWA's.
 - **Custom Auth flows** Instead of using Clerk's pre-built UIs, I implemented custom auth flows using their SDK, not just to have full control over the user experience and branding, but also to understand auth flows.
 - **PWA** installable everywhere, and ships a single codebase. The next step is distributing it on the Google Play Store using the process called [Trusted Web Activity (TWA) &#x2197;](https://developers.google.com/codelabs/pwa-in-play#0)
 - **Product-led Development** Designed the product, UX, database structure, and user flows end-to-end from concept to production.
-
-### Technical sheet
-
-- Built with Next.js, Typescript and Tailwind css
-- Shadcn UI and Motion
-- Auth handled by clerk, and managed postgres by supabase
-- Deployed on Vercel
 
 ### Future Roadmap
 
