@@ -16,11 +16,11 @@ It isn't nostalgia for writing code, and it isn't fear about being replaced. The
 
 Before I learnt to build for the web, I only had a user's view of software.
 
-I saw a search bar. Now I see focus management, and I know that `ctrl+k` will probably open it before I try, because most apps implement it the same standard way. I looked at mobile apps with no idea what they were made with. Now I can usually tell a Flutter app from a native one. If a site showed an image with no download button, I used to screenshot it. Now I open the network tab and take the file itself.
+I saw a search bar. Now I see focus management, and I try `ctrl+k` or `/` before reaching for the mouse, because enough apps share the conventions that one of them usually works. I used to install whatever was recommended, then wonder why a two-year-old laptop felt slow. Now I can tell an Electron app from a native desktop one, and that tells me which of my daily tools to replace instead of which laptop to buy. If a site showed an image with no download button, I used to screenshot it. Now I open the network tab and take the file itself.
 
 None of those apps changed. What changed is my ability to read them.
 
-The example that stuck with me is security. Plenty of people think leaving a laptop unlocked for ten minutes is fine, because they think the worst case is someone snooping through their tabs. It isn't. Someone can lift the session out of that browser and sign into the account from another machine without ever knowing the password. That's not snooping, that's taking the identity, and it takes less time than a coffee refill. I only understood that after learning how cookies, tokens, and server-side sessions fit together. It will never appear in my project work, and it's some of the most useful knowledge I have.
+The example that stuck with me is security. Plenty of people think leaving a laptop unlocked for ten minutes is fine, because they think the worst case is someone snooping through their tabs. It isn't. Someone can lift the session out of that browser and sign into the account from another machine without ever knowing the password, so long as the service treats the token as the only proof of who you are. That's not snooping, that's taking the identity, and it takes less time than a coffee refill. The useful part was never the theft. It was learning how cookies, tokens, and server-side sessions fit together, because that model is what tells you when a session is worth trusting and when it isn't. No feature ticket has ever asked me for it, and it's still some of the most useful knowledge I have.
 
 ### Patterns are the point
 

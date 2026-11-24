@@ -1,6 +1,6 @@
 {
-  "name": "Av-sh",
-  "short_name": "Av-sh",
+  "name": "av-sh",
+  "short_name": "av-sh",
   "description": "Frontend web developer, building things in random.",
   "start_url": "/",
   "scope": "/",
