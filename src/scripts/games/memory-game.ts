@@ -15,6 +15,7 @@ import { GAME_ADAPTERS } from "./adapters";
 import { element, type GameAdapter, type GameContext } from "./types";
 
 type Phase = "ready" | "watch" | "recall" | "success" | "over" | "paused";
+type GameEntry = Extract<(typeof GAMES)[number], { kind: "memory" }>;
 
 class MemoryGame extends HTMLElement {
   private clock = new GameClock();
@@ -29,14 +30,14 @@ class MemoryGame extends HTMLElement {
   private storage?: Storage;
   private bestKey = "";
   private runKey = "";
-  private game?: (typeof GAMES)[number];
+  private game?: GameEntry;
   private resume?: SavedRun;
 
   connectedCallback() {
     if (this.events) return;
     this.events = new AbortController();
     const game = GAMES.find((entry) => entry.id === this.dataset.game);
-    if (!game) {
+    if (!game || game.kind !== "memory") {
       this.heading(
         "This game isn't available.",
         "Return to All games and choose another.",
@@ -76,6 +77,7 @@ class MemoryGame extends HTMLElement {
       resolve: (correct, detail) => this.resolve(correct, detail),
     };
     this.adapter = new GAME_ADAPTERS[game.id](context);
+    this.adapter.reset();
     this.setPhase("ready");
     this.restoreRun();
     element<HTMLButtonElement>(this, "[data-action]").disabled = false;
@@ -208,22 +210,17 @@ class MemoryGame extends HTMLElement {
       element(this, "[data-best]").textContent = String(this.best);
       this.persist(true);
       this.setPhase("success");
-      this.heading(
-        record ? "A new little best." : "Nicely remembered.",
-        detail,
-      );
-      this.action("Next level");
+      this.heading(record ? "New best." : "Nicely remembered.", detail);
+      this.action("Next");
     } else {
       // The run has ended, so there is nothing left to continue.
       if (this.storage) clearRun(this.storage, this.runKey);
       this.setPhase("over");
       this.heading(
-        this.score > this.savedBest
-          ? "Your best just got better."
-          : "That's the one that got away.",
+        this.score > this.savedBest ? "New best." : "Run over.",
         detail,
       );
-      this.action("Play again");
+      this.action("Try again");
       this.savedBest = this.best;
     }
     element(this, "[data-action]").focus({ preventScroll: true });
@@ -235,11 +232,8 @@ class MemoryGame extends HTMLElement {
     this.adapter!.disable();
     this.setPhase("paused");
     element(this, "[data-pause]").hidden = false;
-    this.heading(
-      "Round paused.",
-      "Replay this round when you're back. Your run is saved.",
-    );
-    this.action("Replay round");
+    this.heading("Paused.");
+    this.action("Replay");
   }
 
   private persist(done: boolean) {
@@ -270,10 +264,10 @@ class MemoryGame extends HTMLElement {
     this.heading(
       "Welcome back.",
       run.done
-        ? `Level ${run.level} cleared. Level ${next} is next.`
-        : `Level ${next} is waiting. The round replays from the start.`,
+        ? `Level ${run.level} cleared.`
+        : `Level ${next} replays from the start.`,
     );
-    this.action(`Continue level ${next}`);
+    this.action("Continue");
     this.syncControls();
   }
 
@@ -294,7 +288,7 @@ class MemoryGame extends HTMLElement {
     this.adapter!.reset();
     element(this, "[data-level]").textContent = "1";
     this.heading("Ready when you are.", this.game!.instruction);
-    this.action("Start game");
+    this.action("Start");
     this.syncControls();
     element(this, "[data-action]").focus({ preventScroll: true });
   }
@@ -323,7 +317,7 @@ class MemoryGame extends HTMLElement {
   private action(label: string | null) {
     const button = element<HTMLButtonElement>(this, "[data-action]");
     button.hidden = !label;
-    if (label) button.textContent = label;
+    if (label) element(this, "[data-action-label]").textContent = label;
   }
 
   private setPhase(phase: Phase) {
@@ -344,9 +338,6 @@ class MemoryGame extends HTMLElement {
     );
     element(this, "[data-sound-off]").hidden = this.sound.enabled;
     element(this, "[data-sound-on]").hidden = !this.sound.enabled;
-    element(this, "[data-sound-label]").textContent = this.sound.enabled
-      ? "Sound on"
-      : "Sound off";
   }
 
   disconnectedCallback() {

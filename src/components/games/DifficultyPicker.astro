@@ -1,0 +1,101 @@
+---
+interface Props {
+  options: readonly { id: string; label: string }[];
+  value?: string;
+}
+
+const { options, value = options[0]?.id } = Astro.props;
+---
+
+<div
+  class="difficulty-picker"
+  role="radiogroup"
+  aria-labelledby="difficulty-label"
+>
+  <span class="visually-hidden" id="difficulty-label">Difficulty</span>
+  {
+    options.map((option) => (
+      <label class="difficulty-option">
+        <input
+          type="radio"
+          name="difficulty"
+          value={option.id}
+          data-difficulty={option.id}
+          data-game-setting
+          checked={option.id === value}
+          disabled
+        />
+        <span>{option.label}</span>
+      </label>
+    ))
+  }
+</div>
+
+<style>
+  /* The same family as "Watch at my pace": a quiet text choice under the
+     primary button. The button names the selection ("Start easy"), and a 2px
+     accent underline marks it, matching the pressed toolbar toggles. */
+  .difficulty-picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0 0.25rem;
+  }
+  .difficulty-option {
+    position: relative;
+    display: inline-flex;
+    cursor: pointer;
+  }
+  .difficulty-option + .difficulty-option::before {
+    content: "·";
+    align-self: center;
+    padding: 0 0.15rem;
+    color: var(--text-light);
+  }
+  .difficulty-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .difficulty-option span {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--game-tap);
+    padding: 0 0.2rem;
+    border-bottom: 2px solid transparent;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    transition:
+      color 120ms ease-out,
+      border-color 120ms ease-out;
+  }
+  .difficulty-option input:checked + span {
+    border-bottom-color: var(--accent);
+    color: var(--text);
+  }
+  .difficulty-option input:focus-visible + span {
+    outline: var(--game-focus-ring);
+    outline-offset: var(--game-focus-offset);
+    color: var(--text);
+  }
+  .difficulty-picker:has(input:disabled) {
+    opacity: 0.55;
+  }
+  .difficulty-picker:has(input:disabled) .difficulty-option {
+    cursor: default;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .difficulty-option:not(:has(input:disabled)):hover span {
+      color: var(--text);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .difficulty-option span {
+      transition: none;
+    }
+  }
+</style>

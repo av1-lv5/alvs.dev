@@ -1,0 +1,72 @@
+/* Shared by every hub preview. One tilt, one hover language, one cell
+   treatment, one glyph scale: a preview only declares its own geometry. */
+
+:root {
+  --preview-tilt: -7deg;
+  --preview-gap: 5px;
+  --preview-scale: 1;
+  --preview-radius: 4px;
+  --preview-line: color-mix(in srgb, var(--text) 22%, var(--bg));
+  --preview-line-soft: color-mix(in srgb, var(--text) 12%, var(--bg));
+  --preview-ink: color-mix(in srgb, var(--text) 72%, var(--bg));
+  --preview-accent-line: color-mix(in srgb, var(--accent) 55%, var(--bg));
+  --preview-accent-bg: color-mix(in srgb, var(--accent) 12%, var(--bg-soft));
+  --preview-dot: color-mix(in srgb, var(--text) 28%, transparent);
+}
+
+/* Every preview tilts as one plane and straightens on hover. Nothing else
+   changes on hover. */
+.preview-plane {
+  transform: rotate(var(--preview-tilt));
+  transition: transform 220ms ease-out;
+}
+
+.preview-grid {
+  display: grid;
+  gap: var(--preview-gap);
+  grid-template-columns: repeat(
+    var(--preview-columns, 3),
+    calc(var(--preview-cell, 24px) * var(--preview-scale))
+  );
+}
+
+.preview-cell {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid var(--preview-line);
+  border-radius: var(--preview-radius);
+  color: var(--preview-ink);
+  line-height: 1;
+}
+
+/* One glyph scale, set from the cell size. */
+.preview-mono {
+  font: 500 calc(var(--preview-cell, 24px) * var(--preview-scale) * 0.55)
+    var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.preview-glyph {
+  font: 500 calc(var(--preview-cell, 24px) * var(--preview-scale) * 0.66)
+    var(--sans);
+}
+
+@media (hover: hover) {
+  .game-entry:hover .preview-plane {
+    transform: rotate(0deg);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --preview-gap: 4px;
+    --preview-scale: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview-plane {
+    transition: none;
+  }
+}

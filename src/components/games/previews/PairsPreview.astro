@@ -19,56 +19,31 @@ const cells = [
 ];
 ---
 
-<div class="mini-pairs">
-  {cells.map((emoji) => <span class:list={[{ open: emoji }]}>{emoji}</span>)}
+<div class="preview-plane preview-grid mini-pairs">
+  {
+    cells.map((emoji) => (
+      <span class:list={["preview-cell", { open: emoji }]}>
+        {emoji ? <span class="preview-glyph">{emoji}</span> : null}
+      </span>
+    ))
+  }
 </div>
 
 <style>
   .mini-pairs {
-    display: grid;
-    grid-template-columns: repeat(4, 22px);
-    gap: 6px;
-    transform: rotate(-7deg);
-    transition: transform 220ms ease-out;
+    --preview-columns: 4;
+    --preview-cell: 22px;
   }
-  .mini-pairs span {
-    display: grid;
-    place-items: center;
-    aspect-ratio: 1;
-    border: 1px solid color-mix(in srgb, var(--text) 22%, var(--bg));
-    border-radius: 4px;
-    font-size: 0.7rem;
-    line-height: 1;
-  }
-  .mini-pairs span:not(.open)::after {
+  .mini-pairs .preview-cell:not(.open)::after {
     content: "";
     width: 4px;
     height: 4px;
     border-radius: 1px;
-    background: color-mix(in srgb, var(--text) 28%, transparent);
+    background: var(--preview-dot);
     transform: rotate(15deg);
   }
   .mini-pairs .open {
-    background: color-mix(in srgb, var(--accent) 12%, var(--bg-soft));
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--bg));
-  }
-  @media (hover: hover) {
-    :global(.game-entry:hover) .mini-pairs {
-      transform: rotate(0);
-    }
-  }
-  @media (max-width: 480px) {
-    .mini-pairs {
-      grid-template-columns: repeat(4, 18px);
-      gap: 5px;
-    }
-    .mini-pairs span {
-      font-size: 0.6rem;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .mini-pairs {
-      transition: none;
-    }
+    background: var(--preview-accent-bg);
+    border-color: var(--preview-accent-line);
   }
 </style>

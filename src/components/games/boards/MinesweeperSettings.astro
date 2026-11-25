@@ -1,0 +1,8 @@
+---
+import DifficultyPicker from "../DifficultyPicker.astro";
+import { MINE_DIFFICULTIES } from "../../../lib/games/minesweeper";
+
+const options = MINE_DIFFICULTIES.map(({ id, label }) => ({ id, label }));
+---
+
+<DifficultyPicker options={options} />

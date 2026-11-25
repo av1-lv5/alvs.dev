@@ -108,9 +108,7 @@ export class OddGame implements GameAdapter {
       cell.tabIndex = !cell.hidden && index === 0 ? 0 : -1;
     }
     this.cells[0].focus({ preventScroll: true });
-    this.context.progress(
-      `${this.challenge.columns} × ${this.challenge.columns}. Which one was turned?`,
-    );
+    this.context.progress("Which one was turned?");
   }
 
   private choose(cell: number) {

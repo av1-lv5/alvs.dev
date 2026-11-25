@@ -23,6 +23,7 @@ const MARK_PATH = "M7 4.5v15h10";
         type="button"
         class:list={[
           "odd-cell",
+          "game-cell",
           { "is-shown": cell < IDLE_CELLS, "is-turned": cell === 4 },
         ]}
         data-odd-cell={cell}
@@ -51,22 +52,16 @@ const MARK_PATH = "M7 4.5v15h10";
   .odd-grid {
     display: grid;
     grid-template-columns: repeat(var(--odd-columns, 3), 1fr);
-    gap: 8px;
+    gap: var(--game-cell-gap);
   }
   .odd-cell {
     display: grid;
     place-items: center;
     aspect-ratio: 1;
     padding: 0;
-    border: 1px solid var(--game-control-border);
-    border-radius: var(--radius);
-    background: var(--game-control-bg);
     color: var(--text-light);
     cursor: pointer;
     touch-action: manipulation;
-    transition:
-      border-color 120ms ease-out,
-      background-color 100ms ease-out;
   }
   .odd-cell:disabled {
     opacity: 1;
@@ -114,28 +109,13 @@ const MARK_PATH = "M7 4.5v15h10";
     outline: 2px solid var(--accent);
     outline-offset: -5px;
   }
-  .odd-cell:not(:disabled):focus-visible {
-    border-color: var(--accent);
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
   @media (hover: hover) and (pointer: fine) {
     .odd-cell:not(:disabled):hover {
-      background: color-mix(in srgb, var(--game-control-bg) 96%, var(--text));
-      border-color: color-mix(
-        in srgb,
-        var(--game-control-border) 60%,
-        var(--accent)
-      );
-    }
-  }
-  @media (max-width: 768px) {
-    .odd-grid {
-      gap: 6px;
+      background: var(--game-cell-hover-bg);
+      border-color: var(--game-cell-hover-border);
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .odd-cell,
     .odd-mark,
     .odd-dot {
       transition: none;

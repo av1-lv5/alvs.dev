@@ -9,8 +9,12 @@ interface Props {
   game: (typeof GAMES)[number];
 }
 const { game } = Astro.props;
-const { Board, Settings } = GAME_PARTS[game.id];
+const { Board, Settings, Tools, stats } = GAME_PARTS[game.id];
 const notes: readonly string[] = game.notes;
+const isPuzzle = game.kind === "puzzle";
+const Player = isPuzzle ? "puzzle-game" : "memory-game";
+// Best is a time per difficulty, so the stat says which one it belongs to.
+const bestScope = game.kind === "puzzle" ? game.best.label : null;
 
 // Backticked runs become <kbd> chips, e.g. "then press `Enter` to check".
 const noteParts = (note: string) =>
@@ -26,23 +30,56 @@ const noteParts = (note: string) =>
   </div>
   <h1>{game.title}</h1>
 
-  <memory-game data-game={game.id} data-phase="ready">
+  <Player class="game-player" data-game={game.id} data-phase="ready">
     <div class="game-arena">
       <div class="game-toolbar">
         <dl class="game-stats">
-          <div><dt>Level</dt><dd data-level>1</dd></div>
-          <div><dt>Best</dt><dd data-best>—</dd></div>
+          {
+            stats.map((label, index) => (
+              <div>
+                <dt>{label}</dt>
+                <dd data-game-stat={index}>—</dd>
+              </div>
+            ))
+          }
+          {
+            isPuzzle ? (
+              <div>
+                <dt>Time</dt>
+                <dd data-time>0:00.0</dd>
+              </div>
+            ) : (
+              <div>
+                <dt>Level</dt>
+                <dd data-level>1</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt>
+              Best{
+                bestScope && (
+                  <span class="stat-scope" data-best-scope>
+                    {" "}
+                    · {bestScope}
+                  </span>
+                )
+              }
+            </dt>
+            <dd data-best>—</dd>
+          </div>
         </dl>
         <div class="toolbar-actions">
+          {Tools && <Tools />}
           <button
             type="button"
             class="toolbar-button"
             data-restart
-            aria-label="Start over from level 1"
+            aria-label="Start over"
             hidden
           >
             <Icon name="lucide:rotate-ccw" size={16} />
-            <span>Start over</span>
+            <span class="toolbar-label">Start over</span>
           </button>
           <button
             type="button"
@@ -59,15 +96,15 @@ const noteParts = (note: string) =>
             class="toolbar-button"
             data-sound
             aria-pressed="false"
-            aria-label="Sound effects"
+            aria-label="Sound"
             disabled
           >
-            <span data-sound-off><Icon name="lucide:volume-x" size={17} /></span
+            <span data-sound-off><Icon name="lucide:volume-x" size={16} /></span
             >
             <span data-sound-on hidden
-              ><Icon name="lucide:volume-2" size={17} /></span
+              ><Icon name="lucide:volume-2" size={16} /></span
             >
-            <span class="toolbar-label" data-sound-label>Sound off</span>
+            <span class="toolbar-label">Sound</span>
           </button>
         </div>
       </div>
@@ -87,10 +124,14 @@ const noteParts = (note: string) =>
       <div class="game-board" data-board>
         <Board />
         <div class="pause-cover" data-pause hidden>
-          <Icon name="lucide:pause" size={32} /><span
-            >No rush. We're still here.</span
+          <Icon name="lucide:pause" size={28} /><span data-pause-text
+            >Saved.</span
           >
         </div>
+      </div>
+
+      <div class="game-settings">
+        {Settings && <Settings />}
       </div>
 
       <div class="game-actions">
@@ -99,12 +140,11 @@ const noteParts = (note: string) =>
           class="game-button"
           data-action
           aria-describedby="game-detail"
-          disabled>Start game <Icon name="lucide:play" size={15} /></button
+          disabled
         >
-      </div>
-
-      <div class="game-settings">
-        {Settings && <Settings />}
+          <span data-action-label>Start</span>
+          <Icon name="lucide:play" size={16} />
+        </button>
       </div>
     </div>
     <p
@@ -121,11 +161,11 @@ const noteParts = (note: string) =>
         page.
       </p></noscript
     >
-  </memory-game>
+  </Player>
 
   <details class="game-rules">
     <summary>
-      <Icon name="lucide:chevron-right" size={15} class="rules-chevron" />
+      <Icon name="lucide:chevron-right" size={16} class="rules-chevron" />
       <span>How to play</span>
     </summary>
     <dl class="rules-list">
@@ -152,13 +192,22 @@ const noteParts = (note: string) =>
       <div>
         <dt>Pausing</dt>
         <dd>
-          Leaving the tab or pressing Pause pauses the round; your run is saved,
-          so replay it with no penalty.
+          {
+            isPuzzle
+              ? "Pause or leave the tab and the clock stops. Your puzzle is saved."
+              : "Pause or leave the tab. Your run is saved and replays with no penalty."
+          }
         </dd>
       </div>
       <div>
         <dt>Best</dt>
-        <dd>The highest level you've completed.</dd>
+        <dd>
+          {
+            isPuzzle
+              ? "Fastest solve, per difficulty."
+              : "Highest level completed."
+          }
+        </dd>
       </div>
     </dl>
   </details>
@@ -166,6 +215,7 @@ const noteParts = (note: string) =>
 
 <script>
   import "../../scripts/games/memory-game";
+  import "../../scripts/games/puzzle-game";
 </script>
 
 <style>
@@ -191,62 +241,73 @@ const noteParts = (note: string) =>
     /* Size only: the top/bottom rhythm comes from the global heading rule. */
     font-size: clamp(1.6rem, 5vw, 2.25rem);
   }
-  memory-game {
+  .game-player {
     --board-size: 300px;
     display: block;
   }
+  .game-player[data-game="minesweeper"] {
+    --board-size: 360px;
+  }
+  .game-player[data-game="shikaku"] {
+    --board-size: 360px;
+  }
+  /* Stats on the left, the icon group on the right. The group reserves the
+     width of every tool the game can show, so the row never rewraps (and the
+     board never moves) when Pause, Flag or Start over appear. */
   .game-toolbar {
     display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
     justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
+    width: 100%;
     margin-bottom: 0.75rem;
   }
+  /* One stat rhythm on every game: a small label over a tabular value. */
   .game-stats {
     display: flex;
-    gap: 2rem;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
     margin: 0;
   }
   .game-stats div {
     display: flex;
-    gap: 0.65rem;
-    align-items: baseline;
+    flex-direction: column;
+    gap: 0.1rem;
   }
   .game-stats dt {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 400;
     margin: 0;
     color: var(--text-light);
+    white-space: nowrap;
+  }
+  .stat-scope {
+    color: var(--text-light);
   }
   .game-stats dd {
-    font: 500 1rem var(--mono);
+    font: 500 1.25rem var(--mono);
     font-variant-numeric: tabular-nums;
+    line-height: 1.2;
     margin: 0;
     color: var(--text);
   }
   .toolbar-actions {
     display: flex;
+    flex: none;
     align-items: center;
+    justify-content: flex-end;
+    /* When the row is too narrow for stats and tools together, the group keeps
+       the toolbar's right edge on its own line instead of drifting back to the
+       left under the first stat. */
+    margin-left: auto;
+    /* Two tool slots: the most Start over or Pause ever add to Sound. */
+    min-width: calc(2 * var(--game-tap) + 0.5rem);
     gap: 0.5rem;
   }
-  .toolbar-button {
-    display: inline-flex;
-    gap: 0.5rem;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: transparent;
-    font: inherit;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  .toolbar-button span {
-    display: inline-flex;
+  /* The minefield can show Flag, Pause and Sound together. */
+  .game-player[data-game="minesweeper"] .toolbar-actions {
+    min-width: calc(3 * var(--game-tap) + 1rem);
   }
   .game-arena {
     padding: 1.5rem 1.5rem 1.25rem;
@@ -254,13 +315,30 @@ const noteParts = (note: string) =>
     border-radius: var(--radius);
     background: var(--bg-soft);
   }
+  /* The settings sit directly above the primary button and match its width:
+     the full arena on a phone, the full rail on a wide screen. */
   .game-settings {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin: 0.75rem auto 0;
   }
+  /* A setting that cannot be changed is noise, but its row keeps its height so
+     the button below never moves between phases. */
+  .game-player[data-phase="watch"] .game-settings,
+  .game-player[data-phase="recall"] .game-settings,
+  .game-player[data-phase="playing"] .game-settings,
+  .game-player[data-phase="paused"] .game-settings {
+    visibility: hidden;
+  }
+  /* Reserves the title plus two wrapped lines of detail, which is the most any
+     phase needs, so the board does not move when the status changes. */
   .round-heading {
+    width: 100%;
     text-align: center;
-    min-height: 80px;
+    /* Reserves the title plus two wrapped lines of detail, which is the most
+       any phase needs, so the board and the action below never move. */
+    min-height: 5rem;
     margin-bottom: 0.75rem;
   }
   .round-title {
@@ -282,15 +360,16 @@ const noteParts = (note: string) =>
   .game-actions {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-start;
-    min-height: 48px;
-    width: min(100%, var(--board-size));
-    margin: 1.25rem auto 0;
+    min-height: var(--game-action-height);
+    /* Full arena width on a phone; full rail width on a wide screen. */
+    width: 100%;
+    margin: 0.75rem auto 0;
   }
   .game-actions .game-button {
     width: 100%;
-    min-height: 48px;
+    min-height: var(--game-action-height);
     transition: background-color 120ms ease-out;
   }
   .game-actions .game-button:active {
@@ -300,12 +379,19 @@ const noteParts = (note: string) =>
   .pause-cover {
     position: absolute;
     inset: 0;
+    /* Above board overlays such as Shikaku's rectangles, which are grid items
+       with their own z-index. */
+    z-index: 3;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
-    background: var(--bg-soft);
+    gap: 0.6rem;
+    /* A surface, not a hole: the page fill and one border read as a covered
+       board in both themes while staying inside the shared tokens. */
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     font-size: 0.8125rem;
     color: var(--text-light);
   }
@@ -354,17 +440,15 @@ const noteParts = (note: string) =>
   }
   .rules-list > div {
     display: grid;
-    /* Wide enough for "CONTROLS"; any wider and the label drifts away from
-       the sentence it belongs to. */
-    grid-template-columns: 5rem minmax(0, 1fr);
+    /* Wide enough for "Controls", the longest label; any wider and the label
+       drifts away from the sentence it belongs to. */
+    grid-template-columns: 4.5rem minmax(0, 1fr);
     gap: 0.25rem 1.25rem;
   }
   .rules-list dt {
     margin: 0;
-    padding-top: 0.2rem;
-    font: 500 0.6875rem var(--mono);
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
+    font-size: 0.8125rem;
+    font-weight: 400;
     color: var(--text-light);
   }
   .rules-list dd {
@@ -399,68 +483,65 @@ const noteParts = (note: string) =>
       grid-template-columns: 1fr;
       gap: 0.15rem;
     }
-    .rules-list dt {
-      padding-top: 0;
-    }
   }
-  [data-phase="success"] .round-title {
+  [data-phase="success"] .round-title,
+  [data-phase="solved"] .round-title {
     color: var(--accent);
   }
-  /* Wide screens: the board gets its own column and the round sits beside it,
-     instead of a small board in a wide empty card. */
+  /* Wide screens: one top bar for the stats and the icon group, then the board
+     and the round side by side. The free row sits between the status and the
+     settings, so the action always lands on the bottom and its bottom edge
+     lines up with the board's. */
   @media (min-width: 769px) {
     .game-arena {
       display: grid;
       grid-template-columns: var(--board-size) minmax(0, 1fr);
-      grid-template-rows: auto 1fr auto auto;
       grid-template-areas:
-        "board bar"
+        "toolbar toolbar"
         "board status"
-        "board actions"
-        "board pace";
+        "board ."
+        "board settings"
+        "board actions";
+      grid-template-rows: auto auto 1fr auto auto;
+      align-content: start;
+      align-items: start;
       column-gap: 2.5rem;
       padding: 1.75rem;
     }
+    /* A full-width top bar is what lets the stats and three 44px tools share
+       one row; the rail alone (310px at 1440) is too narrow for both. */
+    .game-toolbar {
+      grid-area: toolbar;
+      margin-bottom: 1rem;
+    }
     .game-board {
       grid-area: board;
-      align-self: start;
       width: 100%;
       margin: 0;
-    }
-    .game-toolbar {
-      grid-area: bar;
-      align-items: flex-start;
     }
     .round-heading {
       grid-area: status;
       text-align: left;
       margin-bottom: 0;
     }
+    .game-settings {
+      grid-area: settings;
+      width: 100%;
+      justify-content: flex-start;
+      margin: 0.75rem 0 0;
+    }
     .game-actions {
       grid-area: actions;
       align-items: stretch;
+      /* The full width of the right panel, bottom-aligned with the board. */
+      width: 100%;
       margin: 0.75rem 0 0;
     }
-    .game-settings {
-      grid-area: pace;
-      justify-content: flex-start;
-    }
     .game-stats {
-      gap: 2.25rem;
-    }
-    .game-stats div {
-      flex-direction: column;
-      gap: 0.1rem;
+      gap: 0.35rem 1.25rem;
     }
     .game-stats dd {
       font-size: 1.5rem;
-      line-height: 1.2;
-    }
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .toolbar-button:hover {
-      color: var(--text);
-      border-color: var(--text-light);
     }
   }
   /* Same breakpoint as the mobile dock: below it the header is gone and the
@@ -474,20 +555,27 @@ const noteParts = (note: string) =>
       padding: 1rem 1rem 0.75rem;
     }
     .game-toolbar {
-      margin-bottom: 0.5rem;
+      gap: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+    .toolbar-actions {
+      gap: 0.25rem;
+      min-width: calc(2 * var(--game-tap) + 0.25rem);
+    }
+    .game-player[data-game="minesweeper"] .toolbar-actions {
+      min-width: calc(3 * var(--game-tap) + 0.5rem);
     }
     .game-stats {
-      gap: 1.1rem;
+      gap: 0.3rem 0.75rem;
     }
-    .game-stats div {
-      gap: 0.4rem;
+    .game-stats dd {
+      font-size: 0.9375rem;
     }
-    .toolbar-button {
-      min-width: 44px;
-    }
-    /* Pause and Sound shrink to icons; Start over keeps its words. */
-    .toolbar-button .toolbar-label {
-      display: none;
+    /* The minefield's three stats and its three tools are the one pair that
+       cannot share a phone row; pin the wrap so a first best cannot change the
+       toolbar's height between phases. */
+    .game-player[data-game="minesweeper"] .game-stats {
+      min-width: 170px;
     }
     .game-actions {
       margin-top: 1rem;
@@ -500,22 +588,78 @@ const noteParts = (note: string) =>
     /* The pattern board fills the height left above the dock instead of
        stepping down through fixed sizes. --game-chrome is everything else
        on screen: sub-navigation, title, arena header and status, button,
-       checkbox, dock and a gap above it. */
-    memory-game[data-game="pattern"] {
-      --game-chrome: calc(33.75rem + env(safe-area-inset-bottom));
+       settings, dock and a gap above it. */
+    .game-player[data-game="pattern"] {
+      /* Includes the toolbar's tool row, which is always present. */
+      --game-chrome: calc(34.75rem + env(safe-area-inset-bottom));
       --board-size: clamp(180px, calc(100vh - var(--game-chrome)), 320px);
     }
     @supports (height: 100dvh) {
-      memory-game[data-game="pattern"] {
+      .game-player[data-game="pattern"] {
         --board-size: clamp(180px, calc(100dvh - var(--game-chrome)), 320px);
+      }
+    }
+    /* Puzzle boards also fit the height left above the dock. Their chrome is
+       taller than the pattern game's by the board's own readout, the settings
+       row and the welcome-back toolbar's second row. */
+    .game-player[data-game="minesweeper"],
+    .game-player[data-game="shikaku"] {
+      --game-chrome: calc(38.5rem + env(safe-area-inset-bottom));
+      --board-size: clamp(220px, calc(100vh - var(--game-chrome)), 360px);
+    }
+    @supports (height: 100dvh) {
+      .game-player[data-game="minesweeper"],
+      .game-player[data-game="shikaku"] {
+        --board-size: clamp(220px, calc(100dvh - var(--game-chrome)), 360px);
       }
     }
   }
   @media (max-width: 480px) {
-    memory-game[data-game="number"],
-    memory-game[data-game="odd"],
-    memory-game[data-game="chimp"] {
+    .game-player[data-game="number"],
+    .game-player[data-game="odd"],
+    .game-player[data-game="chimp"] {
       --board-size: 264px;
+    }
+  }
+  /* Short phones: tighten everything that is not the board just enough for the
+     action and the difficulty row to clear the fixed dock at 320x720. The board
+     drops to its 18px-cell floor, so the dense puzzle still scrolls rather than
+     shrinking below a usable cell. */
+  @media (max-width: 768px) and (max-height: 760px) {
+    .sub-navigation {
+      margin-top: 1rem;
+    }
+    h1 {
+      margin-top: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .game-arena {
+      padding: 0.75rem 1rem 0.5rem;
+    }
+    .game-toolbar {
+      gap: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .round-heading {
+      /* Still reserves two lines: the status text never changes the board's
+         y even at the shortest height. */
+      margin-bottom: 0.5rem;
+    }
+    .game-actions {
+      margin-top: 0.5rem;
+    }
+    .game-settings {
+      margin-top: 0.25rem;
+    }
+    .game-player[data-game="minesweeper"],
+    .game-player[data-game="shikaku"] {
+      --board-size: clamp(190px, calc(100vh - var(--game-chrome)), 360px);
+    }
+    @supports (height: 100dvh) {
+      .game-player[data-game="minesweeper"],
+      .game-player[data-game="shikaku"] {
+        --board-size: clamp(190px, calc(100dvh - var(--game-chrome)), 360px);
+      }
     }
   }
   @media (prefers-reduced-motion: reduce) {

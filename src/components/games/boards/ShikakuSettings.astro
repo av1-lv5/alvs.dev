@@ -1,0 +1,8 @@
+---
+import DifficultyPicker from "../DifficultyPicker.astro";
+import { SHIKAKU_DIFFICULTIES } from "../../../lib/games/shikaku";
+
+const options = SHIKAKU_DIFFICULTIES.map(({ id, label }) => ({ id, label }));
+---
+
+<DifficultyPicker options={options} />

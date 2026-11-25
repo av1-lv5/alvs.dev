@@ -1,0 +1,152 @@
+---
+import { gridCellName } from "../../../lib/games/navigation";
+import { SHIKAKU_DIFFICULTIES } from "../../../lib/games/shikaku";
+
+const easy = SHIKAKU_DIFFICULTIES[0];
+const easyCells = easy.rows * easy.columns;
+const maxCells = Math.max(
+  ...SHIKAKU_DIFFICULTIES.map((entry) => entry.rows * entry.columns),
+);
+
+// An idle grid shows the clues only: a board nobody has started, never a solved
+// example.
+const PREVIEW_CLUES = new Map<number, number>([
+  [0, 4],
+  [3, 3],
+  [7, 2],
+  [14, 4],
+  [16, 6],
+  [22, 6],
+]);
+---
+
+<div class="shikaku-board">
+  <div class="shikaku-frame">
+    <div
+      class="shikaku-grid"
+      data-shikaku-grid
+      role="group"
+      aria-label="Shikaku grid. Draw a rectangle around one number with its area."
+      aria-hidden="true"
+      style={`--shikaku-columns: ${easy.columns}; --shikaku-rows: ${easy.rows}`}
+    >
+      {
+        Array.from({ length: maxCells }, (_, cell) => {
+          const visible = cell < easyCells;
+          const clue = PREVIEW_CLUES.get(cell) ?? 0;
+          const parts = visible ? [gridCellName(cell, easy.columns)] : [];
+          if (clue > 0) parts.push(`clue ${clue}`);
+          return (
+            <button
+              type="button"
+              class:list={[
+                "shikaku-cell",
+                "game-cell",
+                { "is-clue": clue > 0 },
+              ]}
+              data-shikaku-cell={cell}
+              aria-label={parts.join(", ")}
+              style={`grid-row: ${Math.floor(cell / easy.columns) + 1}; grid-column: ${(cell % easy.columns) + 1}`}
+              tabindex="-1"
+              hidden={!visible}
+              disabled
+            >
+              <span class="shikaku-clue" data-shikaku-clue aria-hidden="true">
+                {clue > 0 ? String(clue) : ""}
+              </span>
+            </button>
+          );
+        })
+      }
+    </div>
+  </div>
+  <p class="shikaku-readout" data-shikaku-size aria-hidden="true"></p>
+</div>
+
+<style>
+  .shikaku-board {
+    display: grid;
+    gap: 0.35rem;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .shikaku-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+  }
+  .shikaku-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--shikaku-columns, 5), minmax(0, 1fr));
+    grid-template-rows: repeat(var(--shikaku-rows, 5), minmax(0, 1fr));
+    gap: var(--game-cell-gap);
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+  .shikaku-cell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    color: var(--text);
+    cursor: crosshair;
+    touch-action: none;
+    -webkit-touch-callout: none;
+  }
+  .shikaku-cell:disabled {
+    opacity: 1;
+    cursor: default;
+  }
+  .shikaku-clue {
+    line-height: 1;
+    font: 600 clamp(0.7rem, 2vw, 0.95rem) var(--mono);
+    font-variant-numeric: tabular-nums;
+  }
+  .shikaku-cell.is-covered {
+    border-color: color-mix(
+      in srgb,
+      var(--game-control-border) 45%,
+      transparent
+    );
+  }
+  /* The live readout while drawing: same mono measurement voice as the stats,
+     reserved so the board above never moves. */
+  .shikaku-readout {
+    min-height: 1.2em;
+    margin: 0;
+    font: 500 0.6875rem var(--mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-light);
+    text-align: right;
+  }
+  /* Rectangles are grid items spanning the cells they cover, so their outline
+     crosses the gaps instead of breaking at every cell. The adapter creates
+     these nodes at runtime, so their styles must stay global. */
+  :global(.shikaku-rect) {
+    pointer-events: none;
+    z-index: 1;
+    border: 2px solid var(--accent);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+  }
+  :global(.shikaku-rect.is-invalid) {
+    border-style: dashed;
+    border-color: var(--text-muted);
+    background: color-mix(in srgb, var(--text) 7%, transparent);
+  }
+  :global(.shikaku-draft) {
+    z-index: 2;
+  }
+  :global(.shikaku-draft.is-invalid) {
+    border-style: dashed;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .shikaku-cell:not(:disabled):hover {
+      background: var(--game-cell-hover-bg);
+      border-color: var(--game-cell-hover-border);
+    }
+  }
+</style>

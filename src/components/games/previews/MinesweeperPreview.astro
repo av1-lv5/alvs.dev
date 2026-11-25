@@ -1,0 +1,88 @@
+---
+/** The preview is its own five-by-five board, not a real difficulty: three
+ *  mines, one open and one flagged, numbers derived from them, and the rest
+ *  still covered. */
+const SIZE = 5;
+const MINES = [1, 7, 13];
+const OPEN_MINES = new Set([1]);
+const FLAGS = new Set([13]);
+const OPEN = new Set([0, 2, 5, 6, 8, 11, 12, 17, 18]);
+
+const neighbours = (cell: number) => {
+  const row = Math.floor(cell / SIZE);
+  const column = cell % SIZE;
+  const cells: number[] = [];
+  for (let rowOffset = -1; rowOffset <= 1; rowOffset += 1) {
+    for (let columnOffset = -1; columnOffset <= 1; columnOffset += 1) {
+      if (!rowOffset && !columnOffset) continue;
+      const nextRow = row + rowOffset;
+      const nextColumn = column + columnOffset;
+      if (nextRow < 0 || nextRow >= SIZE) continue;
+      if (nextColumn < 0 || nextColumn >= SIZE) continue;
+      cells.push(nextRow * SIZE + nextColumn);
+    }
+  }
+  return cells;
+};
+
+/** Every number is the real count of neighbouring mines, so the scene reads
+ *  like a board in play rather than decoration. */
+const nearbyMines = (cell: number) =>
+  neighbours(cell).filter((neighbour) => MINES.includes(neighbour)).length;
+---
+
+<div class="preview-plane preview-grid mini-mine">
+  {
+    Array.from({ length: SIZE * SIZE }, (_, cell) => {
+      const flagged = FLAGS.has(cell);
+      const mined = !flagged && OPEN_MINES.has(cell);
+      const opened = OPEN.has(cell);
+      const count = opened ? nearbyMines(cell) : 0;
+      return (
+        <span
+          class:list={[
+            "preview-cell",
+            {
+              "is-revealed": opened || mined,
+              "is-mine": mined,
+              "is-flagged": flagged,
+              "preview-mono": count > 0,
+            },
+          ]}
+        >
+          {flagged ? (
+            <span class="preview-glyph">⚑</span>
+          ) : mined ? (
+            <span class="preview-glyph">✸</span>
+          ) : count > 0 ? (
+            String(count)
+          ) : (
+            ""
+          )}
+        </span>
+      );
+    })
+  }
+</div>
+
+<style>
+  .mini-mine {
+    --preview-columns: 5;
+    --preview-cell: 18px;
+  }
+  .mini-mine .is-revealed {
+    border-color: var(--preview-line-soft);
+  }
+  /* The board's loss state, shrunk: a dashed edge, a faint fill and a star,
+     so a mine reads as a shape and not just as a colour. */
+  .mini-mine .is-mine {
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--text) 45%, var(--bg));
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    color: var(--text);
+  }
+  .mini-mine .is-flagged {
+    border-color: var(--preview-accent-line);
+    color: var(--accent);
+  }
+</style>

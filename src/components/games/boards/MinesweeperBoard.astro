@@ -1,0 +1,164 @@
+---
+import { gridCellName } from "../../../lib/games/navigation";
+import { MINE_DIFFICULTIES } from "../../../lib/games/minesweeper";
+
+const easy = MINE_DIFFICULTIES[0];
+const easyCells = easy.rows * easy.columns;
+const maxCells = Math.max(
+  ...MINE_DIFFICULTIES.map((entry) => entry.rows * entry.columns),
+);
+---
+
+<div class="mine-board">
+  <div
+    class="mine-grid"
+    data-mine-grid
+    data-mode="reveal"
+    role="group"
+    aria-label="Minefield. Use the arrow keys to move, Enter or Space to reveal, and F to flag."
+    aria-hidden="true"
+    style={`--mine-columns: ${easy.columns}`}
+  >
+    {
+      Array.from({ length: maxCells }, (_, cell) => (
+        <button
+          type="button"
+          class="mine-cell game-cell"
+          data-mine-cell={cell}
+          aria-label={gridCellName(cell, easy.columns)}
+          tabindex="-1"
+          hidden={cell >= easyCells}
+          disabled
+        >
+          <span class="mine-mark" data-mine-mark aria-hidden="true" />
+          <span class="mine-value" data-mine-value aria-hidden="true" />
+        </button>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  /* The field scrolls sideways on narrow phones rather than shrinking a hard
+     board below a usable cell size. */
+  .mine-board {
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* Room for the focus ring, which sits outside the cell and would other-
+       wise be clipped by the scroll container. */
+    padding: 6px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .mine-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--mine-columns, 9), minmax(18px, 1fr));
+    gap: var(--game-cell-gap);
+  }
+  .mine-cell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    min-width: 0;
+    padding: 0;
+    color: var(--text);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+  }
+  .mine-cell:disabled {
+    opacity: 1;
+    cursor: default;
+  }
+  .mine-mark,
+  .mine-value {
+    grid-area: 1 / 1;
+    line-height: 1;
+  }
+  .mine-mark {
+    font: 500 clamp(0.6rem, 2vw, 0.85rem) var(--sans);
+    color: var(--text-muted);
+  }
+  .mine-value {
+    font: 600 clamp(0.65rem, 1.8vw, 0.9rem) var(--mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .mine-cell.is-revealed {
+    background: color-mix(in srgb, var(--bg-soft) 45%, transparent);
+    border-color: color-mix(in srgb, var(--border) 55%, transparent);
+    cursor: default;
+  }
+  .mine-cell.is-number {
+    cursor: pointer;
+  }
+  .mine-cell.is-flagged {
+    border-color: color-mix(
+      in srgb,
+      var(--accent) 45%,
+      var(--game-control-border)
+    );
+  }
+  .mine-cell.is-flagged .mine-mark {
+    color: var(--accent);
+  }
+  .mine-cell.is-mine {
+    border-style: dashed;
+    border-color: var(--text);
+    background: color-mix(in srgb, var(--text) 10%, var(--bg));
+  }
+  .mine-cell.is-mine .mine-mark {
+    color: var(--text);
+  }
+  .mine-cell.is-hit {
+    outline: 2px solid var(--text);
+    outline-offset: -2px;
+  }
+  .mine-cell.is-wrong {
+    border-style: dashed;
+    border-color: var(--text-muted);
+  }
+  .mine-cell.is-wrong .mine-mark {
+    color: var(--text);
+  }
+  /* Flag mode previews the mark on a hidden, unflagged cell, so the mode is
+     visible without looking back at the toggle. The alternate text keeps the
+     glyph out of the accessibility tree. Keyboard focus gets the same hint. */
+  .mine-grid[data-mode="flag"]
+    .mine-cell:not(:disabled, .is-revealed, .is-flagged):focus-visible::after {
+    content: "⚑" / "";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font: 500 clamp(0.6rem, 2vw, 0.85rem) var(--sans);
+    color: var(--accent);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  /* A flagged cell fades under the same pointer, hinting the mark comes off. */
+  .mine-grid[data-mode="flag"]
+    .mine-cell.is-flagged:not(:disabled):is(:hover, :focus-visible)
+    .mine-mark {
+    opacity: 0.45;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .mine-grid[data-mode="flag"]
+      .mine-cell:not(:disabled, .is-revealed, .is-flagged):hover::after {
+      content: "⚑" / "";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font: 500 clamp(0.6rem, 2vw, 0.85rem) var(--sans);
+      color: var(--accent);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .mine-cell:not(:disabled):not(.is-revealed):not(.is-flagged):hover {
+      background: var(--game-cell-hover-bg);
+      border-color: var(--game-cell-hover-border);
+    }
+  }
+</style>

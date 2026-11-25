@@ -26,10 +26,8 @@ export class ChimpGame implements GameAdapter {
   private cells: HTMLButtonElement[];
   private numbers: HTMLElement[];
   private grid: HTMLElement;
-  private progressText: HTMLElement;
-  private countText: HTMLElement;
-  private strikesText: HTMLElement;
-  private strikeLabel: HTMLElement;
+  private tappedStat: HTMLElement;
+  private strikesStat: HTMLElement;
 
   constructor(private context: GameContext) {
     const root = context.root;
@@ -40,10 +38,8 @@ export class ChimpGame implements GameAdapter {
     this.numbers = this.cells.map((cell) =>
       element(cell, "[data-chimp-number]"),
     );
-    this.progressText = element(root, "[data-chimp-progress]");
-    this.countText = element(root, "[data-chimp-count]");
-    this.strikesText = element(root, "[data-chimp-strikes]");
-    this.strikeLabel = element(root, "[data-chimp-strike-label]");
+    this.tappedStat = element(root, '[data-game-stat="0"]');
+    this.strikesStat = element(root, '[data-game-stat="1"]');
     for (const [cell, button] of this.cells.entries()) {
       button.addEventListener("click", () => void this.choose(cell), {
         signal: context.events,
@@ -237,7 +233,6 @@ export class ChimpGame implements GameAdapter {
       this.numbers[cell].textContent = number ? String(number) : "";
       button.setAttribute("aria-label", gridCellName(cell, CHIMP_COLUMNS));
     }
-    this.countText.textContent = "4";
   }
 
   private paintChallenge() {
@@ -248,7 +243,6 @@ export class ChimpGame implements GameAdapter {
       button.classList.toggle("has-number", number !== undefined);
       this.numbers[cell].textContent = number ? String(number) : "";
     }
-    this.countText.textContent = String(this.challenge.count);
     this.setHidden(false);
     this.renderStatus();
   }
@@ -285,11 +279,9 @@ export class ChimpGame implements GameAdapter {
   }
 
   private renderStatus() {
-    this.progressText.textContent = String(this.tapped);
-    if (this.challenge)
-      this.countText.textContent = String(this.challenge.count);
-    this.strikesText.textContent = String(this.strikes);
-    this.strikeLabel.textContent = this.strikes === 1 ? "strike" : "strikes";
+    const count = this.challenge?.count ?? 4;
+    this.tappedStat.textContent = `${this.tapped}/${count}`;
+    this.strikesStat.textContent = String(this.strikes);
   }
 
   private clearMarks() {

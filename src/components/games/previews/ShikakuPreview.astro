@@ -1,0 +1,81 @@
+---
+import type { ShikakuRect } from "../../../lib/games/shikaku";
+
+const RECTS: ShikakuRect[] = [
+  { top: 0, left: 0, height: 2, width: 2 },
+  { top: 0, left: 2, height: 1, width: 3 },
+  { top: 1, left: 2, height: 2, width: 1 },
+  { top: 1, left: 3, height: 2, width: 2 },
+  { top: 2, left: 0, height: 3, width: 2 },
+  { top: 3, left: 2, height: 2, width: 3 },
+];
+const CLUES = new Map<number, number>([
+  [0, 4],
+  [3, 3],
+  [7, 2],
+  [14, 4],
+  [16, 6],
+  [22, 6],
+]);
+const CELLS = 25;
+
+const covered = (cell: number) => {
+  const row = Math.floor(cell / 5);
+  const column = cell % 5;
+  return RECTS.some(
+    (rect) =>
+      row >= rect.top &&
+      row < rect.top + rect.height &&
+      column >= rect.left &&
+      column < rect.left + rect.width,
+  );
+};
+---
+
+<div class="preview-plane preview-grid mini-shikaku">
+  {
+    Array.from({ length: CELLS }, (_, cell) => (
+      <span
+        class:list={[
+          "preview-cell",
+          {
+            "is-covered": covered(cell),
+            "is-clue": CLUES.has(cell),
+            "preview-mono": CLUES.has(cell),
+          },
+        ]}
+        style={`grid-row: ${Math.floor(cell / 5) + 1}; grid-column: ${(cell % 5) + 1}`}
+      >
+        {CLUES.get(cell) ?? ""}
+      </span>
+    ))
+  }
+  {
+    RECTS.map((rect) => (
+      <span
+        class="mini-shikaku-rect"
+        style={`grid-row: ${rect.top + 1} / span ${rect.height}; grid-column: ${rect.left + 1} / span ${rect.width}`}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .mini-shikaku {
+    --preview-columns: 5;
+    --preview-cell: 18px;
+  }
+  .mini-shikaku .is-covered {
+    border-color: transparent;
+  }
+  .mini-shikaku .is-clue {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .mini-shikaku-rect {
+    pointer-events: none;
+    z-index: 1;
+    border: 1.5px solid var(--preview-accent-line);
+    border-radius: var(--preview-radius);
+  }
+</style>

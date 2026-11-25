@@ -14,24 +14,18 @@
 </span>
 
 <style>
+  /* The same family as the difficulty choice: a quiet setting under the primary
+     button, on the same 44px touch height. */
   .playback-setting {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    width: fit-content;
-    min-height: 44px;
-    margin-top: 0.25rem;
+    min-height: var(--game-tap);
     color: var(--text-muted);
     font-size: 0.8125rem;
     cursor: pointer;
   }
-  @media (max-width: 768px) {
-    .playback-setting {
-      margin-top: 0;
-    }
-  }
   .playback-setting:has(input:disabled) {
-    opacity: 0.5;
     cursor: default;
   }
   .playback-setting input {

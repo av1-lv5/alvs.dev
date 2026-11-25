@@ -35,8 +35,8 @@ export class NumberGame implements GameAdapter {
         const answer = this.input.value.trim();
         if (!/^\d+$/.test(answer)) {
           this.error.textContent = answer
-            ? "Use digits 0–9 only."
-            : "Type the number before checking.";
+            ? "Digits only."
+            : "Type the number first.";
           this.input.setAttribute("aria-invalid", "true");
           this.input.focus();
           return;
@@ -46,8 +46,8 @@ export class NumberGame implements GameAdapter {
         this.form.hidden = true;
         this.watchPanel.hidden = false;
         element(this.context.root, "[data-number-label]").textContent = correct
-          ? "That's the number."
-          : "The number was";
+          ? "Correct."
+          : "It was";
         this.number.textContent = this.target;
         this.timer.parentElement!.hidden = true;
         this.context.resolve(
@@ -112,8 +112,7 @@ export class NumberGame implements GameAdapter {
     this.preview.hidden = true;
     this.form.hidden = true;
     this.watchPanel.hidden = false;
-    element(this.context.root, "[data-number-label]").textContent =
-      "Remember this";
+    element(this.context.root, "[data-number-label]").textContent = "Remember";
     this.number.textContent = this.target;
     this.timer.parentElement!.hidden = false;
     const duration = numberWatchDuration(this.target.length);

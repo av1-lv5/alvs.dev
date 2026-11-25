@@ -7,14 +7,14 @@ import { Icon } from "astro-icon/components";
     5<span>8</span>3
   </div>
   <div class="number-watch" data-number-watch hidden>
-    <span class="remember-label" data-number-label>Remember this</span>
+    <span class="remember-label" data-number-label>Remember</span>
     <strong class="number-value" data-number></strong>
     <div class="memory-timer" aria-hidden="true">
       <span data-timer></span>
     </div>
   </div>
   <form data-number-form hidden novalidate>
-    <label for="number-answer">What was the number?</label>
+    <label for="number-answer">What was it?</label>
     <input
       id="number-answer"
       data-answer
@@ -30,7 +30,7 @@ import { Icon } from "astro-icon/components";
     />
     <p id="number-error" data-input-error class="input-error" role="alert"></p>
     <button class="game-button" type="submit">
-      Check number <Icon name="lucide:arrow-right" size={16} />
+      Check <Icon name="lucide:arrow-right" size={16} />
     </button>
   </form>
 </div>
@@ -108,8 +108,8 @@ import { Icon } from "astro-icon/components";
     caret-color: var(--accent);
   }
   input:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
+    outline: var(--game-focus-ring);
+    outline-offset: var(--game-focus-offset);
     background: var(--game-control-bg);
     border-color: var(--accent);
   }

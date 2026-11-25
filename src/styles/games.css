@@ -1,5 +1,5 @@
-/* Shared by every game board. Anything specific to one game lives in that
-   game's own board component. */
+/* Shared by the player frame and every game board. Scoped styles in the player
+   cannot reach board components, so anything shared lives here. */
 
 :root {
   --game-control-bg: color-mix(
@@ -10,11 +10,53 @@
   --game-control-border: light-dark(#7e8896, #68717d);
 }
 
-memory-game [hidden] {
+.game-player {
+  /* One cell treatment for every board: stroke, radius, fill and focus. Values
+     that boards need locally (hover, states) are read from the same tokens. */
+  --game-cell-radius: var(--radius);
+  --game-cell-gap: 8px;
+  --game-cell-bg: var(--game-control-bg);
+  --game-cell-hover-bg: color-mix(
+    in srgb,
+    var(--game-control-bg) 95%,
+    var(--text)
+  );
+  --game-cell-hover-border: color-mix(
+    in srgb,
+    var(--game-control-border) 58%,
+    var(--accent)
+  );
+  /* Matches the site-wide focus ring, so a board cell and a page button read
+     as the same keyboard affordance. */
+  --game-focus-ring: 2px solid var(--accent);
+  --game-focus-offset: 4px;
+  --game-tap: 44px;
+  --game-action-height: 48px;
+}
+
+/* Dense boards carry more cells per pixel, so they take a tighter radius and
+   gap. Same tokens, one scale step down. */
+.game-player[data-game="minesweeper"],
+.game-player[data-game="shikaku"] {
+  --game-cell-radius: 3px;
+  --game-cell-gap: 3px;
+}
+
+@media (max-width: 768px) {
+  .game-player {
+    --game-cell-gap: 6px;
+  }
+  .game-player[data-game="minesweeper"],
+  .game-player[data-game="shikaku"] {
+    --game-cell-gap: 2px;
+  }
+}
+
+.game-player [hidden] {
   display: none !important;
 }
 
-memory-game .visually-hidden {
+.game-player .visually-hidden {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -25,12 +67,12 @@ memory-game .visually-hidden {
   white-space: nowrap;
 }
 
-memory-game .game-button {
+.game-player .game-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  min-height: 44px;
+  min-height: var(--game-tap);
   padding: 0.7rem 1.2rem;
   border: 1px solid var(--accent);
   border-radius: var(--radius);
@@ -44,27 +86,112 @@ memory-game .game-button {
     background-color 120ms ease-out;
 }
 
-memory-game .game-button:active {
+.game-player .game-button:active {
   transform: scale(0.97);
 }
 
-memory-game .game-button:focus-visible:active {
+.game-player .game-button:focus-visible:active {
   transform: none;
 }
 
-memory-game .game-button:disabled {
+.game-player .game-button:disabled {
   opacity: 0.5;
   cursor: default;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  memory-game .game-button:hover {
+  .game-player .game-button:hover {
     background: var(--accent-hover);
   }
 }
 
+/* Board cells: every board opts in with `game-cell` and keeps only its own
+   states. */
+.game-player .game-cell {
+  border: 1px solid var(--game-control-border);
+  border-radius: var(--game-cell-radius);
+  background: var(--game-cell-bg);
+  transition:
+    border-color 120ms ease-out,
+    background-color 100ms ease-out;
+}
+
+.game-player .game-cell:focus-visible {
+  outline: var(--game-focus-ring);
+  outline-offset: var(--game-focus-offset);
+  z-index: 1;
+}
+
+/* Toolbar controls: one shape for every tool on every game, including the
+   per-game ones such as the minefield's flag toggle. */
+.game-player .toolbar-button {
+  display: inline-flex;
+  flex: none;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--game-tap);
+  min-height: var(--game-tap);
+  /* Icon only at every width: a 44px square, named by its aria-label. */
+  padding: 0;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  font: 400 0.75rem var(--sans);
+  color: var(--text-muted);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    color 120ms ease-out,
+    border-color 120ms ease-out,
+    background-color 120ms ease-out;
+}
+
+.game-player .toolbar-button span {
+  display: inline-flex;
+}
+
+/* The names stay on the buttons as aria-label; nothing prints beside the
+   icon, so the tool group is one compact row at the top right. */
+.game-player .toolbar-button .toolbar-label {
+  display: none;
+}
+
+/* The same 2px accent underline marks every current choice: a pressed toolbar
+   toggle and the selected difficulty. */
+.game-player .toolbar-button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  box-shadow: inset 0 -2px 0 var(--accent);
+  color: var(--text);
+}
+
+.game-player .toolbar-button:focus-visible {
+  outline: var(--game-focus-ring);
+  outline-offset: var(--game-focus-offset);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .game-player .toolbar-button:hover {
+    color: var(--text);
+    border-color: var(--text-light);
+  }
+}
+
+/* Per-game tools only matter while a board is in play. */
+.game-player [data-game-tool] {
+  display: none;
+}
+
+.game-player[data-phase="playing"] [data-game-tool],
+.game-player[data-phase="paused"] [data-game-tool] {
+  display: inline-flex;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  memory-game .game-button {
+  .game-player .game-button,
+  .game-player .game-cell,
+  .game-player .toolbar-button {
     transition: none;
   }
 }

@@ -28,13 +28,13 @@ export class PairsGame implements GameAdapter {
   private focusIndex = 0;
   private cells: HTMLButtonElement[];
   private fronts: HTMLElement[];
-  private found: HTMLElement;
-  private tries: HTMLElement;
+  private pairsStat: HTMLElement;
+  private triesStat: HTMLElement;
 
   constructor(private context: GameContext) {
     const root = context.root;
-    this.found = element(root, "[data-pair-found]");
-    this.tries = element(root, "[data-pair-tries]");
+    this.pairsStat = element(root, '[data-game-stat="0"]');
+    this.triesStat = element(root, '[data-game-stat="1"]');
     this.cells = Array.from(
       root.querySelectorAll<HTMLButtonElement>("[data-pair-card]"),
     );
@@ -168,6 +168,9 @@ export class PairsGame implements GameAdapter {
     if (this.board[first] === this.board[second]) {
       this.matched.add(first);
       this.matched.add(second);
+      // The pairs count must include the pair just found before a win is
+      // announced, or the winning screen reads 7/8.
+      this.updateStatus();
       this.flipped = [];
       this.focusIndex = this.nextOpen(cell);
       this.paint();
@@ -245,8 +248,10 @@ export class PairsGame implements GameAdapter {
   }
 
   private updateStatus() {
-    this.found.textContent = String(this.matched.size / 2);
-    this.tries.textContent = this.board.length ? String(this.remaining) : "—";
+    this.pairsStat.textContent = `${this.matched.size / 2}/${PAIR_COUNT}`;
+    this.triesStat.textContent = this.board.length
+      ? String(this.remaining)
+      : "—";
   }
 
   private report() {

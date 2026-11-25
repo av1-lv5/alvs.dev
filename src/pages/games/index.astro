@@ -3,16 +3,17 @@ import PageLayout from "@layouts/PageLayout.astro";
 import { Icon } from "astro-icon/components";
 import { GAME_PARTS } from "../../components/games/game-parts";
 import { GAMES } from "../../lib/games/registry";
+import "../../styles/previews.css";
 ---
 
 <PageLayout
   tabTitle="Games"
-  description="Small, playful memory games. Remember a pattern, spot the odd one out, remember a number, outsmart the chimp, match the pairs, and beat your own best."
+  description="Small, playful games for your brain: memory games and logic puzzles. Remember a pattern, match the pairs, beat the chimp, clear a minefield, divide a grid, and beat your own best."
 >
   <section class="hero">
     <h1>/games<span class="heading-dot" aria-hidden="true"></span></h1>
     <p class="hero-text">A small detour for your brain.</p>
-    <p>Pick a game. Find your rhythm. Surprise yourself.</p>
+    <p>Memory games and logic puzzles. Beat your own best.</p>
   </section>
 
   <div class="game-shelf">
@@ -32,10 +33,20 @@ import { GAMES } from "../../lib/games/registry";
               <p>{game.description}</p>
               <div class="entry-meta">
                 <span class="play-link">
-                  Let's play <Icon name="lucide:arrow-right" size={16} />
+                  Play <Icon name="lucide:arrow-right" size={16} />
                 </span>
-                <span class="best" data-best-for={game.id} hidden>
-                  Best level <span class="best-value" data-best-value />
+                <span
+                  class="best"
+                  data-best-for={game.id}
+                  data-best-difficulty={
+                    game.kind === "puzzle" ? game.best.difficulty : undefined
+                  }
+                  hidden
+                >
+                  {game.kind === "puzzle"
+                    ? `Best · ${game.best.label}`
+                    : "Best level"}{" "}
+                  <span class="best-value" data-best-value />
                 </span>
               </div>
             </div>
@@ -47,6 +58,10 @@ import { GAMES } from "../../lib/games/registry";
 </PageLayout>
 
 <script>
+  import {
+    formatPuzzleTime,
+    puzzleBestStorageKey,
+  } from "../../lib/games/puzzle";
   import { bestStorageKey, readBest } from "../../lib/games/session";
 
   // Personal bests live on this device, so they're filled in after load.
@@ -55,13 +70,16 @@ import { GAMES } from "../../lib/games/registry";
       for (const entry of document.querySelectorAll<HTMLElement>(
         "[data-best-for]",
       )) {
-        const best = readBest(
-          localStorage,
-          bestStorageKey(entry.dataset.bestFor ?? ""),
-        );
+        const gameId = entry.dataset.bestFor ?? "";
+        const difficulty = entry.dataset.bestDifficulty;
+        const best = difficulty
+          ? readBest(localStorage, puzzleBestStorageKey(gameId, difficulty))
+          : readBest(localStorage, bestStorageKey(gameId));
         const value = entry.querySelector("[data-best-value]");
         if (best && value) {
-          value.textContent = String(best);
+          value.textContent = difficulty
+            ? formatPuzzleTime(best)
+            : String(best);
           entry.hidden = false;
         }
       }
@@ -156,12 +174,8 @@ import { GAMES } from "../../lib/games/registry";
     font-variant-numeric: tabular-nums;
     color: var(--text);
   }
-  @media (hover: hover) {
-    .game-entry:hover .play-link {
-      text-decoration: underline;
-      text-underline-offset: 4px;
-    }
-  }
+  /* Hover has one cue only: the preview straightens. The row keeps the shared
+     focus-visible ring for keyboard users. */
   @media (max-width: 480px) {
     .game-entry {
       grid-template-columns: 100px 1fr;

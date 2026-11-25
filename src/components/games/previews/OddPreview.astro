@@ -3,10 +3,10 @@ const cells = 9;
 const MARK_PATH = "M7 4.5v15h10";
 ---
 
-<div class="mini-odd">
+<div class="preview-plane preview-grid mini-odd">
   {
     Array.from({ length: cells }, (_, cell) => (
-      <span class:list={["mini-odd-cell", { turned: cell === 4 }]}>
+      <span class:list={["preview-cell", { turned: cell === 4 }]}>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path
             d={MARK_PATH}
@@ -24,41 +24,14 @@ const MARK_PATH = "M7 4.5v15h10";
 
 <style>
   .mini-odd {
-    display: grid;
-    grid-template-columns: repeat(3, 26px);
-    gap: 6px;
-    color: color-mix(in srgb, var(--text) 62%, var(--bg));
-    transform: rotate(-7deg);
-    transition: transform 220ms ease-out;
+    --preview-columns: 3;
+    --preview-cell: 28px;
   }
-  .mini-odd-cell {
-    display: grid;
-    place-items: center;
-    aspect-ratio: 1;
-    border: 1px solid color-mix(in srgb, var(--text) 22%, var(--bg));
-    border-radius: 4px;
-  }
-  .mini-odd-cell svg {
-    width: 62%;
+  .mini-odd svg {
+    width: 56%;
     aspect-ratio: 1;
   }
-  .mini-odd-cell.turned svg {
+  .mini-odd .turned svg {
     transform: rotate(42deg);
-  }
-  @media (hover: hover) {
-    :global(.game-entry:hover) .mini-odd {
-      transform: rotate(0);
-    }
-  }
-  @media (max-width: 480px) {
-    .mini-odd {
-      grid-template-columns: repeat(3, 21px);
-      gap: 5px;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .mini-odd {
-      transition: none;
-    }
   }
 </style>
